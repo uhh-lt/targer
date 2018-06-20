@@ -50,7 +50,9 @@ def label_doc(document):
     for sentence in document.sentences:
         extracted = extract_tokens(sentence.words_conll)
         doc_raw_text += extracted
-    labeled_doc = model.label(extracted)
+        # alternatively use text provided in data set 
+        # doc_raw_text += sentence.text[]
+    labeled_doc = model.label(doc_raw_text)
     sentence_index = 0
     for sentence in document.sentences:
         labeled_sentence = labeled_doc[sentence_index]
