@@ -1,0 +1,13 @@
+{
+  "name": "Vue Material - Login",
+  "keywords": [
+    "vue-material",
+    "material-design",
+    "vue",
+    "login"
+  ],
+  "dependencies": {
+    "vue-material": "latest",
+    "vue": "latest"
+  }
+}
