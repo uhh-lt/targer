@@ -7,6 +7,7 @@ dependencies:
 Run behind reverse proxy:
 The current code is default set to run at port 6000 behind a reverseproxy like nginx or apache2 on in a subdirectory /arg-mining. You need to add this to your webserver configuration:
 nginx:
+
     location /arg-mining/ {
         proxy_pass http://localhost:6000;
         proxy_http_version 1.1;
@@ -17,6 +18,7 @@ nginx:
     }
 
 apache2:
+
     <Location /arg-mining>
         Header add X-Script-Name "/arg-mining"
         RequestHeader set X-Script-Name "/arg-mining"
