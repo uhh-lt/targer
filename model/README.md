@@ -7,13 +7,10 @@ https://github.com/UKPLab/emnlp2017-bilstm-cnn-crf
 
 2. Downloading the pretrained model. https://goo.gl/5cFJWT (old)
 
-Trained on:
-
-ES dataset with "shrinked" fasttext embeddings: https://goo.gl/heAHLb
-WD dataset with "shrinked" fasttext embeddings: https://goo.gl/7CAotT
-
-ES dataset with full Dependency Based embeddings by [1]: https://goo.gl/WZgsiE
-WD dataset with full  Dependency Based embeddings by [1]:  https://goo.gl/nvtqrY
+* ES dataset with "shrinked" fasttext embeddings: https://goo.gl/heAHLb
+* WD dataset with "shrinked" fasttext embeddings: https://goo.gl/7CAotT
+* ES dataset with full Dependency Based embeddings by [1]: https://goo.gl/WZgsiE
+* WD dataset with full  Dependency Based embeddings by [1]:  https://goo.gl/nvtqrY
 
 3. Using Model class in Model.py to run pretrained model on a new input:
 
