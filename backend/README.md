@@ -1,12 +1,12 @@
-Web backend for BiLSTM-CNN-CRF Implementation for Sequence Tagging
-based on Python, Flask and Restful API.
+# Web backend for BiLSTM-CNN-CRF Implementation for Sequence Tagging
+### based on Python, Flask and Restful API.
 
-dependencies:
+### dependencies:
 - ...
 
-Run behind reverse proxy:
+### Run behind reverse proxy:
 The current code is default set to run at port 6000 behind a reverseproxy like nginx or apache2 on in a subdirectory /arg-mining. You need to add this to your webserver configuration:
-nginx:
+#### nginx:
 
     location /arg-mining/ {
         proxy_pass http://localhost:6000;
@@ -17,7 +17,7 @@ nginx:
         proxy_set_header X-Script-Name /arg-mining;
     }
 
-apache2:
+#### apache2:
 
     <Location /arg-mining>
         Header add X-Script-Name "/arg-mining"
@@ -28,10 +28,10 @@ apache2:
     </Location>
 
 
-Installation:
+### Installation:
 You can use a virtualenv for the installation. Download and set up the model from [0]. Add the backend.py into the main directory of the BiLSTM-CNN-CRF Implementation for Sequence Tagging.
 
-Usage:
+### Usage:
     python3 backend.py
 
 The webserver will now listen at http://localhost:6000 for incoming request.
