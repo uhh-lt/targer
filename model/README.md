@@ -5,7 +5,7 @@ How to use:
 1. Cloning the following repo:
 https://github.com/UKPLab/emnlp2017-bilstm-cnn-crf
 
-2. Downloading the pretrained model. https://goo.gl/5cFJWT (old)
+2. Downloading the pretrained model.
 
 * ES dataset with "shrinked" fasttext embeddings: https://goo.gl/heAHLb
 * WD dataset with "shrinked" fasttext embeddings: https://goo.gl/7CAotT
