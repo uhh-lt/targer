@@ -1,0 +1,58 @@
+<!doctype html>
+
+<html>
+
+<head>
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/displacy.css') }}">
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type='text/javascript' src="{{ url_for('static', filename = 'displacy-ent.js') }}"></script>
+</head>
+
+<body>
+<script type=text/javascript>
+    $(function() {
+      $('a#button_send').bind('click', function() {
+	$.get( "/label_text", { username: document.getElementById("text_to_parse").value } )
+	.done(function( data ) {
+		console.log( "JSON Data: " + data );
+		const displacy = new displaCyENT('https://api.explosion.ai/displacy/ent/', {
+		    container: '#displacy'
+		});
+
+		text = document.getElementById("text_to_parse").value
+ 		spans = JSON.parse(data)
+		ents = ['p-b', 'p-i', 'c-b', 'c-i'];
+		displacy.render(text, spans, ents);
+	})
+	.fail(function( jqxhr, textStatus, error ) {
+		var err = textStatus + ", " + error;
+		console.log( "Request Failed: " + err );
+	});
+	
+	return false;
+      });
+    });
+
+const displacy = new displaCyENT('https://api.explosion.ai/displacy/ent/', {
+    container: '#displacy'
+});
+
+</script>
+
+
+<meta charset=utf-8> 
+
+<textarea id="text_to_parse" rows="4" cols="50">
+Therefore fixed punishment will decrease the space between poor and rich people and everyone will understand the importance of each other. I know it better.
+</textarea>
+
+<div class='container'>
+    <form>
+        <a href=# id=button_send><button class='btn btn-default'>Test</button></a>
+    </form>
+</div>
+
+<div id="displacy"> Results will be here </div>
+
+</body>
+</html>
