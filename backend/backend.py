@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""be.py: Description."""
+"""backend.py: Backend."""
 from flask import Flask, jsonify, request
 from flasgger import Swagger, LazyString, LazyJSONEncoder
 from flask_restful import Api, Resource, reqparse
@@ -8,6 +8,8 @@ from flask import make_response
 from nltk.tokenize import sent_tokenize, word_tokenize
 import random
 import json
+from flask import jsonify
+
 
 from Model import Model
 from ModelES import ModelES
@@ -209,7 +211,6 @@ class InputtextWDk(Resource):
        response.headers['content-type'] = 'application/json'
        return response
 
-
 class ClassifyES(Resource):
     def post(self):
        """
@@ -333,6 +334,131 @@ class ClassifyWDk(Resource):
        response = make_response(result)
        response.headers['content-type'] = 'application/json'
        return response
+
+
+class ClassifyES_p(Resource):
+    def post(self):
+       """
+       Takes a input sequence and assigns label with highes probability (ES model)
+       ---
+       consumes:
+         - text/plain
+       parameters:
+         - in: body
+           name: text
+           type: string
+           required: true
+           description: Text to classify 
+           example: This is an example sentence. You can paste in any other text, because this is a text field. The quotes are not needed.
+       responses:
+         200:
+           description: A list of tagged tokens annotated with labels
+           schema:
+             id: Returntext
+             properties:
+               returntext:
+                 type: string
+                 description: JSON-List
+                 default: No input text set
+        """
+       inputtext = request.get_data().decode('UTF-8')
+       result = modelES.label_with_probs(inputtext)
+       response = make_response(jsonify(result))
+       response.headers['content-type'] = 'application/json'
+       return response
+       
+class ClassifyWD_p(Resource):
+    def post(self):
+       """
+       Takes a input sequence and assigns label with highes probability (WD model)
+       ---
+       consumes:
+         - text/plain
+       parameters:
+         - in: body
+           name: text
+           type: string
+           required: true
+           description: Text to classify 
+           example: This is an example sentence. You can paste in any other text, because this is a text field. The quotes are not needed.
+       responses:
+         200:
+           description: A list of tagged tokens annotated with labels
+           schema:
+             id: Returntext
+             properties:
+               returntext:
+                 type: string
+                 description: JSON-List
+                 default: No input text set
+        """
+       inputtext = request.get_data().decode('UTF-8')
+       result = modelWD.label_with_probs(inputtext)
+       response = make_response(jsonify(result))
+       response.headers['content-type'] = 'application/json'
+       return response
+       
+class ClassifyESk_p(Resource):
+    def post(self):
+       """
+       Takes a input sequence and assigns label with highes probability (ESk model)
+       ---
+       consumes:
+         - text/plain
+       parameters:
+         - in: body
+           name: text
+           type: string
+           required: true
+           description: Text to classify 
+           example: This is an example sentence. You can paste in any other text, because this is a text field. The quotes are not needed.
+       responses:
+         200:
+           description: A list of tagged tokens annotated with labels
+           schema:
+             id: Returntext
+             properties:
+               returntext:
+                 type: string
+                 description: JSON-List
+                 default: No input text set
+        """
+       inputtext = request.get_data().decode('UTF-8')
+       result = modelESk.label_with_probs(inputtext)
+       response = make_response(jsonify(result))
+       response.headers['content-type'] = 'application/json'
+       return response
+       
+class ClassifyWDk_p(Resource):
+    def post(self):
+       """
+       Takes a input sequence and assigns label with highes probability (WDk model)
+       ---
+       consumes:
+         - text/plain
+       parameters:
+         - in: body
+           name: text
+           type: string
+           required: true
+           description: Text to classify 
+           example: This is an example sentence. You can paste in any other text, because this is a text field. The quotes are not needed.
+       responses:
+         200:
+           description: A list of tagged tokens annotated with labels
+           schema:
+             id: Returntext
+             properties:
+               returntext:
+                 type: string
+                 description: JSON-List
+                 default: No input text set
+        """
+       inputtext = request.get_data().decode('UTF-8')
+       result = modelWDk.label_with_probs(inputtext)
+       response = make_response(jsonify(result))
+       response.headers['content-type'] = 'application/json'
+       return response
        
 api.add_resource(Inputtext, '/inputtext/<inputtext>')
 api.add_resource(InputtextES, '/inputtextES/<inputtext>')
@@ -343,6 +469,10 @@ api.add_resource(ClassifyES, '/classifyES')
 api.add_resource(ClassifyWD, '/classifyWD')
 api.add_resource(ClassifyESk, '/classifyESk')
 api.add_resource(ClassifyWDk, '/classifyWDk')
+api.add_resource(ClassifyES_p, '/classifyES_p')
+api.add_resource(ClassifyWD_p, '/classifyWD_p')
+api.add_resource(ClassifyESk_p, '/classifyESk_p')
+api.add_resource(ClassifyWDk_p, '/classifyWDk_p')
 
 
 app.run(host='0.0.0.0', port=6000,debug=False)
