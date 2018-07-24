@@ -21,7 +21,7 @@ sender = Sender()
 
 @app.route('/')
 def index():
-  return render_template('template.html')
+  return render_template('template2.html')
 
 @app.route('/label_text')
 def background_process_test():
