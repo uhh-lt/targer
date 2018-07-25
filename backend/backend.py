@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-"""backend.py: Backend."""
+"""be.py: Description."""
 from flask import Flask, jsonify, request
 from flasgger import Swagger, LazyString, LazyJSONEncoder
 from flask_restful import Api, Resource, reqparse
@@ -12,6 +12,7 @@ from flask import jsonify
 
 
 from Model import Model
+from ModelHalle import ModelHalle
 from ModelES import ModelES
 from ModelWD import ModelWD
 from ModelESk import ModelESk
@@ -21,6 +22,11 @@ model = Model()
 # We must call this cause of a keras bug
 # https://github.com/keras-team/keras/issues/2397
 model.label("Therefore fixed punishment will")
+
+modelHalle = ModelHalle()
+# We must call this cause of a keras bug
+# https://github.com/keras-team/keras/issues/2397
+modelHalle.label("Therefore fixed punishment will")
 
 modelES = ModelES()
 # We must call this cause of a keras bug
@@ -335,6 +341,36 @@ class ClassifyWDk(Resource):
        response.headers['content-type'] = 'application/json'
        return response
 
+class ClassifyHalle(Resource):
+    def post(self):
+       """
+       Takes a input sequence and assigns label with highes probability (Uni Halle model)
+       ---
+       consumes:
+         - text/plain
+       parameters:
+         - in: body
+           name: text
+           type: string
+           required: true
+           description: Text to classify 
+           example: This is an example sentence. You can paste in any other text, because this is a text field. The quotes are not needed.
+       responses:
+         200:
+           description: A list of tagged tokens annotated with labels
+           schema:
+             id: Returntext
+             properties:
+               returntext:
+                 type: string
+                 description: JSON-List
+                 default: No input text set
+        """
+       inputtext = request.get_data().decode('UTF-8')
+       result = modelHalle.label(inputtext)
+       response = make_response(result)
+       response.headers['content-type'] = 'application/json'
+       return response
 
 class ClassifyES_p(Resource):
     def post(self):
@@ -459,6 +495,37 @@ class ClassifyWDk_p(Resource):
        response = make_response(jsonify(result))
        response.headers['content-type'] = 'application/json'
        return response
+
+class ClassifyHalle_p(Resource):
+    def post(self):
+       """
+       Takes a input sequence and assigns label with highes probability (Uni Halle model)
+       ---
+       consumes:
+         - text/plain
+       parameters:
+         - in: body
+           name: text
+           type: string
+           required: true
+           description: Text to classify 
+           example: This is an example sentence. You can paste in any other text, because this is a text field. The quotes are not needed.
+       responses:
+         200:
+           description: A list of tagged tokens annotated with labels
+           schema:
+             id: Returntext
+             properties:
+               returntext:
+                 type: string
+                 description: JSON-List
+                 default: No input text set
+        """
+       inputtext = request.get_data().decode('UTF-8')
+       result = modelHalle.label_with_probs(inputtext)
+       response = make_response(jsonify(result))
+       response.headers['content-type'] = 'application/json'
+       return response
        
 api.add_resource(Inputtext, '/inputtext/<inputtext>')
 api.add_resource(InputtextES, '/inputtextES/<inputtext>')
@@ -469,10 +536,12 @@ api.add_resource(ClassifyES, '/classifyES')
 api.add_resource(ClassifyWD, '/classifyWD')
 api.add_resource(ClassifyESk, '/classifyESk')
 api.add_resource(ClassifyWDk, '/classifyWDk')
+api.add_resource(ClassifyHalle, '/classifyHalle')
 api.add_resource(ClassifyES_p, '/classifyES_p')
 api.add_resource(ClassifyWD_p, '/classifyWD_p')
 api.add_resource(ClassifyESk_p, '/classifyESk_p')
 api.add_resource(ClassifyWDk_p, '/classifyWDk_p')
+api.add_resource(ClassifyHalle_p, '/classifyHalle_p')
 
 
 app.run(host='0.0.0.0', port=6000,debug=False)
