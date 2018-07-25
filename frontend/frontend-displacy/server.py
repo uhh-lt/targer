@@ -2,8 +2,6 @@ from flask import Flask, render_template
 from json import JSONDecodeError
 import requests
 import json
-import urllib.parse
-import urllib.request as req
 from flask import request
 
 app = Flask(__name__)
@@ -23,12 +21,10 @@ sender = Sender()
 def index():
   return render_template('template2.html')
 
-@app.route('/label_text')
+@app.route('/label_text', methods=['POST'])
 def background_process_test():
-    text = request.args.get('username')
-    print ("Hello, ", text)
+    text = request.form.get('username')
     doc = sender.send(text)
-    print(doc)
     currentPos = 0
     data = []
     for sentence in doc:
