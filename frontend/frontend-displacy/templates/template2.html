@@ -22,7 +22,7 @@
 <script type=text/javascript>
     $(function() {
       $('a#button_send').bind('click', function() {
-	$.get( "/label_text", { username: document.getElementById("text_to_parse").value } )
+	$.post( "/label_text", { username: document.getElementById("text_to_parse").value } )
 	.done(function( data ) {
 		console.log( "JSON Data: " + data );
 		const displacy = new displaCyENT('https://api.explosion.ai/displacy/ent/', {
