@@ -6,9 +6,9 @@ import sys
 import json
 
 
-modelPath = "models/uni_halle.h5"
+modelPath = "models/ibm.h5"
 
-class ModelHalle:
+class ModelIBM:
 
     lstmModel = BiLSTM.loadModel(modelPath)
 
