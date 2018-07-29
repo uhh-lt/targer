@@ -10,23 +10,24 @@ import random
 import json
 from flask import jsonify
 
+"""Front-End"""
+from flask import render_template
+from json import JSONDecodeError
+import requests
+import urllib.parse
+import urllib.request as req
 
-from Model import Model
-from ModelHalle import ModelHalle
+"""Models"""
+from ModelIBM import ModelIBM
 from ModelES import ModelES
 from ModelWD import ModelWD
-from ModelESk import ModelESk
-from ModelWDk import ModelWDk
+from ModelES_dep import ModelES_dep
+from ModelWD_dep import ModelWD_dep
 
-model = Model()
+modelIBM = ModelIBM()
 # We must call this cause of a keras bug
 # https://github.com/keras-team/keras/issues/2397
-model.label("Therefore fixed punishment will")
-
-modelHalle = ModelHalle()
-# We must call this cause of a keras bug
-# https://github.com/keras-team/keras/issues/2397
-modelHalle.label("Therefore fixed punishment will")
+modelIBM.label("Therefore fixed punishment will")
 
 modelES = ModelES()
 # We must call this cause of a keras bug
@@ -38,15 +39,15 @@ modelWD = ModelWD()
 # https://github.com/keras-team/keras/issues/2397
 modelWD.label("Therefore fixed punishment will")
 
-modelESk = ModelESk()
+modelES_dep = ModelES_dep()
 # We must call this cause of a keras bug
 # https://github.com/keras-team/keras/issues/2397
-modelESk.label("Therefore fixed punishment will")
+modelES_dep.label("Therefore fixed punishment will")
 
-modelWDk = ModelWDk()
+modelWD_dep = ModelWD_dep()
 # We must call this cause of a keras bug
 # https://github.com/keras-team/keras/issues/2397
-modelWDk.label("Therefore fixed punishment will")
+modelWD_dep.label("Therefore fixed punishment will")
 
 class ReverseProxied(object):
     def __init__(self, app):
@@ -81,146 +82,46 @@ else:
 
 api = Api(app)
 
+class Sender:
+    def send(self, text):
+        try:
+            r = requests.post("http://ltdemos.informatik.uni-hamburg.de/arg-mining-ltcpu/classifyES", data=text.encode("utf-8"))
+            return r.json()
+        except JSONDecodeError:
+            print("!!!!", len(text), text)
+            pass
 
+sender = Sender()
 
-@app.route("/")
-def hello():
-    return "Hello World!"
+@app.route('/')
+def index():
+  return render_template('template2.html')
 
-class Inputtext(Resource):
-    def post(self, inputtext):
-       """
-       Takes a input sequence and assigns label with highes probability (default model)
-       ---
-       parameters:
-         - in: path
-           name: inputtext
-           type: string
-           required: true
-       responses:
-         200:
-           description: A list of tagged tokens annotated with labels
-           schema:
-             id: Returntext
-             properties:
-               returntext:
-                 type: string
-                 description: JSON-List
-                 default: No input text set
-        """
-       result = model.label(inputtext)
-       response = make_response(result)
-       response.headers['content-type'] = 'application/json'
-       return response
-
-class InputtextES(Resource):
-    def post(self, inputtext):
-       """
-       Takes a input sequence and assigns label with highes probability (ES model)
-       ---
-       parameters:
-         - in: path
-           name: inputtext
-           type: string
-           required: true
-       responses:
-         200:
-           description: A list of tagged tokens annotated with labels
-           schema:
-             id: Returntext
-             properties:
-               returntext:
-                 type: string
-                 description: JSON-List
-                 default: No input text set
-        """
-       result = modelES.label(inputtext)
-       response = make_response(result)
-       response.headers['content-type'] = 'application/json'
-       return response
-
-class InputtextWD(Resource):
-    def post(self, inputtext):
-       """
-       Takes a input sequence and assigns label with highes probability (WD model)
-       ---
-       parameters:
-         - in: path
-           name: inputtext
-           type: string
-           required: true
-       responses:
-         200:
-           description: A list of tagged tokens annotated with labels
-           schema:
-             id: Returntext
-             properties:
-               returntext:
-                 type: string
-                 description: JSON-List
-                 default: No input text set
-        """
-       result = modelWD.label(inputtext)
-       response = make_response(result)
-       response.headers['content-type'] = 'application/json'
-       return response
-
-class InputtextESk(Resource):
-    def post(self, inputtext):
-       """
-       Takes a input sequence and assigns label with highes probability (EDk model)
-       ---
-       parameters:
-         - in: path
-           name: inputtext
-           type: string
-           required: true
-       responses:
-         200:
-           description: A list of tagged tokens annotated with labels
-           schema:
-             id: Returntext
-             properties:
-               returntext:
-                 type: string
-                 description: JSON-List
-                 default: No input text set
-        """
-       result = modelESk.label(inputtext)
-       response = make_response(result)
-       response.headers['content-type'] = 'application/json'
-       return response
-
-class InputtextWDk(Resource):
-    def post(self, inputtext):
-       """
-       Takes a input sequence and assigns label with highes probability (WDk model)
-       ---
-       parameters:
-         - in: path
-           name: inputtext
-           type: string
-           required: true
-       responses:
-         200:
-           description: A list of tagged tokens annotated with labels
-           schema:
-             id: Returntext
-             properties:
-               returntext:
-                 type: string
-                 description: JSON-List
-                 default: No input text set
-        """
-       result = modelWDk.label(inputtext)
-       response = make_response(result)
-       response.headers['content-type'] = 'application/json'
-       return response
+@app.route('/label_text', methods=['POST'])
+def background_process_test():
+    #text = request.args.get('username')
+    text = request.form.get('username')
+    #print ("Hello, ", text)
+    doc = sender.send(text)
+    #print(doc)
+    currentPos = 0
+    data = []
+    for sentence in doc:
+        for token in sentence:
+            start = text.find(token["token"], currentPos)
+            end = start + len(token["token"])
+            currentPos = end
+            currentWord = {}
+            currentWord['start'] = start
+            currentWord['end'] = end
+            currentWord['type'] = token["label"]
+            data.append(currentWord)
+    return json.dumps(data)
 
 class ClassifyES(Resource):
     def post(self):
        """
-       Takes a input sequence and assigns label with highes probability (ES model)
+       Classifies input text to argument structure (ES model, fasttext - big dataset)
        ---
        consumes:
          - text/plain
@@ -230,169 +131,14 @@ class ClassifyES(Resource):
            type: string
            required: true
            description: Text to classify 
-           example: This is an example sentence. You can paste in any other text, because this is a text field. The quotes are not needed.
+           example: Quebecan independence is justified. In the special episode in Japan, his system is restored by a doctor who wishes to use his independence for her selfish reasons.
        responses:
          200:
            description: A list of tagged tokens annotated with labels
            schema:
-             id: Returntext
+             id: argument-structure
              properties:
-               returntext:
-                 type: string
-                 description: JSON-List
-                 default: No input text set
-        """
-       inputtext = request.get_data().decode('UTF-8')
-       result = modelES.label(inputtext)
-       response = make_response(result)
-       response.headers['content-type'] = 'application/json'
-       return response
-       
-class ClassifyWD(Resource):
-    def post(self):
-       """
-       Takes a input sequence and assigns label with highes probability (WD model)
-       ---
-       consumes:
-         - text/plain
-       parameters:
-         - in: body
-           name: text
-           type: string
-           required: true
-           description: Text to classify 
-           example: This is an example sentence. You can paste in any other text, because this is a text field. The quotes are not needed.
-       responses:
-         200:
-           description: A list of tagged tokens annotated with labels
-           schema:
-             id: Returntext
-             properties:
-               returntext:
-                 type: string
-                 description: JSON-List
-                 default: No input text set
-        """
-       inputtext = request.get_data().decode('UTF-8')
-       result = modelWD.label(inputtext)
-       response = make_response(result)
-       response.headers['content-type'] = 'application/json'
-       return response
-       
-class ClassifyESk(Resource):
-    def post(self):
-       """
-       Takes a input sequence and assigns label with highes probability (ESk model)
-       ---
-       consumes:
-         - text/plain
-       parameters:
-         - in: body
-           name: text
-           type: string
-           required: true
-           description: Text to classify 
-           example: This is an example sentence. You can paste in any other text, because this is a text field. The quotes are not needed.
-       responses:
-         200:
-           description: A list of tagged tokens annotated with labels
-           schema:
-             id: Returntext
-             properties:
-               returntext:
-                 type: string
-                 description: JSON-List
-                 default: No input text set
-        """
-       inputtext = request.get_data().decode('UTF-8')
-       result = modelESk.label(inputtext)
-       response = make_response(result)
-       response.headers['content-type'] = 'application/json'
-       return response
-       
-class ClassifyWDk(Resource):
-    def post(self):
-       """
-       Takes a input sequence and assigns label with highes probability (WDk model)
-       ---
-       consumes:
-         - text/plain
-       parameters:
-         - in: body
-           name: text
-           type: string
-           required: true
-           description: Text to classify 
-           example: This is an example sentence. You can paste in any other text, because this is a text field. The quotes are not needed.
-       responses:
-         200:
-           description: A list of tagged tokens annotated with labels
-           schema:
-             id: Returntext
-             properties:
-               returntext:
-                 type: string
-                 description: JSON-List
-                 default: No input text set
-        """
-       inputtext = request.get_data().decode('UTF-8')
-       result = modelWDk.label(inputtext)
-       response = make_response(result)
-       response.headers['content-type'] = 'application/json'
-       return response
-
-class ClassifyHalle(Resource):
-    def post(self):
-       """
-       Takes a input sequence and assigns label with highes probability (Uni Halle model)
-       ---
-       consumes:
-         - text/plain
-       parameters:
-         - in: body
-           name: text
-           type: string
-           required: true
-           description: Text to classify 
-           example: This is an example sentence. You can paste in any other text, because this is a text field. The quotes are not needed.
-       responses:
-         200:
-           description: A list of tagged tokens annotated with labels
-           schema:
-             id: Returntext
-             properties:
-               returntext:
-                 type: string
-                 description: JSON-List
-                 default: No input text set
-        """
-       inputtext = request.get_data().decode('UTF-8')
-       result = modelHalle.label(inputtext)
-       response = make_response(result)
-       response.headers['content-type'] = 'application/json'
-       return response
-
-class ClassifyES_p(Resource):
-    def post(self):
-       """
-       Takes a input sequence and assigns label with highes probability (ES model)
-       ---
-       consumes:
-         - text/plain
-       parameters:
-         - in: body
-           name: text
-           type: string
-           required: true
-           description: Text to classify 
-           example: This is an example sentence. You can paste in any other text, because this is a text field. The quotes are not needed.
-       responses:
-         200:
-           description: A list of tagged tokens annotated with labels
-           schema:
-             id: Returntext
-             properties:
-               returntext:
+               argument-structure:
                  type: string
                  description: JSON-List
                  default: No input text set
@@ -403,10 +149,10 @@ class ClassifyES_p(Resource):
        response.headers['content-type'] = 'application/json'
        return response
        
-class ClassifyWD_p(Resource):
+class ClassifyWD(Resource):
     def post(self):
        """
-       Takes a input sequence and assigns label with highes probability (WD model)
+       Classifies input text to argument structure (WD model, fasttext - big dataset)
        ---
        consumes:
          - text/plain
@@ -416,14 +162,14 @@ class ClassifyWD_p(Resource):
            type: string
            required: true
            description: Text to classify 
-           example: This is an example sentence. You can paste in any other text, because this is a text field. The quotes are not needed.
+           example: Quebecan independence is justified. In the special episode in Japan, his system is restored by a doctor who wishes to use his independence for her selfish reasons.
        responses:
          200:
            description: A list of tagged tokens annotated with labels
            schema:
-             id: Returntext
+             id: argument-structure
              properties:
-               returntext:
+               argument-structure:
                  type: string
                  description: JSON-List
                  default: No input text set
@@ -434,10 +180,10 @@ class ClassifyWD_p(Resource):
        response.headers['content-type'] = 'application/json'
        return response
        
-class ClassifyESk_p(Resource):
+class ClassifyES_dep(Resource):
     def post(self):
        """
-       Takes a input sequence and assigns label with highes probability (ESk model)
+       Classifies input text to argument structure (ES model dependency based)
        ---
        consumes:
          - text/plain
@@ -447,28 +193,28 @@ class ClassifyESk_p(Resource):
            type: string
            required: true
            description: Text to classify 
-           example: This is an example sentence. You can paste in any other text, because this is a text field. The quotes are not needed.
+           example: Quebecan independence is justified. In the special episode in Japan, his system is restored by a doctor who wishes to use his independence for her selfish reasons.
        responses:
          200:
            description: A list of tagged tokens annotated with labels
            schema:
-             id: Returntext
+             id: argument-structure
              properties:
-               returntext:
+               argument-structure:
                  type: string
                  description: JSON-List
                  default: No input text set
         """
        inputtext = request.get_data().decode('UTF-8')
-       result = modelESk.label_with_probs(inputtext)
+       result = modelES_dep.label_with_probs(inputtext)
        response = make_response(jsonify(result))
        response.headers['content-type'] = 'application/json'
        return response
        
-class ClassifyWDk_p(Resource):
+class ClassifyWD_dep(Resource):
     def post(self):
        """
-       Takes a input sequence and assigns label with highes probability (WDk model)
+       Classifies input text to argument structure (WD model dependency based)
        ---
        consumes:
          - text/plain
@@ -478,28 +224,28 @@ class ClassifyWDk_p(Resource):
            type: string
            required: true
            description: Text to classify 
-           example: This is an example sentence. You can paste in any other text, because this is a text field. The quotes are not needed.
+           example: Quebecan independence is justified. In the special episode in Japan, his system is restored by a doctor who wishes to use his independence for her selfish reasons.
        responses:
          200:
            description: A list of tagged tokens annotated with labels
            schema:
-             id: Returntext
+             id: argument-structure
              properties:
-               returntext:
+               argument-structure:
                  type: string
                  description: JSON-List
                  default: No input text set
         """
        inputtext = request.get_data().decode('UTF-8')
-       result = modelWDk.label_with_probs(inputtext)
+       result = modelWD_dep.label_with_probs(inputtext)
        response = make_response(jsonify(result))
        response.headers['content-type'] = 'application/json'
        return response
 
-class ClassifyHalle_p(Resource):
+class ClassifyIBM(Resource):
     def post(self):
        """
-       Takes a input sequence and assigns label with highes probability (Uni Halle model)
+       Classifies input text to argument structure (IBM model)
        ---
        consumes:
          - text/plain
@@ -509,39 +255,29 @@ class ClassifyHalle_p(Resource):
            type: string
            required: true
            description: Text to classify 
-           example: This is an example sentence. You can paste in any other text, because this is a text field. The quotes are not needed.
+           example: Quebecan independence is justified. In the special episode in Japan, his system is restored by a doctor who wishes to use his independence for her selfish reasons.
        responses:
          200:
            description: A list of tagged tokens annotated with labels
            schema:
-             id: Returntext
+             id: argument-structure
              properties:
-               returntext:
+               argument-structure:
                  type: string
                  description: JSON-List
                  default: No input text set
         """
        inputtext = request.get_data().decode('UTF-8')
-       result = modelHalle.label_with_probs(inputtext)
+       result = modelIBM.label_with_probs(inputtext)
        response = make_response(jsonify(result))
        response.headers['content-type'] = 'application/json'
        return response
        
-api.add_resource(Inputtext, '/inputtext/<inputtext>')
-api.add_resource(InputtextES, '/inputtextES/<inputtext>')
-api.add_resource(InputtextWD, '/inputtextWD/<inputtext>')
-api.add_resource(InputtextESk, '/inputtextESk/<inputtext>')
-api.add_resource(InputtextWDk, '/inputtextWDk/<inputtext>')
 api.add_resource(ClassifyES, '/classifyES')
 api.add_resource(ClassifyWD, '/classifyWD')
-api.add_resource(ClassifyESk, '/classifyESk')
-api.add_resource(ClassifyWDk, '/classifyWDk')
-api.add_resource(ClassifyHalle, '/classifyHalle')
-api.add_resource(ClassifyES_p, '/classifyES_p')
-api.add_resource(ClassifyWD_p, '/classifyWD_p')
-api.add_resource(ClassifyESk_p, '/classifyESk_p')
-api.add_resource(ClassifyWDk_p, '/classifyWDk_p')
-api.add_resource(ClassifyHalle_p, '/classifyHalle_p')
+api.add_resource(ClassifyES_dep, '/classifyES_dep')
+api.add_resource(ClassifyWD_dep, '/classifyWD_dep')
+api.add_resource(ClassifyIBM, '/classifyIBM')
 
 
 app.run(host='0.0.0.0', port=6000,debug=False)
