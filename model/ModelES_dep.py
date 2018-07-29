@@ -6,9 +6,9 @@ import sys
 import json
 
 
-modelPath = "models/ES_k.h5"
+modelPath = "models/ES_dep.h5"
 
-class ModelESk:
+class ModelES_dep:
 
     lstmModel = BiLSTM.loadModel(modelPath)
 
