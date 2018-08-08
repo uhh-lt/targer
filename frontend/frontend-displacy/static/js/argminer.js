@@ -24,7 +24,7 @@ $(function() {
     		$(this).prop( "checked", true );            
 	    });
 
-	    $.post( "/label_text", { username: document.getElementById("text_to_parse").value , classifier: document.getElementById("model").value } )
+	    $.post( "/arg-mining-ltcpu/label_text", { username: document.getElementById("text_to_parse").value , classifier: document.getElementById("model").value } )
 	    .done(function( data ) {
 		    console.log( "JSON Data: " + data );
 
@@ -33,31 +33,68 @@ $(function() {
 
 
             for (var i = 0; i < marks.length; i++) {
-                if (marks[i].type == "P-B") {
-                    var mark = {'type': "PREMISE", 'start': marks[i].start}
-                    marks_new.push(mark)
-                }
-                else if (marks[i].type == "C-B") {
-                    var mark = {'type': "CLAIM", 'start': marks[i].start}
-                    marks_new.push(mark)
-                }
-                else if (marks[i].type == "P-I" || marks[i].type == "C-I") {
-
-                    if (i+1 < marks.length) {
-                        if (marks[i].type != marks[i+1].type) {
-
-                            mark = marks_new.pop()
+                if (i > 0 && i+1 < marks.length) {
+                    // Start Label
+                    if (marks[i].type.substring(0,1) == "P" && marks[i-1].type.substring(0,1) != marks[i].type.substring(0,1)) {
+                        var mark = {'type': "PREMISE", 'start': marks[i].start}
+                        marks_new.push(mark)
+                    }
+                    else if (marks[i].type.substring(0,1) == "C" && marks[i-1].type.substring(0,1) != marks[i].type.substring(0,1)) {
+                        var mark = {'type': "CLAIM", 'start': marks[i].start}
+                        marks_new.push(mark)
+                    }
+                    /*else if (marks[i].type.substring(0,1) == "O") {
+                        var mark = marks[i]
+                        marks_new.push(mark)
+                    }*/
+                    // End Label
+                    if ((marks[i].type.substring(0,1) == "P" || marks[i].type.substring(0,1) == "C")) {
+                        if (marks[i].type.substring(0,1) != marks[i+1].type.substring(0,1)) {
+                            var mark = marks_new.pop() 
                             mark.end = marks[i].end
                             marks_new.push(mark)
                         }
-                    } else {
-                        mark = marks_new.pop()
-                        mark.end = marks[i].end
+                    } /* else if (marks[i].type.substring(0,1) == "O") {
+                        mark = marks[i]
+                        marks_new.push(mark)
+                    } */
+                }
+                else if (i == 0 && i+1 < marks.length ) {
+                    // Start Label
+                    if (marks[i].type.substring(0,1) == "P") {
+                        var mark = {'type': "PREMISE", 'start': marks[i].start}
                         marks_new.push(mark)
                     }
+                    else if (marks[i].type.substring(0,1) == "C") {
+                        var mark = {'type': "CLAIM", 'start': marks[i].start}
+                        marks_new.push(mark)
+                    }
+                    /* else if (marks[i].type.substring(0,1) == "O") {
+                        var mark = marks[i]
+                        marks_new.push(mark)
+                    } */
+                    // End Label
+                    if ((marks[i].type.substring(0,1) == "P" || marks[i].type.substring(0,1) == "C")) {
+                        if (marks[i].type.substring(0,1) != marks[i+1].type.substring(0,1)) {
+                            var mark = marks_new.pop() 
+                            mark.end = marks[i].end
+                            marks_new.push(mark)
+                        }
+                     } /* else if (marks[i].type.substring(0,1) == "O") {
+                        var mark = marks_new.pop() 
+                        mark.end = marks[i].end
+                        marks_new.push(mark)
+                    } */
                 }
-                else {
-                    marks_new.push(marks[i])
+                else if (i == 0 && i+1 == marks.length ) {
+                    // End Label
+                    if ((marks[i].type.substring(0,1) == "P" || marks[i].type.substring(0,1) == "C")) {
+                        mark.end = marks[i]
+                        marks_new.push(mark)
+                    } /* else if (marks[i].type.substring(0,1) == "O") {
+                        mark.end = marks[i]
+                        marks_new.push(mark)
+                    } */
                 }
             }
 
