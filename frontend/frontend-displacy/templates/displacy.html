@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Argument Mining Visualizer</title>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="referrer" content="always">
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="static/css/demos.css">
+</head>
+<body>
+    <main
+        class="l-main">
+        <header class="l-header"><a href="/" class="l-logo"></a>
+            <nav>
+                <ul class="l-nav u-t-md">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/">Documentation</a></li>
+                    <li class="is-active u-strong"><a href="/demos">Repository</a></li>
+                    <li><a href="/">About</a></li>
+                </ul>
+            </nav>
+        </header>
+        <div class="l-content">
+            <article data-demo="displacy-ent">
+
+                <header
+                    class="d-header d-wrapper l-wrapper">
+                    <h1 class="u-h2 u-b-sm">Argument Entity Visualizer</h1>
+                    <div class="o-grid o-grid--half">
+                        <div class="u-t-md">
+                            <div class="d-input d-input--full">
+                                <div class="d-input__wrapper"><textarea id="text_to_parse" rows="5" cols="5" placeholder="Your text here..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onfocus="this.select()" class="d-input__field d-input__field--textarea"></textarea>
+
+<button id="button_send" aria-label="Submit" style="min-width: 40px" class="d-button"><img src="static/img/search.png" /></button></div>
+
+                            </div>
+                            <div class="d-input"><label class="u-b-xs u-block u-h6">Model to use</label>
+                                <div
+                                    class="d-input__wrapper"><select id="model" class="d-select" v-model="model"><option value="ES">Model ES (fasttext)</option><option value="ES_dep">Model ES (dependencies)</option><option value="WD">Model WD (fasttext)</option><option value="WD_dep">Model WD (dependencies)</option><option value="IBM">Model IBM</option></select></div>
+                        </div>
+                    </div>
+                    <div><label class="u-b-xs u-block u-h6">Entity labels</label>
+                        <div><label for="premise" class="d-input__option u-t-xs u-strong"><input type="checkbox" id="premise" value="premise" class="d-input__option__box" ref="premise"> <span class="d-input__option__value">PREMISE</span></label>
+                        <label for="claim" class="d-input__option u-t-xs u-strong"><input type="checkbox" id="claim" value="claim" class="d-input__option__box" ref="claim"> <span class="d-input__option__value">CLAIM</span></label>
+                        <label for="rebuttal" class="d-input__option u-t-xs u-strong"><input type="checkbox" id="rebuttal" value="rebuttal" class="d-input__option__box" ref="rebuttal"> <span class="d-input__option__value">REBUTTAL</span></label>
+
+                        </div>
+                    </div>
+        </div>
+        </header>
+        <section class="d-content l-wrapper u-b-lg l-wrapper--page u-t-md">
+            <div id="displacy">Results will be here </div>
+        </section>
+        <footer class="l-wrapper d-wrapper">
+            <div class="o-grid o-grid--half">
+                <section>
+                    <h3 class="u-h3 u-b-sm">Text section one</h3>
+                    <p>In publishing and graphic design, lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document without relying on meaningful content (also called greeking). Replacing the actual content with placeholder text allows designers to design the form of the content before the content itself has been produced.</p>
+                    <p class="u-inline-list"><a href="/" target="_blank" class="u-a u-t-md u-a-x o-button o-button--light u-b-sm">Link One</a><a href="/" target="_blank" class="u-a u-t-md u-a-x o-button o-button--light">Link Two</a></p>
+                </section>
+                <section>
+                    <h3 class="u-h3 u-b-sm">Text section two</h3>
+                    <p>In publishing and graphic design, lorem ipsum is a placeholder text commonly used to demonstrate the visual form of a document without relying on meaningful content (also called greeking).</p>
+                    <pre class="o-code u-fit u-b-md lang-python"><code class="o-code__content u-fit u-t-xs">sample_code = bla()
+</code></pre>
+                    <p><a href="https://spacy.io/usage/visualizers" target="_blank" class="u-a u-t-md u-a-x o-button o-button--light">Read more</a></p>
+                </section>
+            </div>
+        </footer>
+        </article>
+        </div>
+        <footer class="l-footer">
+            <section class="u-b-md">
+                <h4 class="u-h6 u-b-xs">About Section</h4>
+                <p class="u-t-sm u-b-sm">Lorem ipsum.</p>
+                <div class="u-inline-list u-c-subtle">
+                </div>
+            </section>
+            <section class="u-b-md">
+                <h4 class="u-h6 u-b-xs">Navigation</h4>
+                <ul class="u-t-sm">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/">Documentation</a></li>
+                    <li><a href="/">Repository</a></li>
+                    <li class="u-strong"><a href="/">About</a></li>
+                    <li><a href="/">Legal / Imprint</a></li>
+                </ul>
+            </section>
+            <section class="u-b-md">
+                <h4 class="u-h6 u-b-xs">Another section</h4>
+                <ul class="u-t-sm u-b-xs">
+                    <li><a href="/" target="_blank" class="u-a u-a-x">Title One<div class="u-c-subtle u-t-xs u-b-xs">Subtitle one</div></a></li>
+                    <li><a href="/" target="_blank" class="u-a u-a-x">Title Two<div class="u-c-subtle u-t-xs u-b-xs">Subtitle two</div></a></li>
+                </ul><a href="/" class="u-t-sm">See more &rarr;</a></section>
+        </footer>
+        </main>
+        <!-- <script src="assets/js/prism.js"></script>
+        <script src="assets/js/vue.js"></script>
+        <script src="assets/js/displacy-ent.js"></script> -->
+        <script type='text/javascript' src="static/js/displacy-ent.js"></script>
+        <script src="static/js/jquery-3.3.1.min.js"></script>
+        <script src="static/js/argminer.js"></script>
+
+        <link rel="stylesheet" href="//hello.myfonts.net/count/323b37">
+</body>
+
+</html>
