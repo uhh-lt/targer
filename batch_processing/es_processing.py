@@ -52,7 +52,6 @@ def parse_sentence(sentence):
     # get arguments
     arguments_list = extract_tokens(sentence.words_conll, 9)
     for id, arg in enumerate(arguments_list):
-        prnt += arg + " "
         if arg == 'P-B' or arg == 'P-I':
             sentence_premise += words_list[id] + " "
         if arg == 'C-B' or arg == 'C-I':
@@ -95,7 +94,9 @@ def parse_arguments():
             yield {
                 "_index": INDEX_NAME,
                 "_type": "argument",
-                "doc": {"text": txt, "claim": cl, "premise": pr},
+                "text": txt, 
+                "claim": cl, 
+                "premise": pr
             }
 
 
