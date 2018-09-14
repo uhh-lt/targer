@@ -1,3 +1,5 @@
+from Word import Word
+
 class Sentence:
 
     def __init__(self):
@@ -6,4 +8,4 @@ class Sentence:
         self.words_conll = []
 
     def add_word_conll(self, word):
-        self.words_conll.append(word)
+        self.words_conll.append(Word(word))

@@ -84,7 +84,7 @@ if __name__ == '__main__':
         myfile.write("")
 
     texts_to_label = []
-    with open('xaa') as f:  
+    with open('conll.txt') as f:  
         data = f.read()  
         splt = data.split('# newdoc')  
         for sp in splt:
