@@ -68,12 +68,13 @@ def parse_doc_from_raw(s):
         current_sentence = Sentence()
         words = paragraph.split("\n")
         for word in words:
-            if word.startswith("# sent_id"):
-                current_sentence.sent_id = word
-            elif word.startswith("# text"):
-                current_sentence.text = word
-            else:
-                current_sentence.add_word_conll(word)
+            if len(word) > 0:
+                if word.startswith("# sent_id"):
+                    current_sentence.sent_id = word
+                elif word.startswith("# text"):
+                    current_sentence.text = word
+                else:
+                    current_sentence.add_word_conll(word)
         current_doc.add_sentence(current_sentence)
     return current_doc
 
@@ -157,7 +158,7 @@ INDEX_NAME = 'arguments'
 # init ES
 es = Elasticsearch(hosts=[ES_SERVER])
 
-#delete_index(INDEX_NAME)
+delete_index(INDEX_NAME)
 create_index(INDEX_NAME)
 bulk(es, parse_arguments())
 
