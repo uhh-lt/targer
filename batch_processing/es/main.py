@@ -5,8 +5,6 @@ from Sentence import Sentence
 import pandas as pd
 import re
 
-entity_classes = ['B-Location', 'I-Location', 'B-Person', 'I-Person']
-
 def delete_index(name):
     if es.indices.exists(name):
         print("deleting index for: '%s'" % (name))
@@ -83,40 +81,56 @@ def extract_arguments(sentence):
     sentence_claims = []
     sentence_premises = []
 
-    df = pd.DataFrame()
-    df['form'] = [word.FORM for word in sentence.words_conll]
-    df['arg'] = [word.ARGUMENT for word in sentence.words_conll]
-    df['arg'] = df['arg'].apply(lambda x: x.replace("-I", "").replace("-B", ""))
-    df['change'] = (df['arg'] != df['arg'].shift()).cumsum()
+    prev = ""
+    current_type = ""
+    current_arg = []
+    for word in sentence.words_conll:
+        if word.ARGUMENT != prev and prev != "":
+            if len(current_arg) > 0:
+                if current_type == "P":
+                    sentence_premises.append(" ".join(current_arg))
+                if current_type == "C":
+                    sentence_claims.append(" ".join(current_arg))
+                current_arg = []
 
-    grouped_df = df.groupby('change').agg({'arg': 'first', 'form': lambda x: list(x)})
-    grouped_df = grouped_df[~grouped_df.arg.isin(['O'])]
+        if word.ARGUMENT != "O":
+            current_arg.append(word.FORM)
+            current_type = word.ARGUMENT
+        prev = word.ARGUMENT
 
-    for index, row in grouped_df.iterrows():
-        argument = " ".join(row['form'])
-        if row['arg'] == "P":
-            sentence_premises.append(argument)
-        if row['arg'] == "C":
-            sentence_claims.append(argument)
+    if (len(current_arg) > 0):
+        if current_type == "P":
+            sentence_premises.append(" ".join(current_arg))
+        if current_type == "C":
+            sentence_claims.append(" ".join(current_arg))
 
     return sentence_text, sentence_premises, sentence_claims
+
 
 def extract_entities(sentence):
     entities_result = []
 
-    df = pd.DataFrame()
-    df['form'] = [word.FORM for word in sentence.words_conll]
-    df['ent'] = [word.ENTITY for word in sentence.words_conll]
-    df['ent'] = df['ent'].apply(lambda x: x.replace("B-", "").replace("I-", ""))
-    df['change'] = (df['ent'] != df['ent'].shift()).cumsum()
+    prev = ""
+    current_type = ""
+    current_entity = []
+    for word in sentence.words_conll:
+        if word.ENTITY != prev and prev != "":
+            if len(current_entity) > 0:
+                entity = {}
+                entity['class'] = current_type
+                entity['text'] = " ".join(current_entity)
+                entities_result.append(entity)
+                current_entity = []
 
-    grouped_df = df.groupby('change').agg({'ent': 'first', 'form': lambda x: list(x)})
-    grouped_df = grouped_df[~grouped_df.ent.isin(['O'])]
+        if word.ENTITY != "O":
+            current_entity.append(word.FORM)
+            current_type = word.ENTITY
+        prev = word.ENTITY
 
-    for index, row in grouped_df.iterrows():
+    if (len(current_entity) > 0):
         entity = {}
-        entity['class'] = row['ent']
-        entity['text'] = " ".join(row['form'])
+        entity['class'] = current_type
+        entity['text'] = " ".join(current_entity)
         entities_result.append(entity)
 
     return entities_result
@@ -133,6 +147,7 @@ def parse_arguments():
     for doc in docs:
         if len(doc.sentences) == 0:
             continue
+
         currentDocument = {}
         sentences = []
 
