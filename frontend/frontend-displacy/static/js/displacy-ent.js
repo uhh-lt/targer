@@ -45,7 +45,7 @@ class displaCyENT {
         xhr.send(JSON.stringify({ text, model }));
     }
 
-    render(text, spans, ents) {
+    render_old(text, spans, ents) {
         this.container.innerHTML = '';
         let offset = 0;
 
@@ -78,4 +78,51 @@ class displaCyENT {
 
         if(typeof this.onRender === 'function') this.onRender();
     }
+
+    render(text, spans, ents) {
+
+        var text_copy = text
+        var offset = 0        
+
+        for (var i = 0; i < text.length; i++) {
+            var start_tags = spans.filter( span => span.start === i );
+            var end_tags = spans.filter( span => span.end === i );
+
+            start_tags.forEach(function(tag){
+                if(ents.includes(tag.type.toLowerCase())) {
+                    var entity_string = "<mark data-entity='" + tag.type.toLowerCase() + "'>"
+                    text_copy = text_copy.slice(0, offset+i) + entity_string + text_copy.slice(offset+i);
+                    offset = offset + entity_string.length
+                }
+            })
+
+            end_tags.forEach(function(tag){
+                if(ents.includes(tag.type.toLowerCase())) {
+                    var entity_string = "</mark>"
+                    text_copy = text_copy.slice(0, offset+i) + entity_string + text_copy.slice(offset+i);
+                    offset = offset + entity_string.length
+                }
+            })
+            /*if (end_tag) {
+                var entity_string = "</mark>"
+                text_copy = text_copy.slice(0, offset+i) + entity_string + text_copy.slice(offset+i);
+                offset = offset + entity_string.length
+            }*/
+
+        }
+
+        //this.container.appendChild(document.createTextNode(text_copy));
+
+        while (this.container.firstChild) {
+            this.container.removeChild(this.container.firstChild);
+        }
+
+        var e = document.createElement('div');
+        e.innerHTML = text_copy;
+        this.container.appendChild(e)
+
+        if(typeof this.onRender === 'function') this.onRender();
+    }
+
+
 }

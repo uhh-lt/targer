@@ -23,6 +23,10 @@ $(function() {
 
     $('#text_to_parse').val(item)
 
+    $(".d-input__option__box").each(function() {
+        $(this).prop('checked', true) 
+    });
+
     $('.d-input__option').bind('click', function() {
 
         var chkArray = [];
