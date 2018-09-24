@@ -324,13 +324,13 @@
     border-radius:4px
 }
 [data-demo=displacy-ent] [data-entity=premise],[data-demo=displacy-ent] [value=premise]:checked+.d-input__option__value{
-    background:#a6e22d
+    background:#FF624C
 }
 [data-demo=displacy-ent] [data-entity=claim],[data-demo=displacy-ent] [value=claim]:checked+.d-input__option__value{
-    background:#fd9720
+    background:#FF1F00
 }
 [data-demo=displacy-ent] [data-entity=rebuttal],[data-demo=displacy-ent] [value=rebuttal]:checked+.d-input__option__value{
-    background:#43c6fc
+    background:#CC1900
 }
 [data-demo=displacy-ent] [data-entity=person],[data-demo=displacy-ent] [value=person]:checked+.d-input__option__value{
     background:#a6e22d
