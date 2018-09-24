@@ -71,6 +71,9 @@
 
 <label for="event" class="d-input__option u-t-xs u-strong" v-show="showLabel('event')"><input id="event" value="event" class="d-input__option__box" v-model="ents" ref="event" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">EVENT</span></label>
 
+
+<label class="u-b-xs u-block u-h6" id="more_labels">+ more labels</label>
+<div id="more_labels_box" style="display: none;">
 <label for="work_of_art" class="d-input__option u-t-xs u-strong" v-show="showLabel('work_of_art')"><input id="work_of_art" value="work_of_art" class="d-input__option__box" v-model="ents" ref="work_of_art" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">WORK OF ART</span></label>
 
 <label for="language" class="d-input__option u-t-xs u-strong" v-show="showLabel('language')"><input id="language" value="language" class="d-input__option__box" v-model="ents" ref="language" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">LANGUAGE</span></label>
@@ -90,6 +93,8 @@
 <label for="cardinal" class="d-input__option u-t-xs u-strong" v-show="showLabel('cardinal')"><input id="cardinal" value="cardinal" class="d-input__option__box" v-model="ents" ref="cardinal" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">CARDINAL</span></label>
 
 <label for="misc" class="d-input__option u-t-xs u-strong" v-show="showLabel('misc')"><input id="misc" value="misc" class="d-input__option__box" v-model="ents" ref="misc" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">MISC</span></label>
+
+</div>
                         </div>
                     </div>
         </div>

@@ -37,9 +37,9 @@ $(function() {
 
     $('#button_send').bind('click', function() {
 
-	    $(".d-input__option__box").each(function() {            
+	    /*$(".d-input__option__box").each(function() {            
     		$(this).prop( "checked", true );            
-	    });
+	    });*/
 
 	    $.post( "/label_text", { username: document.getElementById("text_to_parse").value , classifier: document.getElementById("model").value } )
 	    .done(function( data ) {
@@ -53,7 +53,14 @@ $(function() {
 	            container: '#displacy'
 	            });
 	        text = document.getElementById("text_to_parse").value
-	        ents = ['premise', 'claim', 'person', 'org', 'gpe', 'loc', 'product', 'misc']
+	        //ents = ['premise', 'claim', 'person', 'org', 'gpe', 'loc', 'product', 'misc']
+	        ents = []
+            $(".d-input__option__box").each(function() {
+                if( $(this).prop('checked') ) {
+		            ents.push($(this).val());
+                }
+            });
+
 	        //displacy.render(text, marks_new, ents);
 	        
 	        //marks_new = [{"type": "CLAIM", "start": 3, "end": 36}, {"type": "PREMISE", "start": 42, "end": 111}, {"type": "ORG", "start": 42, "end": 56}, {"type": "PREMISE", "start": 113, "end": 115}, {"type": "ORG", "start": 22, "end": 36}, {"type": "ORG", "start": 121, "end": 155}];
@@ -72,6 +79,15 @@ $(function() {
     });
     const displacy = new displaCyENT('https://api.explosion.ai/displacy/ent/', {
     container: '#displacy'
+});
+
+$("#more_labels").click(function(){
+    if ($("#more_labels_box").is(":visible")){
+        $("#more_labels").text("+ more labels");
+    } else {
+        $("#more_labels").text("- more labels");
+    }
+    $("#more_labels_box").toggle();
 });
 
 
