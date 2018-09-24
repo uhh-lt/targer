@@ -16,6 +16,8 @@ import requests
 import spacy
 
 nlp = spacy.load('xx')
+#path = "arg-mining-ltcpu/"
+path = "/"
 
 class ReverseProxied(object):
     def __init__(self, app):
@@ -33,7 +35,6 @@ class ReverseProxied(object):
         if scheme:
             environ['wsgi.url_scheme'] = scheme
         return self.app(environ, start_response)
-
 
 app = Flask(__name__)
 app.json_encoder = LazyJSONEncoder
@@ -77,7 +78,16 @@ sender = Sender()
 
 @app.route('/')
 def index():
-  return render_template('displacy.html')
+  return render_template('displacy.html', title="Argument Entity Visualizer", page="index", path=path)
+
+@app.route('/search_text', methods=['POST'])
+def search_text():
+    text = request.form.get('username')
+    data = []
+    for i in range(20):
+        data.append({'title': "Ergebnis "+str(i), 'description': "Hier steht der Beschreibungstext"}) 
+
+    return json.dumps(data)
 
 @app.route('/label_text', methods=['POST'])
 def background_process_arg():

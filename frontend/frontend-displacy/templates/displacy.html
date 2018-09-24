@@ -6,8 +6,8 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="referrer" content="always">
-    <link rel="stylesheet" href="static/css/style.css">
-    <link rel="stylesheet" href="static/css/demos.css">
+    <link rel="stylesheet" href="{{ path }}static/css/style.css">
+    <link rel="stylesheet" href="{{ path }}static/css/demos.css">
 </head>
 <body>
     <main
@@ -15,8 +15,9 @@
         <header class="l-header"><a href="/" class="l-logo"></a>
             <nav>
                 <ul class="l-nav u-t-md">
-                    <li class="is-active u-strong"><a href="/arg-mining-ltcpu/">Home</a></li>
-                    <li><a href="/arg-mining-ltcpu/apidocs">API Docs (Swagger)</a></li>
+                    <li id="home_li" class="is-active u-strong"><a id="home_link" href="#">Home</a></li>
+                    <li><a href="apidocs">API Docs (Swagger)</a></li>
+                    <li id="search_li"><a id="search_link" href="#">Search</a></li>
                     <li><a target="_blank" href="https://github.com/uhh-lt/rnn2argument-web">Repository</a></li>
                 </ul>
             </nav>
@@ -26,16 +27,17 @@
 
                 <header
                     class="d-header d-wrapper l-wrapper">
-                    <h1 class="u-h2 u-b-sm">Argument Entity Visualizer</h1>
+                    <h1 id="page_title" class="u-h2 u-b-sm">Argument Entity Visualizer</h1>
                     <div class="o-grid o-grid--half">
                         <div class="u-t-md">
                             <div class="d-input d-input--full">
-                                <div class="d-input__wrapper"><textarea id="text_to_parse" rows="5" cols="5" placeholder="Your text here..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onfocus="this.select()" class="d-input__field d-input__field--textarea"></textarea>
+                                <div class="d-input__wrapper"><textarea id="text_to_parse" rows="5" cols="5" placeholder="Your text here..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" onfocus="this.select()" class="d-input__field d-input__field--textarea">{% if text and page=="search" %}{{ text }}{% endif %}</textarea>
 
-<button id="button_send" aria-label="Submit" style="min-width: 40px" class="d-button"><img src="static/img/search.png" /></button></div>
+<button id="button_send" aria-label="Submit" style="min-width: 40px" class="d-button"><img src="{{ path }}static/img/search.png" /></button></div>
 
                             </div>
-                            <div class="d-input">
+{% if page == "index" %}
+                            <div id="model_selector_box" class="d-input">
 
 <label class="u-b-xs u-block u-h6">Model to use</label>
 <div class="d-input__wrapper">
@@ -48,8 +50,10 @@
 <option value="WD_dep">Model WD (dependencies)</option>
 </select></div>
                         </div>
+{% endif %}
                     </div>
-                    <div><label class="u-b-xs u-block u-h6">Argument labels</label>
+{% if page == "index" %}
+                    <div id="label_box"><label class="u-b-xs u-block u-h6">Argument labels</label>
                         <div><label for="premise" class="d-input__option u-t-xs u-strong"><input type="checkbox" id="premise" value="premise" class="d-input__option__box" ref="premise"> <span class="d-input__option__value">PREMISE</span></label>
                         <label for="claim" class="d-input__option u-t-xs u-strong"><input type="checkbox" id="claim" value="claim" class="d-input__option__box" ref="claim"> <span class="d-input__option__value">CLAIM</span></label>
                         <label for="rebuttal" class="d-input__option u-t-xs u-strong"><input type="checkbox" id="rebuttal" value="rebuttal" class="d-input__option__box" ref="rebuttal"> <span class="d-input__option__value">REBUTTAL</span></label></div><div><label class="u-b-xs u-block u-h6">Entity labels</label>
@@ -97,6 +101,7 @@
 </div>
                         </div>
                     </div>
+                    {% endif %}
         </div>
         </header>
         <section class="d-content l-wrapper u-b-lg l-wrapper--page u-t-md">
@@ -147,12 +152,14 @@
                 </ul><a href="/" class="u-t-sm">See more &rarr;</a></section>
         </footer> -->
         </main>
-        <!-- <script src="assets/js/prism.js"></script>
-        <script src="assets/js/vue.js"></script>
-        <script src="assets/js/displacy-ent.js"></script> -->
+
         <script type='text/javascript' src="static/js/displacy-ent.js"></script>
-        <script src="static/js/jquery-3.3.1.min.js"></script>
-        <script src="static/js/argminer.js"></script>
+        <script src="{{ path }}static/js/jquery-3.3.1.min.js"></script>
+        {% if page=="index" %}
+        <script src="{{ path }}static/js/argminer.js"></script>
+        {% elif page=="search" %}
+        <script src="{{ path }}static/js/search.js"></script>
+        {% endif %}
 
         <link rel="stylesheet" href="//hello.myfonts.net/count/323b37">
 </body>

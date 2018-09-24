@@ -22,6 +22,13 @@ var item = items[Math.floor(Math.random()*items.length)];
 $(function() {
 
     $('#text_to_parse').val(item)
+    
+    $('#search_link').bind('click', function() {
+        search_page()        
+    });
+    $('#home_link').bind('click', function() {
+        home_page()        
+    });
 
     $(".d-input__option__box").each(function() {
         $(this).prop('checked', true) 
@@ -45,7 +52,45 @@ $(function() {
     		$(this).prop( "checked", true );            
 	    });*/
 
-	    $.post( "/label_text", { username: document.getElementById("text_to_parse").value , classifier: document.getElementById("model").value } )
+	    send_action()
+	
+	    return false;
+      });
+    });
+    const displacy = new displaCyENT('https://api.explosion.ai/displacy/ent/', {
+    container: '#displacy'
+});
+
+function search_action() {
+	    $.post( "search_text", { username: document.getElementById("text_to_parse").value } )
+	    .done(function( data ) {
+		    console.log( "JSON Data: " + data )
+            results = JSON.parse(data)
+            console.log(marks_new);
+            results.forEach(function(result){
+                var h = document.createElement("H1")                // Create a <h1> element
+                var t = document.createTextNode(result.title);     // Create a text node
+                var p = document.createElement("p")                // Create a <h1> element
+                p.setAttribute("class", "description_text")
+                var d = document.createTextNode(result.description);     // Create a text node
+                p.appendChild(d);                                   // Append the text to <h1>
+                h.appendChild(t);                                   // Append the text to <h1>
+                $("#displacy").append(h);                                   // Append the text to <h1>
+                $("#displacy").append(p);                                   // Append the text to <h1>
+            })
+            	    add_listener()
+	        
+	    })
+	    .fail(function( jqxhr, textStatus, error ) {
+		    var err = textStatus + ", " + error;
+		    console.log( "Request Failed: " + err );
+	    });	
+	    return false;
+}
+
+
+function send_action() {
+$.post( "label_text", { username: document.getElementById("text_to_parse").value , classifier: document.getElementById("model").value } )
 	    .done(function( data ) {
 		    console.log( "JSON Data: " + data )
             marks = JSON.parse(data)
@@ -71,19 +116,19 @@ $(function() {
 	        //text = "We should disband the United Nations. The United Nations condemned the killings in the strongest possible terms, and the French Council of the Muslim Faith also condemned the attacks";
 	        displacy.render(text, marks_new, ents);
 	        
+	        $( "mark" ).bind('click', function(e) {
+            	        console.log(e.target.textContent)
+            	        search_page()
+            	        $('#text_to_parse').val(e.target.textContent)
+            	        search_action()
+	        })
 	        
 	    })
 	    .fail(function( jqxhr, textStatus, error ) {
 		    var err = textStatus + ", " + error;
 		    console.log( "Request Failed: " + err );
 	    });
-	
-	    return false;
-      });
-    });
-    const displacy = new displaCyENT('https://api.explosion.ai/displacy/ent/', {
-    container: '#displacy'
-});
+}
 
 $("#more_labels").click(function(){
     if ($("#more_labels_box").is(":visible")){
@@ -164,4 +209,41 @@ function show_entity_labels(labels) {
 	
 	return false;
       
+}
+
+
+function home_page() {
+    $("#displacy").empty()
+    $("#model_selector_box").show()
+    $("#label_box").show()
+    $("#page_title").text("Argument Entity Visualizer")
+    $("#home_li").addClass('is-active u-strong');
+    $("#search_li").removeClass('is-active u-strong');
+    $('#button_send').unbind()
+    $('#button_send').bind('click', function() {
+	    send_action()
+      });
+}
+
+function search_page() {
+
+    $("#displacy").empty()
+    $("#model_selector_box").hide()
+    $("#label_box").hide()
+    $("#page_title").text("Argument Entity Search")
+    $("#search_li").addClass('is-active u-strong');
+    $("#home_li").removeClass('is-active u-strong');
+    $('#button_send').unbind()
+    $('#button_send').bind('click', function() {
+	    search_action()
+      });
+
+}
+
+function add_listener(){
+    $('.description_text').bind('click', function(e) {
+        home_page()
+        var document_text = e.target.textContent
+        $('#text_to_parse').val(document_text)
+    })
 }
