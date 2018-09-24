@@ -1,0 +1,7 @@
+setuptools
+flask
+flasgger
+flask_restful
+spacy
+
+python -m spacy download xx

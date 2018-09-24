@@ -110,7 +110,7 @@ def background_process_arg():
     return json.dumps(data)
 
 def do_label_arg(marks):
-    print("marks:" + str(marks))
+    #print("marks:" + str(marks))
     marks_new = []
     for i, item in enumerate(marks):
     #for (var i = 0; i < marks.length; i++):

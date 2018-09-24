@@ -15,10 +15,9 @@
         <header class="l-header"><a href="/" class="l-logo"></a>
             <nav>
                 <ul class="l-nav u-t-md">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/">Documentation</a></li>
-                    <li class="is-active u-strong"><a href="/demos">Repository</a></li>
-                    <li><a href="/">About</a></li>
+                    <li><a href="/arg-mining-ltcpu/">Home</a></li>
+                    <li><a href="/arg-mining-ltcpu/apidocs">API Docs (Swagger)</a></li>
+                    <li class="is-active u-strong"><a target="_blank" href="https://github.com/uhh-lt/rnn2argument-web">Repository</a></li>
                 </ul>
             </nav>
         </header>
@@ -36,23 +35,70 @@
 <button id="button_send" aria-label="Submit" style="min-width: 40px" class="d-button"><img src="static/img/search.png" /></button></div>
 
                             </div>
-                            <div class="d-input"><label class="u-b-xs u-block u-h6">Model to use</label>
-                                <div
-                                    class="d-input__wrapper"><select id="model" class="d-select" v-model="model"><option value="ES">Model ES (fasttext)</option><option value="ES_dep">Model ES (dependencies)</option><option value="WD">Model WD (fasttext)</option><option value="WD_dep">Model WD (dependencies)</option><option value="IBM">Model IBM</option></select></div>
+                            <div class="d-input">
+
+<label class="u-b-xs u-block u-h6">Model to use</label>
+<div class="d-input__wrapper">
+<select id="model" class="d-select" v-model="model">
+<option value="IBM">Model IBM</option>
+<option value="Combo">Model Combo</option>
+<option value="ES">Model ES (fasttext)</option>
+<option value="ES_dep">Model ES (dependencies)</option>
+<option value="WD">Model WD (fasttext)</option>
+<option value="WD_dep">Model WD (dependencies)</option>
+</select></div>
                         </div>
                     </div>
-                    <div><label class="u-b-xs u-block u-h6">Entity labels</label>
+                    <div><label class="u-b-xs u-block u-h6">Argument labels</label>
                         <div><label for="premise" class="d-input__option u-t-xs u-strong"><input type="checkbox" id="premise" value="premise" class="d-input__option__box" ref="premise"> <span class="d-input__option__value">PREMISE</span></label>
                         <label for="claim" class="d-input__option u-t-xs u-strong"><input type="checkbox" id="claim" value="claim" class="d-input__option__box" ref="claim"> <span class="d-input__option__value">CLAIM</span></label>
-                        <label for="rebuttal" class="d-input__option u-t-xs u-strong"><input type="checkbox" id="rebuttal" value="rebuttal" class="d-input__option__box" ref="rebuttal"> <span class="d-input__option__value">REBUTTAL</span></label>
+                        <label for="rebuttal" class="d-input__option u-t-xs u-strong"><input type="checkbox" id="rebuttal" value="rebuttal" class="d-input__option__box" ref="rebuttal"> <span class="d-input__option__value">REBUTTAL</span></label></div><div><label class="u-b-xs u-block u-h6">Entity labels</label>
+<label for="person" class="d-input__option u-t-xs u-strong" v-show="showLabel('person')">
+<input id="person" value="person" class="d-input__option__box" v-model="ents" ref="person" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">PERSON</span></label>
+<label for="per" class="d-input__option u-t-xs u-strong" v-show="showLabel('per')"><input id="per" value="per" class="d-input__option__box" v-model="ents" ref="per" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">PER</span></label>
 
+<label for="norp" class="d-input__option u-t-xs u-strong" v-show="showLabel('norp')"><input id="norp" value="norp" class="d-input__option__box" v-model="ents" ref="norp" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">NORP</span></label>
+
+<label for="facility" class="d-input__option u-t-xs u-strong" v-show="showLabel('facility')"><input id="facility" value="facility" class="d-input__option__box" v-model="ents" ref="facility" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">FACILITY</span></label>
+
+<label for="org" class="d-input__option u-t-xs u-strong" v-show="showLabel('org')"><input id="org" value="org" class="d-input__option__box" v-model="ents" ref="org" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">ORG</span></label>
+
+<label for="gpe" class="d-input__option u-t-xs u-strong" v-show="showLabel('gpe')"><input id="gpe" value="gpe" class="d-input__option__box" v-model="ents" ref="gpe" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">GPE</span></label>
+
+<label for="loc" class="d-input__option u-t-xs u-strong" v-show="showLabel('loc')"><input id="loc" value="loc" class="d-input__option__box" v-model="ents" ref="loc" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">LOC</span></label>
+
+<label for="product" class="d-input__option u-t-xs u-strong" v-show="showLabel('product')"><input id="product" value="product" class="d-input__option__box" v-model="ents" ref="product" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">PRODUCT</span></label>
+
+<label for="event" class="d-input__option u-t-xs u-strong" v-show="showLabel('event')"><input id="event" value="event" class="d-input__option__box" v-model="ents" ref="event" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">EVENT</span></label>
+
+<label for="work_of_art" class="d-input__option u-t-xs u-strong" v-show="showLabel('work_of_art')"><input id="work_of_art" value="work_of_art" class="d-input__option__box" v-model="ents" ref="work_of_art" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">WORK OF ART</span></label>
+
+<label for="language" class="d-input__option u-t-xs u-strong" v-show="showLabel('language')"><input id="language" value="language" class="d-input__option__box" v-model="ents" ref="language" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">LANGUAGE</span></label>
+
+<label for="date" class="d-input__option u-t-xs u-strong" v-show="showLabel('date')"><input id="date" value="date" class="d-input__option__box" v-model="ents" ref="date" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">DATE</span></label>
+
+<label for="time" class="d-input__option u-t-xs u-strong" v-show="showLabel('time')"><input id="time" value="time" class="d-input__option__box" v-model="ents" ref="time" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">TIME</span></label>
+
+<label for="percent" class="d-input__option u-t-xs u-strong" v-show="showLabel('percent')"><input id="percent" value="percent" class="d-input__option__box" v-model="ents" ref="percent" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">PERCENT</span></label>
+
+<label for="money" class="d-input__option u-t-xs u-strong" v-show="showLabel('money')"><input id="money" value="money" class="d-input__option__box" v-model="ents" ref="money" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">MONEY</span></label>
+
+<label for="quantity" class="d-input__option u-t-xs u-strong" v-show="showLabel('quantity')"><input id="quantity" value="quantity" class="d-input__option__box" v-model="ents" ref="quantity" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">QUANTITY</span></label>
+
+<label for="ordinal" class="d-input__option u-t-xs u-strong" v-show="showLabel('ordinal')"><input id="ordinal" value="ordinal" class="d-input__option__box" v-model="ents" ref="ordinal" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">ORDINAL</span></label>
+
+<label for="cardinal" class="d-input__option u-t-xs u-strong" v-show="showLabel('cardinal')"><input id="cardinal" value="cardinal" class="d-input__option__box" v-model="ents" ref="cardinal" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">CARDINAL</span></label>
+
+<label for="misc" class="d-input__option u-t-xs u-strong" v-show="showLabel('misc')"><input id="misc" value="misc" class="d-input__option__box" v-model="ents" ref="misc" data-_extension-text-contrast="bg" type="checkbox"> <span class="d-input__option__value">MISC</span></label>
                         </div>
                     </div>
         </div>
         </header>
         <section class="d-content l-wrapper u-b-lg l-wrapper--page u-t-md">
-            <div id="displacy">Results will be here </div>
+            <div id="displacy"></div>
         </section>
+
+<!--
         <footer class="l-wrapper d-wrapper">
             <div class="o-grid o-grid--half">
                 <section>
@@ -94,7 +140,7 @@
                     <li><a href="/" target="_blank" class="u-a u-a-x">Title One<div class="u-c-subtle u-t-xs u-b-xs">Subtitle one</div></a></li>
                     <li><a href="/" target="_blank" class="u-a u-a-x">Title Two<div class="u-c-subtle u-t-xs u-b-xs">Subtitle two</div></a></li>
                 </ul><a href="/" class="u-t-sm">See more &rarr;</a></section>
-        </footer>
+        </footer> -->
         </main>
         <!-- <script src="assets/js/prism.js"></script>
         <script src="assets/js/vue.js"></script>
