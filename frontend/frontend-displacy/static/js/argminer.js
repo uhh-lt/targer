@@ -245,5 +245,6 @@ function add_listener(){
         home_page()
         var document_text = e.target.textContent
         $('#text_to_parse').val(document_text)
+        send_action()
     })
 }
