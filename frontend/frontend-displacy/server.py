@@ -159,7 +159,8 @@ def do_label_arg(marks):
                 marks_new.append(mark)            
     return marks_new
 
-
+app.jinja_env.auto_reload = True
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.run(host='0.0.0.0', port=6000,debug=False)
 
 
