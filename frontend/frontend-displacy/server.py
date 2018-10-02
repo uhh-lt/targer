@@ -11,6 +11,8 @@ from flask import jsonify
 from flask import render_template
 from json import JSONDecodeError
 import requests
+from elasticsearch import Elasticsearch
+import json
 
 """Spacy"""
 import spacy
@@ -38,6 +40,11 @@ class ReverseProxied(object):
 
 app = Flask(__name__)
 app.json_encoder = LazyJSONEncoder
+
+
+ES_SERVER = {"host": "localhost", "port": 9200}
+INDEX_NAME = 'arguments'
+es = Elasticsearch(hosts=[ES_SERVER])
 
 reversed = True
 
@@ -83,11 +90,7 @@ def index():
 @app.route('/search_text', methods=['POST'])
 def search_text():
     text = request.form.get('username')
-    data = []
-    for i in range(20):
-        data.append({'title': "Ergebnis "+str(i), 'description': "Hier steht der Beschreibungstext"}) 
-
-    return json.dumps(data)
+    return search_in_es(text)
 
 @app.route('/label_text', methods=['POST'])
 def background_process_arg():
@@ -158,6 +161,39 @@ def do_label_arg(marks):
                 mark['end'] = marks[i]['end']
                 marks_new.append(mark)            
     return marks_new
+
+def search_in_es(query):
+    docs = []
+    res = es.search(index=INDEX_NAME, body={"from" : 0, "size" : 1,
+        "query": {
+        "nested": {
+            "path": "sentences",
+            "score_mode": "avg",
+            "query": {
+                "bool": {
+                    "must": [
+                        {"match": {"sentences.text": query}}
+                    ]
+                }
+            }
+        }
+    }})
+
+    print("Got %d Hits:" % res['hits']['total'])
+    for hit in res['hits']['hits']:
+        doc = {}
+        id = hit["_id"]
+        text_with_hit = ""
+        text_full = ""
+        for sentence in hit["_source"]["sentences"]:
+            text = sentence["text"]
+            if query in text:
+                text_with_hit = text
+            text_full += text
+        doc["text_with_hit"] = text_with_hit
+        doc["text_full"] = text_full
+        docs.append(doc)
+    return json.dumps(docs)
 
 app.jinja_env.auto_reload = True
 app.config['TEMPLATES_AUTO_RELOAD'] = True
