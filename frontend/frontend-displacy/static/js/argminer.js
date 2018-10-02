@@ -64,6 +64,7 @@ $(function() {
 function search_action() {
 	    $.post( "search_text", { username: document.getElementById("text_to_parse").value } )
 	    .done(function( data ) {
+        	    $("#displacy").empty()
 		    console.log( "JSON Data: " + data )
             results = JSON.parse(data)
             console.log(marks_new);
@@ -83,6 +84,12 @@ function search_action() {
                 $("#displacy").append(h);                                   // Append the text to <h1>
                 $("#displacy").append(p);                                   // Append the text to <h1>
             })
+            if (results.length == 0){
+                var h = document.createElement("H1")                // Create a <h1> element
+                var t = document.createTextNode("No results found.");     // Create a text node
+                h.appendChild(t);                                   // Append the text to <h1>
+                $("#displacy").append(h);                                   // Append the text to <h1>
+            }
             	    add_listener()
 	        
 	    })
