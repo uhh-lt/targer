@@ -69,10 +69,15 @@ function search_action() {
             console.log(marks_new);
             results.forEach(function(result){
                 var h = document.createElement("H1")                // Create a <h1> element
-                var t = document.createTextNode(result.title);     // Create a text node
+                var t = document.createTextNode(result.text_with_hit);     // Create a text node
                 var p = document.createElement("p")                // Create a <h1> element
                 p.setAttribute("class", "description_text")
-                var d = document.createTextNode(result.description);     // Create a text node
+                if (result.text_full.length > 200) {
+                    var d = document.createTextNode(result.text_full.substring(1, 200) + " (...)");
+                } else {
+                    var d = document.createTextNode(result.text_full);     // Create a text node
+
+                }
                 p.appendChild(d);                                   // Append the text to <h1>
                 h.appendChild(t);                                   // Append the text to <h1>
                 $("#displacy").append(h);                                   // Append the text to <h1>
