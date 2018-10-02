@@ -187,7 +187,7 @@ def search_in_es(query):
         text_full = ""
         for sentence in hit["_source"]["sentences"]:
             text = sentence["text"]
-            if query in text:
+            if query.lower() in text.lower():
                 text_with_hit = text
             text_full += text
         doc["text_with_hit"] = text_with_hit
