@@ -1,7 +1,5 @@
-setuptools
 flask
 flasgger
 flask_restful
+elasticsearch
 spacy
-
-python -m spacy download xx

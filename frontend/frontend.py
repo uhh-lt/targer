@@ -1,18 +1,16 @@
 #!/usr/bin/env python3
 
 """be.py: Description."""
-from flask import Flask, jsonify, request
+from flask import Flask, request
 from flasgger import Swagger, LazyString, LazyJSONEncoder
 from flask_restful import Api
 import json
-from flask import jsonify
 
 """Front-End"""
 from flask import render_template
 from json import JSONDecodeError
 import requests
 from elasticsearch import Elasticsearch
-import json
 
 """Spacy"""
 import spacy
@@ -62,17 +60,17 @@ class Sender:
     def send(self, text, classifier):
         
         if classifier == "WD":
-            url = "http://ltdemos.informatik.uni-hamburg.de/arg-mining-ltcpu/classifyWD"
+            url = "http://backend:6000/classifyWD"
         elif classifier == "WD_dep":
-            url = "http://ltdemos.informatik.uni-hamburg.de/arg-mining-ltcpu/classifyWD_dep"
+            url = "http://backend:6000/classifyWD_dep"
         elif classifier == "ES":
-            url = "http://ltdemos.informatik.uni-hamburg.de/arg-mining-ltcpu/classifyES"
+            url = "http://backend:6000/classifyES"
         elif classifier == "ES_dep":
-            url = "http://ltdemos.informatik.uni-hamburg.de/arg-mining-ltcpu/classifyES_dep"
+            url = "http://backend:6000/classifyES_dep"
         elif classifier == "IBM":
-            url = "http://ltdemos.informatik.uni-hamburg.de/arg-mining-ltcpu/classifyIBM"
+            url = "http://backend:6000/classifyIBM"
         elif classifier == "Combo":
-            url = "http://ltdemos.informatik.uni-hamburg.de/arg-mining-ltcpu/classifyCombo"
+            url = "http://backend:6000/classifyCombo"
         
         try:
             r = requests.post(url, data=text.encode("utf-8"))
@@ -197,6 +195,6 @@ def search_in_es(query):
 
 app.jinja_env.auto_reload = True
 app.config['TEMPLATES_AUTO_RELOAD'] = True
-app.run(host='0.0.0.0', port=6000,debug=False)
+app.run(host='0.0.0.0', port=6001,debug=False)
 
 
