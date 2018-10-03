@@ -10,24 +10,24 @@ import random
 import json
 from flask import jsonify
 
-"""Front-End"""
-from flask import render_template
-from json import JSONDecodeError
-import requests
-import urllib.parse
-import urllib.request as req
-
 """Models"""
 from ModelIBM import ModelIBM
 from ModelES import ModelES
 from ModelWD import ModelWD
 from ModelES_dep import ModelES_dep
 from ModelWD_dep import ModelWD_dep
+from ModelCombo import ModelCombo
+
 
 modelIBM = ModelIBM()
 # We must call this cause of a keras bug
 # https://github.com/keras-team/keras/issues/2397
 modelIBM.label("Therefore fixed punishment will")
+
+modelCombo = ModelCombo()
+# We must call this cause of a keras bug
+# https://github.com/keras-team/keras/issues/2397
+modelCombo.label("Therefore fixed punishment will")
 
 modelES = ModelES()
 # We must call this cause of a keras bug
@@ -79,44 +79,7 @@ if(reversed):
 else:
 	swagger = Swagger(app)
 
-
 api = Api(app)
-
-class Sender:
-    def send(self, text):
-        try:
-            r = requests.post("http://ltdemos.informatik.uni-hamburg.de/arg-mining-ltcpu/classifyES", data=text.encode("utf-8"))
-            return r.json()
-        except JSONDecodeError:
-            print("!!!!", len(text), text)
-            pass
-
-sender = Sender()
-
-@app.route('/')
-def index():
-  return render_template('template2.html')
-
-@app.route('/label_text', methods=['POST'])
-def background_process_test():
-    #text = request.args.get('username')
-    text = request.form.get('username')
-    #print ("Hello, ", text)
-    doc = sender.send(text)
-    #print(doc)
-    currentPos = 0
-    data = []
-    for sentence in doc:
-        for token in sentence:
-            start = text.find(token["token"], currentPos)
-            end = start + len(token["token"])
-            currentPos = end
-            currentWord = {}
-            currentWord['start'] = start
-            currentWord['end'] = end
-            currentWord['type'] = token["label"]
-            data.append(currentWord)
-    return json.dumps(data)
 
 class ClassifyES(Resource):
     def post(self):
@@ -183,7 +146,7 @@ class ClassifyWD(Resource):
 class ClassifyES_dep(Resource):
     def post(self):
        """
-       Classifies input text to argument structure (ES model dependency based)
+       Classifies input text to argument structure (ES model, dependency based)
        ---
        consumes:
          - text/plain
@@ -214,7 +177,7 @@ class ClassifyES_dep(Resource):
 class ClassifyWD_dep(Resource):
     def post(self):
        """
-       Classifies input text to argument structure (WD model dependency based)
+       Classifies input text to argument structure (WD model, dependency based)
        ---
        consumes:
          - text/plain
@@ -245,7 +208,7 @@ class ClassifyWD_dep(Resource):
 class ClassifyIBM(Resource):
     def post(self):
        """
-       Classifies input text to argument structure (IBM model)
+       Classifies input text to argument structure (IBM model, fasttext - big dataset)
        ---
        consumes:
          - text/plain
@@ -272,13 +235,47 @@ class ClassifyIBM(Resource):
        response = make_response(jsonify(result))
        response.headers['content-type'] = 'application/json'
        return response
+
+class ClassifyCombo(Resource):
+    def post(self):
+       """
+       Classifies input text to argument structure (Combo model - big dataset)
+       ---
+       consumes:
+         - text/plain
+       parameters:
+         - in: body
+           name: text
+           type: string
+           required: true
+           description: Text to classify 
+           example: Quebecan independence is justified. In the special episode in Japan, his system is restored by a doctor who wishes to use his independence for her selfish reasons.
+       responses:
+         200:
+           description: A list of tagged tokens annotated with labels
+           schema:
+             id: argument-structure
+             properties:
+               argument-structure:
+                 type: string
+                 description: JSON-List
+                 default: No input text set
+        """
+       inputtext = request.get_data().decode('UTF-8')
+       result = modelCombo.label_with_probs(inputtext)
+       response = make_response(jsonify(result))
+       response.headers['content-type'] = 'application/json'
+       return response
        
 api.add_resource(ClassifyES, '/classifyES')
 api.add_resource(ClassifyWD, '/classifyWD')
 api.add_resource(ClassifyES_dep, '/classifyES_dep')
 api.add_resource(ClassifyWD_dep, '/classifyWD_dep')
 api.add_resource(ClassifyIBM, '/classifyIBM')
+api.add_resource(ClassifyCombo, '/classifyCombo')
 
-
+app.jinja_env.auto_reload = True
+app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.run(host='0.0.0.0', port=6000,debug=False)
+
 

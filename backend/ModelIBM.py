@@ -6,7 +6,7 @@ import sys
 import json
 
 
-modelPath = "models/ibm.h5"
+modelPath = "models/IBM.h5"
 
 class ModelIBM:
 

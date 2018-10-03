@@ -99,3 +99,10 @@ ENV/
 
 # mypy
 .mypy_cache/
+
+backend/models/ES.h5
+backend/models/ES_dep.h5
+backend/models/WD.h5
+backend/models/WD_dep.h5
+backend/models/COMBO.h5
+backend/models/IBM.h5

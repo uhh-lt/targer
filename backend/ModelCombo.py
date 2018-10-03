@@ -6,9 +6,9 @@ import sys
 import json
 
 
-modelPath = "models/WD_k.h5"
+modelPath = "models/COMBO.h5"
 
-class ModelWDk:
+class ModelCombo:
 
     lstmModel = BiLSTM.loadModel(modelPath)
 
