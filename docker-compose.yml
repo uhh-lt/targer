@@ -1,0 +1,18 @@
+version: "3"
+services:
+  frontend:
+    build: ./frontend/
+    ports:
+      - 6001:6001
+    networks:
+      - arg
+  backend:
+    build: ./backend/
+    ports:
+      - 6000:6000
+    networks:
+      - arg
+
+networks:
+  arg:
+
