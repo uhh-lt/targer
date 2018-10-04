@@ -2,8 +2,9 @@ from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
 from Document import Document
 from Sentence import Sentence
-import pandas as pd
 import re
+import argparse
+
 
 def delete_index(name):
     if es.indices.exists(name):
@@ -135,9 +136,10 @@ def extract_entities(sentence):
 
     return entities_result
 
-def parse_arguments():
+def parse_arguments(filename):
     docs = []
-    with open('out_small.txt') as f:
+
+    with open(filename) as f:
         data = f.read()
         splt = data.split('# newdoc')
         for sp in splt:
@@ -167,14 +169,19 @@ def parse_arguments():
 
         yield currentDocument
 
+parser = argparse.ArgumentParser(description='Index data')
+parser.add_argument("-index", help="index to delete")
+args = parser.parse_args()
+
 ES_SERVER = {"host": "localhost", "port": 9200}
 INDEX_NAME = 'arguments'
 
 # init ES
 es = Elasticsearch(hosts=[ES_SERVER])
 
-delete_index(INDEX_NAME)
+#delete_index(INDEX_NAME)
 create_index(INDEX_NAME)
-bulk(es, parse_arguments())
+bulk(es, parse_arguments(args.index))
+
 
 
