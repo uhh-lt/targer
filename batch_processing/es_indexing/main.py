@@ -170,10 +170,12 @@ def parse_arguments(filename):
         yield currentDocument
 
 parser = argparse.ArgumentParser(description='Index data')
-parser.add_argument("-index", help="index to delete")
+parser.add_argument("-index", help="file to parse")
+parser.add_argument("-host", help="host name")
+parser.add_argument("-port", help="port", type=int)
 args = parser.parse_args()
 
-ES_SERVER = {"host": "localhost", "port": 9200}
+ES_SERVER = {"host": args.host, "port": args.port}
 INDEX_NAME = 'arguments'
 
 # init ES
