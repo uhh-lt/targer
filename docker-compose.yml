@@ -19,6 +19,8 @@ services:
     ports:
       - 10602:9200
       - 10603:9300
+    environment:
+      - discovery.type=single-node
 
 networks:
   arg:
