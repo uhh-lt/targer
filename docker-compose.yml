@@ -3,19 +3,22 @@ services:
   frontend:
     build: ./frontend/
     ports:
-      - 6001:6001
+      - 10601:6001
     networks:
       - arg
   backend:
     build: ./backend/
     ports:
-      - 6000:6000
+      - 10600:6000
     networks:
       - arg
   es:
     build: ./es
     networks:
       - arg
+    ports:
+      - 10602:9200
+      - 10603:9300
 
 networks:
   arg:
