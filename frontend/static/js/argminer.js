@@ -73,6 +73,7 @@ function search_action() {
                 var t = document.createTextNode(result.text_with_hit);     // Create a text node
                 var p = document.createElement("p")                // Create a <h1> element
                 p.setAttribute("class", "description_text")
+                p.setAttribute("doc_text", result.text_full)
                 if (result.text_full.length > 200) {
                     var d = document.createTextNode(result.text_full.substring(1, 200) + " (...)");
                 } else {
@@ -255,7 +256,7 @@ function search_page() {
 function add_listener(){
     $('.description_text').bind('click', function(e) {
         home_page()
-        var document_text = e.target.textContent
+        var document_text = e.target.attributes.doc_text.value
         $('#text_to_parse').val(document_text)
         send_action()
     })
