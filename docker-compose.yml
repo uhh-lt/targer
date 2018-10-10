@@ -12,8 +12,8 @@ services:
       - 6000:6000
     networks:
       - arg
-  es_indexer:
-    build: ./batch_processing/es_indexing
+  es:
+    build: ./es
     networks:
       - arg
 
