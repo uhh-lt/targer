@@ -40,7 +40,7 @@ app = Flask(__name__)
 app.json_encoder = LazyJSONEncoder
 
 
-ES_SERVER = {"host": "localhost", "port": 9200}
+ES_SERVER = {"host": "es", "port": 9200}
 INDEX_NAME = 'arguments'
 es = Elasticsearch(hosts=[ES_SERVER])
 
@@ -162,7 +162,7 @@ def do_label_arg(marks):
 
 def search_in_es(query):
     docs = []
-    res = es.search(index=INDEX_NAME, body={"from" : 0, "size" : 1,
+    res = es.search(index=INDEX_NAME, body={"from" : 0, "size" : 25,
         "query": {
         "nested": {
             "path": "sentences",
