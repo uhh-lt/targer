@@ -226,6 +226,9 @@ function show_entity_labels(labels) {
 
 
 function home_page() {
+    $('#text_to_parse').focus(function(){
+        $(this).attr('rows', '5');
+    });
     $("#displacy").empty()
     $("#model_selector_box").show()
     $("#label_box").show()
@@ -239,7 +242,9 @@ function home_page() {
 }
 
 function search_page() {
-
+    $('#text_to_parse').focus(function(){
+        $(this).attr('rows', '1');
+    });    
     $("#displacy").empty()
     $("#model_selector_box").hide()
     $("#label_box").hide()
