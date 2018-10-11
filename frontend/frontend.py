@@ -18,8 +18,9 @@ import json
 import spacy
 
 nlp = spacy.load('xx')
-#path = "arg-mining-ltcpu/"
+# path = "arg-mining-ltcpu/"
 path = "/"
+
 
 class ReverseProxied(object):
     def __init__(self, app):
@@ -38,9 +39,9 @@ class ReverseProxied(object):
             environ['wsgi.url_scheme'] = scheme
         return self.app(environ, start_response)
 
+
 app = Flask(__name__)
 app.json_encoder = LazyJSONEncoder
-
 
 ES_SERVER = {"host": "es", "port": 9200}
 INDEX_NAME = 'arguments'
@@ -48,19 +49,19 @@ es = Elasticsearch(hosts=[ES_SERVER])
 
 reversed = True
 
-if(reversed):
-	app.wsgi_app = ReverseProxied(app.wsgi_app)
-	template2 = dict(swaggerUiPrefix=LazyString(lambda : request.environ.get('HTTP_X_SCRIPT_NAME', '')))
-	swagger = Swagger(app, template=template2)
+if (reversed):
+    app.wsgi_app = ReverseProxied(app.wsgi_app)
+    template2 = dict(swaggerUiPrefix=LazyString(lambda: request.environ.get('HTTP_X_SCRIPT_NAME', '')))
+    swagger = Swagger(app, template=template2)
 else:
-	swagger = Swagger(app)
-
+    swagger = Swagger(app)
 
 api = Api(app)
 
+
 class Sender:
     def send(self, text, classifier):
-        
+
         if classifier == "WD":
             url = "http://backend:6000/classifyWD"
         elif classifier == "WD_dep":
@@ -73,7 +74,7 @@ class Sender:
             url = "http://backend:6000/classifyIBM"
         elif classifier == "Combo":
             url = "http://backend:6000/classifyCombo"
-        
+
         try:
             r = requests.post(url, data=text.encode("utf-8"))
             return r.json()
@@ -81,23 +82,27 @@ class Sender:
             print("!!!!", len(text), text)
             pass
 
+
 sender = Sender()
+
 
 @app.route('/')
 def index():
-  return render_template('displacy.html', title="Argument Entity Visualizer", page="index", path=path)
+    return render_template('displacy.html', title="Argument Entity Visualizer", page="index", path=path)
+
 
 @app.route('/search_text', methods=['POST'])
 def search_text():
     text = request.form.get('username')
     return search_in_es(text)
 
+
 @app.route('/label_text', methods=['POST'])
 def background_process_arg():
     text = request.form.get('username')
-    
+
     data = []
-    
+
     # Arg-Mining Tags
     classifier = request.form.get('classifier')
     doc = sender.send(text, classifier)
@@ -112,36 +117,37 @@ def background_process_arg():
             currentWord['end'] = end
             currentWord['type'] = token["label"]
             data.append(currentWord)
-            
+
     data = do_label_arg(data)
-    
+
     doc = nlp(text)
     for ent in doc.ents:
         entry = {'start': ent.start_char, 'end': ent.end_char, 'type': ent.label_}
         data.append(entry)
-    
+
     return json.dumps(data)
 
+
 def do_label_arg(marks):
-    #print("marks:" + str(marks))
+    # print("marks:" + str(marks))
     marks_new = []
     for i, item in enumerate(marks):
-    #for (var i = 0; i < marks.length; i++):
-        if i > 0 and i+1 < len(marks):
+        # for (var i = 0; i < marks.length; i++):
+        if i > 0 and i + 1 < len(marks):
             # Start Label
-            if marks[i]['type'][0] == "P" and marks[i-1]['type'][0] != marks[i]['type'][0]:
+            if marks[i]['type'][0] == "P" and marks[i - 1]['type'][0] != marks[i]['type'][0]:
                 mark = {'type': "PREMISE", 'start': marks[i]['start']}
                 marks_new.append(mark)
-            elif marks[i]['type'][0] == "C" and marks[i-1]['type'][0] != marks[i]['type'][0]:
+            elif marks[i]['type'][0] == "C" and marks[i - 1]['type'][0] != marks[i]['type'][0]:
                 mark = {'type': "CLAIM", 'start': marks[i]['start']}
-                marks_new.append(mark)            
-            # End Label
+                marks_new.append(mark)
+                # End Label
             if marks[i]['type'][0] == "P" or marks[i]['type'][0] == "C":
-                if marks[i]['type'][0] != marks[i+1]['type'][0]:
-                    mark = marks_new.pop() 
+                if marks[i]['type'][0] != marks[i + 1]['type'][0]:
+                    mark = marks_new.pop()
                     mark['end'] = marks[i]['end']
                     marks_new.append(mark)
-        elif i == 0 and i+1 < len(marks):
+        elif i == 0 and i + 1 < len(marks):
             # Start Label
             if marks[i]['type'][0] == "P":
                 mark = {'type': "PREMISE", 'start': marks[i]['start']}
@@ -151,45 +157,46 @@ def do_label_arg(marks):
                 marks_new.append(mark)
             # End Label
             if marks[i]['type'][0] == "P" or marks[i]['type'][0] == "C":
-                if marks[i]['type'][0] != marks[i+1]['type'][0]:
-                    mark = marks_new.pop() 
+                if marks[i]['type'][0] != marks[i + 1]['type'][0]:
+                    mark = marks_new.pop()
                     mark['end'] = marks[i]['end']
                     marks_new.append(mark)
-        elif i == 0 and i+1 == marks.length:
+        elif i == 0 and i + 1 == marks.length:
             # End Label
             if marks[i]['type'][0] == "P" or marks[i]['type'][0] == "C":
                 mark['end'] = marks[i]['end']
-                marks_new.append(mark)            
+                marks_new.append(mark)
     return marks_new
+
 
 def search_in_es(query):
     docs = []
-    res = es.search(index=INDEX_NAME, body={"from" : 0, "size" : 25,
-        "query": {
-        "nested": {
-            "path": "sentences",
-            "score_mode": "avg",
-            "query": {
-                "bool": {
-                    "must": [
-                        {"match": {"sentences.text": query}}
-                    ]
-                }
-            }
-        }
-    },
-    "highlight": {
-        "fields": {
-            "sentences.text": {
-                "type": "plain",
-                "fragment_size": 125,
-                "number_of_fragments": 1,
-                "fragmenter": "span"
-            }
-        }
-    }})
+    res = es.search(index=INDEX_NAME, body={"from": 0, "size": 25,
+                                            "query": {
+                                                "nested": {
+                                                    "path": "sentences",
+                                                    "score_mode": "avg",
+                                                    "query": {
+                                                        "bool": {
+                                                            "must": [
+                                                                {"match": {"sentences.text": query[:100]}}
+                                                            ]
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "highlight": {
+                                                "fields": {
+                                                    "sentences.text": {
+                                                        "type": "plain",
+                                                        "fragment_size": 125,
+                                                        "number_of_fragments": 1,
+                                                        "fragmenter": "span"
+                                                    }
+                                                }
+                                            }})
 
-    query_words = query.strip().split()
+    query_words = query[:100].strip().split()
     print("Got %d Hits:" % res['hits']['total'])
     for hit in res['hits']['hits']:
         doc = {}
@@ -200,8 +207,8 @@ def search_in_es(query):
 
         text_full_labeled = text_full
         for word in query_words:
-            for query_match in re.findall(word, text_full_labeled, re.IGNORECASE):
-                text_full_labeled = text_full_labeled.replace(query_match, "<em>" + query_match + "</em>")
+            for match in set(re.findall(word, text_full_labeled, re.IGNORECASE)):
+                text_full_labeled = re.sub(match, '<em>' + match + '</em>', text_full_labeled, flags=re.I)
 
         doc["text_with_hit"] = hit["highlight"]["sentences.text"][0]
         doc["text_full"] = text_full
@@ -210,9 +217,7 @@ def search_in_es(query):
     return json.dumps(docs)
 
 
-
 if __name__ == "__main__":
     app.jinja_env.auto_reload = True
     app.config['TEMPLATES_AUTO_RELOAD'] = True
-    app.run(host='0.0.0.0', port=6001,debug=False)
-
+    app.run(host='0.0.0.0', port=6001, debug=False)
