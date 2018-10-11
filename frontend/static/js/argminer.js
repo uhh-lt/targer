@@ -101,7 +101,6 @@ function search_action() {
                 } else {
                     p.innerHTML = result.text_full;
                 }
-                h.appendChild(t);
 		div_element.appendChild(h);
 		div_element.appendChild(p);
 		if(result.text_full.length > 200) {
@@ -113,6 +112,7 @@ function search_action() {
             if (results.length == 0){
                 var h = document.createElement("H1")                // Create a <h1> element
                 var t = document.createTextNode("No results found.");     // Create a text node
+                h.appendChild(t);
                 $("#displacy").append(h);                                   // Append the text to <h1>
             }
             	    add_listener()
