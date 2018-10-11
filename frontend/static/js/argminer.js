@@ -72,7 +72,7 @@ function search_action() {
             results.forEach(function(result){
 		var div_element = document.createElement("div")
                 var h = document.createElement("H1")                // Create a <h1> element
-                var t = document.createTextNode(result.text_with_hit);     // Create a text node
+		h.innerHTML = result.text_with_hit
                 var p = document.createElement("p")                // Create a <h1> element
 		
 		div_element.setAttribute("result_id", i)
@@ -113,7 +113,6 @@ function search_action() {
             if (results.length == 0){
                 var h = document.createElement("H1")                // Create a <h1> element
                 var t = document.createTextNode("No results found.");     // Create a text node
-                h.appendChild(t);                                   // Append the text to <h1>
                 $("#displacy").append(h);                                   // Append the text to <h1>
             }
             	    add_listener()
