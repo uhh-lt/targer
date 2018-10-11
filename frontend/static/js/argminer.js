@@ -88,7 +88,7 @@ function search_action() {
 
 		    div_element.setAttribute("full_text", result.text_full_labeled)
 		    div_element.setAttribute("short_text", short_text);
-		    var view_text = document.createTextNode(short_text);
+		    p.innerHTML = short_text;
 
 
 		    var span = document.createElement("span")
@@ -99,9 +99,8 @@ function search_action() {
 		    span.appendChild(span_text)
 
                 } else {
-                    var view_text = document.createTextNode(result.text_full_labeled);
+                    p.innerHTML = result.text_full;
                 }
-                p.appendChild(view_text)
                 h.appendChild(t);
 		div_element.appendChild(h);
 		div_element.appendChild(p);
@@ -295,12 +294,12 @@ function add_listener(){
     $('.more_label').bind('click', function(e) {
         if (e.target.attributes.state.value == "closed") {
             var result_id = e.target.parentNode.attributes.result_id.value
-            $('#p_text_' + result_id).text(e.target.parentNode.attributes.full_text.value)
+            $('#p_text_' + result_id).html(e.target.parentNode.attributes.full_text.value)
             $('#more_'+ result_id).text("(less)")
             $('#more_'+ result_id).attr("state", "opened")
         } else {
             var result_id = e.target.parentNode.attributes.result_id.value
-            $('#p_text_' + result_id).text(e.target.parentNode.attributes.short_text.value)
+            $('#p_text_' + result_id).html(e.target.parentNode.attributes.short_text.value)
             $('#more_'+ result_id).text("(less)")
             $('#more_'+ result_id).attr("state", "closed")
         }
