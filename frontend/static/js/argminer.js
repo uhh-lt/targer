@@ -22,6 +22,15 @@ var item = items[Math.floor(Math.random()*items.length)];
 $(function() {
 
     $('#text_to_parse').val(item)
+	
+    $("#text_to_parse").keypress(function (e) {
+        var code = (e.keyCode ? e.keyCode : e.which);
+        if (code == 13) {          
+            e.preventDefault();
+            $("#button_send").trigger('click');
+            return true;
+        }
+    });
     
     $('#search_link').bind('click', function() {
         search_page()        
@@ -268,7 +277,7 @@ function home_page() {
 }
 
 function search_page() {
-    $('#text_to_parse').attr('rows', '1'); 
+    $("#text_to_parse").attr('rows', '1'); 
     $("#displacy").empty()
     $("#model_selector_box").hide()
     $("#label_box").hide()
