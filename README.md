@@ -7,6 +7,6 @@ Access the frontend at http://localhost:6001/ and the backend REST API at http:/
 
 ## Documentation
 
-* [[System architecture]]
-* [[Installation guide]] (with Docker or manual)
-* [[User guide]]
+* [System architecture](https://github.com/uhh-lt/argument-search-engine/wiki/System-architecture)
+* [Installation guide](https://github.com/uhh-lt/argument-search-engine/wiki/Installation-guide)
+* [User guide](https://github.com/uhh-lt/argument-search-engine/wiki/User-guide)
