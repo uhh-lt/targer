@@ -22,6 +22,15 @@ var item = items[Math.floor(Math.random()*items.length)];
 $(function() {
 
     $('#text_to_parse').val(item)
+	
+    $("#text_to_parse").keypress(function (e) {
+        var code = (e.keyCode ? e.keyCode : e.which);
+        if (code == 13) {          
+            e.preventDefault();
+            $("#button_send").trigger('click');
+            return true;
+        }
+    });
     
     $('#search_link').bind('click', function() {
         search_page()        
@@ -71,6 +80,7 @@ function search_action() {
 	    var i = 1;
             results.forEach(function(result){
 		var div_element = document.createElement("div")
+		div_element.setAttribute("class", "result_div")
                 var h = document.createElement("H1")                // Create a <h1> element
 		h.innerHTML = result.text_with_hit
                 var p = document.createElement("p")                // Create a <h1> element
@@ -121,6 +131,10 @@ function search_action() {
 	    .fail(function( jqxhr, textStatus, error ) {
 		    var err = textStatus + ", " + error;
 		    console.log( "Request Failed: " + err );
+		    var h = document.createElement("H1")                // Create a <h1> element
+                    var t = document.createTextNode("No results found. (timeout)");     // Create a text node
+                    h.appendChild(t);
+                    $("#displacy").append(h);                                   // Append the text to <h1>
 	    });	
 	    return false;
 }
@@ -264,7 +278,7 @@ function home_page() {
 }
 
 function search_page() {
-    $('#text_to_parse').attr('rows', '1'); 
+    $("#text_to_parse").attr('rows', '1'); 
     $("#displacy").empty()
     $("#model_selector_box").hide()
     $("#label_box").hide()

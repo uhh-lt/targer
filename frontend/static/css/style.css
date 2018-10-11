@@ -299,9 +299,7 @@ body *::selection{
         grid-template-columns:1fr
     }
 }
-p{
-    margin-bottom:3rem
-}
+
 code,kbd{
     font-family:hack,Consolas,andale mono,Menlo,Monaco,Courier,monospace;
     font-weight:400;
@@ -1032,4 +1030,12 @@ kbd{
 .footer-hh {
     text-align: center;
     margin-top: 2rem
+}
+
+.more_label {
+    color: #4357ad
+}
+
+.result_div {
+    margin-bottom: 3rem
 }
