@@ -11,6 +11,8 @@ from flask import render_template
 from json import JSONDecodeError
 import requests
 from elasticsearch import Elasticsearch
+import re
+import json
 
 """Spacy"""
 import spacy
@@ -175,21 +177,35 @@ def search_in_es(query):
                 }
             }
         }
+    },
+    "highlight": {
+        "fields": {
+            "sentences.text": {
+                "type": "plain",
+                "fragment_size": 125,
+                "number_of_fragments": 1,
+                "fragmenter": "span"
+            }
+        }
     }})
 
+    query_words = query.strip().split()
     print("Got %d Hits:" % res['hits']['total'])
     for hit in res['hits']['hits']:
         doc = {}
-        id = hit["_id"]
-        text_with_hit = ""
         text_full = ""
+
         for sentence in hit["_source"]["sentences"]:
-            text = sentence["text"]
-            if query.lower() in text.lower():
-                text_with_hit = text
-            text_full += text
-        doc["text_with_hit"] = text_with_hit
+            text_full += sentence["text"]
+
+        text_full_labeled = text_full
+        for word in query_words:
+            for query_match in re.findall(word, text_full_labeled, re.IGNORECASE):
+                text_full_labeled = text_full_labeled.replace(query_match, "<em>" + query_match + "</em>")
+
+        doc["text_with_hit"] = hit["highlight"]["sentences.text"][0]
         doc["text_full"] = text_full
+        doc["text_full_labeled"] = text_full_labeled
         docs.append(doc)
     return json.dumps(docs)
 
