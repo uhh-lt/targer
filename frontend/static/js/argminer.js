@@ -68,22 +68,48 @@ function search_action() {
 		    console.log( "JSON Data: " + data )
             results = JSON.parse(data)
             console.log(marks_new);
+	    var i = 1;
             results.forEach(function(result){
+		var div_element = document.createElement("div")
                 var h = document.createElement("H1")                // Create a <h1> element
                 var t = document.createTextNode(result.text_with_hit);     // Create a text node
                 var p = document.createElement("p")                // Create a <h1> element
+		
+		div_element.setAttribute("result_id", i)
+		p.setAttribute("full_text", result.text_full)
                 p.setAttribute("class", "description_text")
-                p.setAttribute("doc_text", result.text_full)
-                if (result.text_full.length > 200) {
-                    var d = document.createTextNode(result.text_full.substring(1, 200) + " (...)");
-                } else {
-                    var d = document.createTextNode(result.text_full);     // Create a text node
+                p.setAttribute("id", "p_text_"+i)
+                if (result.text_full_labeled.length > 200) {
+            	    var short_text = result.text_full_labeled.substring(0, 200)
+		    while (short_text.slice(-1) != " ") {
+			short_text = short_text.substring(0, short_text.length - 1);
+		    }
+		    short_text = short_text + " ..."
 
+		    div_element.setAttribute("full_text", result.text_full_labeled)
+		    div_element.setAttribute("short_text", short_text);
+		    var view_text = document.createTextNode(short_text);
+
+
+		    var span = document.createElement("span")
+		    var span_text = document.createTextNode("more")
+		    span.setAttribute("class", "more_label")
+		    span.setAttribute("id", "more_"+i)
+		    span.setAttribute("state", "closed")
+		    span.appendChild(span_text)
+
+                } else {
+                    var view_text = document.createTextNode(result.text_full_labeled);
                 }
-                p.appendChild(d);                                   // Append the text to <h1>
-                h.appendChild(t);                                   // Append the text to <h1>
-                $("#displacy").append(h);                                   // Append the text to <h1>
-                $("#displacy").append(p);                                   // Append the text to <h1>
+                p.appendChild(view_text)
+                h.appendChild(t);
+		div_element.appendChild(h);
+		div_element.appendChild(p);
+		if(result.text_full.length > 200) {
+            	    div_element.appendChild(span)
+        	}
+                $("#displacy").append(div_element);
+		i = i + 1
             })
             if (results.length == 0){
                 var h = document.createElement("H1")                // Create a <h1> element
@@ -261,8 +287,22 @@ function search_page() {
 function add_listener(){
     $('.description_text').bind('click', function(e) {
         home_page()
-        var document_text = e.target.attributes.doc_text.value
+        var document_text = e.target.attributes.full_text.value
         $('#text_to_parse').val(document_text)
         send_action()
+    })
+	
+    $('.more_label').bind('click', function(e) {
+        if (e.target.attributes.state.value == "closed") {
+            var result_id = e.target.parentNode.attributes.result_id.value
+            $('#p_text_' + result_id).text(e.target.parentNode.attributes.full_text.value)
+            $('#more_'+ result_id).text("(less)")
+            $('#more_'+ result_id).attr("state", "opened")
+        } else {
+            var result_id = e.target.parentNode.attributes.result_id.value
+            $('#p_text_' + result_id).text(e.target.parentNode.attributes.short_text.value)
+            $('#more_'+ result_id).text("(less)")
+            $('#more_'+ result_id).attr("state", "closed")
+        }
     })
 }
