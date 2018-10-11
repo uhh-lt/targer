@@ -80,6 +80,7 @@ function search_action() {
 	    var i = 1;
             results.forEach(function(result){
 		var div_element = document.createElement("div")
+		div_element.setAttribute("class", "result_div")
                 var h = document.createElement("H1")                // Create a <h1> element
 		h.innerHTML = result.text_with_hit
                 var p = document.createElement("p")                // Create a <h1> element
