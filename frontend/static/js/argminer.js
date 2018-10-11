@@ -121,6 +121,10 @@ function search_action() {
 	    .fail(function( jqxhr, textStatus, error ) {
 		    var err = textStatus + ", " + error;
 		    console.log( "Request Failed: " + err );
+		    var h = document.createElement("H1")                // Create a <h1> element
+                    var t = document.createTextNode("No results found. (timeout)");     // Create a text node
+                    h.appendChild(t);
+                    $("#displacy").append(h);                                   // Append the text to <h1>
 	    });	
 	    return false;
 }
