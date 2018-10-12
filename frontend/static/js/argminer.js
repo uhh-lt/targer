@@ -304,12 +304,12 @@ function add_listener(){
         if (e.target.attributes.state.value == "closed") {
             var result_id = e.target.parentNode.attributes.result_id.value
             $('#p_text_' + result_id).html(e.target.parentNode.attributes.full_text.value)
-            $('#more_'+ result_id).text("(less)")
+            $('#more_'+ result_id).text("less")
             $('#more_'+ result_id).attr("state", "opened")
         } else {
             var result_id = e.target.parentNode.attributes.result_id.value
             $('#p_text_' + result_id).html(e.target.parentNode.attributes.short_text.value)
-            $('#more_'+ result_id).text("(less)")
+            $('#more_'+ result_id).text("more")
             $('#more_'+ result_id).attr("state", "closed")
         }
     })
