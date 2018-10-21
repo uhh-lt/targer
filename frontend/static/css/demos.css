@@ -111,6 +111,25 @@
     position:relative;
     bottom:.075em
 }
+.search_option{
+    background:rgba(255,255,255,.9);
+    color:#1e1935;
+    padding:.25rem .75rem .35rem;
+    margin-bottom:.5rem;
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    display:inline-block;
+    white-space:nowrap;
+    cursor:pointer
+}
+.search_box{
+    font-size:2em;
+    margin-right:.5rem;
+    position:relative;
+    bottom:.075em
+}
 .d-input__option[hidden]{
     display:none
 }
