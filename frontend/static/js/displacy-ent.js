@@ -124,5 +124,31 @@ class displaCyENT {
         if(typeof this.onRender === 'function') this.onRender();
     }
 
+    search_render(text, spans, ents) {
 
+        var text_copy = text
+        var offset = 0        
+
+        for (var i = 0; i < text.length; i++) {
+            var start_tags = spans.filter( span => span.start === i );
+            var end_tags = spans.filter( span => span.end === i );
+
+            start_tags.forEach(function(tag){
+                if(ents.includes(tag.type.toLowerCase())) {
+                    var entity_string = "<mark data-entity='" + tag.type.toLowerCase() + "'>"
+                    text_copy = text_copy.slice(0, offset+i) + entity_string + text_copy.slice(offset+i);
+                    offset = offset + entity_string.length
+                }
+            })
+
+            end_tags.forEach(function(tag){
+                if(ents.includes(tag.type.toLowerCase())) {
+                    var entity_string = "</mark>"
+                    text_copy = text_copy.slice(0, offset+i) + entity_string + text_copy.slice(offset+i);
+                    offset = offset + entity_string.length
+                }
+            })
+        }
+        return text_copy
+    }
 }
