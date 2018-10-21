@@ -17,6 +17,10 @@ var items = Array("Quebecan independence is justified. In the special episode in
 "We should protect endangered species. Centaurea pinnata is an endangered species of plant present in this mountain range.",
 "We should ban Greyhound racing. The stadium opened to greyhound racing in March 1948 and just five months later a new totalisator was brought into the track.",
 "We should adopt vegetarianism. There are several categories for which the food entry can be classified Appetizers, Soups and Salads, Seafood, Entrees, Vegetarian Entree, Desserts, and the coined Best Damned Dish.");
+
+
+var search_items = Array("single gender schools", "death penalty", "asylum", "chinese medicine");
+
 var item = items[Math.floor(Math.random()*items.length)];
 
 $(function() {
@@ -33,7 +37,8 @@ $(function() {
     });
     
     $('#search_link').bind('click', function() {
-        search_page()        
+        search_page()
+        $('#text_to_parse').val(search_items[Math.floor(Math.random()*search_items.length)])
     });
     $('#home_link').bind('click', function() {
         home_page()        
