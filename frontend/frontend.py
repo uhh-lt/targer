@@ -94,6 +94,7 @@ def index():
 @app.route('/search_text', methods=['POST'])
 def search_text():
     text = request.form.get('username')
+    where_to_seach = request.form.getlist('where[]') # List like ['claim', 'text']
     return search_in_es(text)
 
 
