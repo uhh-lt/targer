@@ -25,6 +25,8 @@ var item = items[Math.floor(Math.random()*items.length)];
 
 $(function() {
 
+    $('#label_search_box').hide()
+
     $('#text_to_parse').val(item)
 	
     $("#text_to_parse").keypress(function (e) {
@@ -45,6 +47,10 @@ $(function() {
     });
 
     $(".d-input__option__box").each(function() {
+        $(this).prop('checked', true) 
+    });
+
+    $(".search_box").each(function() {
         $(this).prop('checked', true) 
     });
 
@@ -76,7 +82,15 @@ $(function() {
 });
 
 function search_action() {
-	    $.post( "search_text", { username: document.getElementById("text_to_parse").value } )
+
+        var selected_fields = [];
+	    $(".search_box").each(function() {
+            if( $(this).prop('checked') ) {
+    		    selected_fields.push($(this).val());
+            }
+	    });
+
+	    $.post( "search_text", { username: document.getElementById("text_to_parse").value, where: selected_fields } )
 	    .done(function( data ) {
         	    $("#displacy").empty()
 		    console.log( "JSON Data: " + data )
@@ -270,6 +284,7 @@ function show_entity_labels(labels) {
 
 function home_page() {
     $('#text_to_parse').attr('rows', '5');
+    $('#label_search_box').hide()
     $("#displacy").empty()
     $("#model_selector_box").show()
     $("#label_box").show()
@@ -284,6 +299,7 @@ function home_page() {
 
 function search_page() {
     $("#text_to_parse").attr('rows', '1'); 
+    $('#label_search_box').show()
     $("#displacy").empty()
     $("#model_selector_box").hide()
     $("#label_box").hide()
