@@ -324,10 +324,10 @@
     border-radius:4px
 }
 [data-demo=displacy-ent] [data-entity=premise],[data-demo=displacy-ent] [value=premise]:checked+.d-input__option__value{
-    background:#FF624C
+    background:#FF4082
 }
 [data-demo=displacy-ent] [data-entity=claim],[data-demo=displacy-ent] [value=claim]:checked+.d-input__option__value{
-    background:#FF1F00
+    background:#FFF159
 }
 [data-demo=displacy-ent] [data-entity=rebuttal],[data-demo=displacy-ent] [value=rebuttal]:checked+.d-input__option__value{
     background:#CC1900
