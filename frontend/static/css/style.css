@@ -1039,3 +1039,8 @@ kbd{
 .result_div {
     margin-bottom: 3rem
 }
+
+em {
+    background-color: #FFFF00;
+    font-style: normal
+}
