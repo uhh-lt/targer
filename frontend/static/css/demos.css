@@ -351,6 +351,9 @@
 [data-demo=displacy-ent] [data-entity=rebuttal],[data-demo=displacy-ent] [value=rebuttal]:checked+.d-input__option__value{
     background:#CC1900
 }
+[data-demo=displacy-ent] [data-entity=named_entity],[data-demo=displacy-ent] [value=named_entity]:checked+.d-input__option__value{
+    background:#43c6fc
+}
 [data-demo=displacy-ent] [data-entity=person],[data-demo=displacy-ent] [value=person]:checked+.d-input__option__value{
     background:#a6e22d
 }
