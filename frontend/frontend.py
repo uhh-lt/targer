@@ -43,7 +43,7 @@ class ReverseProxied(object):
 app = Flask(__name__)
 app.json_encoder = LazyJSONEncoder
 
-ES_SERVER = {"host": "es", "port": 9200}
+ES_SERVER = {"host": "0.0.0.0", "port": 9203}
 INDEX_NAME = 'arguments'
 es = Elasticsearch(hosts=[ES_SERVER])
 
@@ -204,19 +204,21 @@ def search_in_es(query):
         text_full = ""
 
         for sentence in hit["_source"]["sentences"]:
-            text_full += sentence["text"]
+            text_full += adjust_punctuation(sentence["text"]) + " "
 
         text_full_labeled = text_full
         for word in query_words:
             for match in set(re.findall(word, text_full_labeled, re.IGNORECASE)):
                 text_full_labeled = re.sub(match, '<em>' + match + '</em>', text_full_labeled, flags=re.I)
 
-        doc["text_with_hit"] = hit["highlight"]["sentences.text"][0]
+        doc["text_with_hit"] = adjust_punctuation(hit["highlight"]["sentences.text"][0])
         doc["text_full"] = text_full
         doc["text_full_labeled"] = text_full_labeled
         docs.append(doc)
     return json.dumps(docs)
 
+def adjust_punctuation(text):
+    return re.sub(r'\s([?.!,:;"](?:\s|$))', r'\1', text)
 
 if __name__ == "__main__":
     app.jinja_env.auto_reload = True
