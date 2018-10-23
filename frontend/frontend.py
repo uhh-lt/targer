@@ -5,6 +5,7 @@ from flask import Flask, request
 from flasgger import Swagger, LazyString, LazyJSONEncoder
 from flask_restful import Api
 import json
+import sys
 
 """Front-End"""
 from flask import render_template
@@ -43,7 +44,7 @@ class ReverseProxied(object):
 app = Flask(__name__)
 app.json_encoder = LazyJSONEncoder
 
-ES_SERVER = {"host": "0.0.0.0", "port": 9203}
+ES_SERVER = {"host": "es", "port": 9200}
 INDEX_NAME = 'arguments'
 es = Elasticsearch(hosts=[ES_SERVER])
 
@@ -94,8 +95,8 @@ def index():
 @app.route('/search_text', methods=['POST'])
 def search_text():
     text = request.form.get('username')
-    where_to_seach = request.form.getlist('where[]') # List like ['claim', 'text']
-    return search_in_es(text)
+    where_to_seach = request.form.getlist('where[]') # List like ['premise', 'claim', 'named_entity', 'text']
+    return search_in_es(text, where_to_seach)
 
 
 @app.route('/label_text', methods=['POST'])
@@ -170,27 +171,60 @@ def do_label_arg(marks):
     return marks_new
 
 
-def search_in_es(query):
+SEARCH_KEY_PREMISE = 'premise'
+SEARCH_KEY_CLAIM = 'claim'
+SEARCH_KEY_ENTITY = 'named_entity'
+SEARCH_KEY_TEXT = 'text'
+
+def get_search_field(path, field, query):
+    return {"nested": {
+                "path": path,
+                "query": {
+                    "bool": {
+                        "must": [{"match": {
+                            field: {"query": query}}}]
+                    }
+                }
+           }}
+
+def search_in_es(query, where_to_seach):
     docs = []
+
+    search_query = query[:100]
+
+    highlight_field = ""
+    search_elements = []
+    for search_category in where_to_seach:
+        if search_category == SEARCH_KEY_TEXT:
+            search_elements.append(get_search_field("sentences", "sentences.text", search_query))
+            highlight_field = "sentences.text"
+        if search_category == SEARCH_KEY_PREMISE:
+            search_elements.append(get_search_field("sentences", "sentences.premise", search_query))
+            highlight_field = "sentences.premise"
+        if search_category == SEARCH_KEY_CLAIM:
+            search_elements.append(get_search_field("sentences", "sentences.claim", search_query))
+            highlight_field = "sentences.claim"
+        if search_category == SEARCH_KEY_ENTITY:
+            search_elements.append(get_search_field("sentences.entities", "sentences.entities.text", search_query))
+            highlight_field = "sentences.entities.text"
+
+
+    if len(search_elements) == 0:
+        search_elements.append(get_search_field("sentences", "sentences.text", search_query))
+        highlight_field = "sentences.text"
+
     res = es.search(index=INDEX_NAME, body={"from": 0, "size": 25,
+
                                             "query": {
-                                                "nested": {
-                                                    "path": "sentences",
-                                                    "score_mode": "avg",
-                                                    "query": {
-                                                        "bool": {
-                                                            "must": [
-                                                                {"match": {"sentences.text": query[:100]}}
-                                                            ]
-                                                        }
-                                                    }
+                                                "bool": {
+                                                    "should": search_elements
                                                 }
                                             },
                                             "highlight": {
                                                 "pre_tags": [""],
                                                 "post_tags": [""],
                                                 "fields": {
-                                                    "sentences.text": {
+                                                    highlight_field: {
                                                         "type": "plain",
                                                         "fragment_size": 125,
                                                         "number_of_fragments": 1,
@@ -199,52 +233,54 @@ def search_in_es(query):
                                                 }
                                             }})
 
-    query_words = query[:100].strip().split()
+    query_words = search_query.strip().split()
     print("Got %d Hits:" % res['hits']['total'])
     for hit in res['hits']['hits']:
+        try:
+            doc = {}
+            text_full = ""
 
-        doc = {}
-        text_full = ""
+            arguments_positions = []
+            entity_positions = []
 
+            for sentence in hit["_source"]["sentences"]:
+                offset = len(text_full)
+                text_full += adjust_punctuation(sentence["text"]) + " "
 
-        arguments_positions = []
-        entity_positions = []
+                for claim in sentence["claim"]:
+                    start_pos = sentence["text"].find(claim)
+                    end_pos = start_pos + len(claim)
+                    arguments_positions.append({"type": "claim", "start": offset + start_pos, "end": offset + end_pos})
 
-        for sentence in hit["_source"]["sentences"]:
-            offset = len(text_full)
-            text_full += adjust_punctuation(sentence["text"]) + " "
+                for premise in sentence["premise"]:
+                    start_pos = sentence["text"].find(premise)
+                    end_pos = start_pos + len(premise)
+                    arguments_positions.append({"type": "premise", "start": offset + start_pos, "end": offset + end_pos})
 
-            for claim in sentence["claim"]:
-                start_pos = sentence["text"].find(claim)
-                end_pos = start_pos + len(claim)
-                arguments_positions.append({"type": "claim", "start": offset + start_pos, "end": offset + end_pos})
+                for entity in sentence["entities"]:
+                    type = entity["class"]
+                    text = entity["text"]
+                    start_pos = sentence["text"].find(text)
+                    end_pos = start_pos + len(text)
+                    entity_positions.append({"type": type, "start": offset + start_pos, "end": offset + end_pos})
 
-            for premise in sentence["premise"]:
-                start_pos = sentence["text"].find(premise)
-                end_pos = start_pos + len(premise)
-                arguments_positions.append({"type": "premise", "start": offset + start_pos, "end": offset + end_pos})
+                query_search_positions = []
+                text_full_labeled = text_full
+                for word in query_words:
+                    for match in set(re.findall(word, text_full_labeled, re.IGNORECASE)):
+                        positions = [{"start": m.start(), "end": m.end()} for m in re.finditer(match, text_full_labeled)]
+                        query_search_positions.extend(positions)
 
-            for entity in sentence["entities"]:
-                type = entity["class"]
-                text = entity["text"]
-                start_pos = sentence["text"].find(text)
-                end_pos = start_pos + len(text)
-                entity_positions.append({"type": type, "start": offset + start_pos, "end": offset + end_pos})
+            doc["text_with_hit"] = adjust_punctuation(hit["highlight"][highlight_field][0])
+            doc["text_full"] = text_full
+            doc["text_full_labeled"] = text_full_labeled
+            doc["query_positions"] = query_search_positions
+            doc["arguments_positions"] = arguments_positions
+            doc["entity_positions"] = entity_positions
+            docs.append(doc)
+        except:
+            print("Unexpected error:", sys.exc_info()[0])
 
-        query_search_positions = []
-        text_full_labeled = text_full
-        for word in query_words:
-            for match in set(re.findall(word, text_full_labeled, re.IGNORECASE)):
-                positions = [{"type": "search_query", "start": m.start(), "end": m.end()} for m in re.finditer(match, text_full_labeled)]
-                query_search_positions.extend(positions)
-
-        doc["text_with_hit"] = adjust_punctuation(hit["highlight"]["sentences.text"][0])
-        doc["text_full"] = text_full
-        doc["text_full_labeled"] = text_full_labeled
-        doc["query_positions"] = query_search_positions
-        doc["arguments_positions"] = arguments_positions
-        doc["entity_positions"] = entity_positions
-        docs.append(doc)
     return json.dumps(docs)
 
 def adjust_punctuation(text):
