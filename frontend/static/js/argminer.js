@@ -136,6 +136,8 @@ function search_action() {
                 } else {
                     var text_full = result.text_full
                     text_full = displacy.search_render(text_full, new_marks)
+		    div_element.setAttribute("full_text", text_full)
+		    div_element.setAttribute("short_text", text_full)
                     p.innerHTML = text_full;
                 }
 		div_element.appendChild(h);
