@@ -109,21 +109,21 @@ function search_action() {
 		
 		div_element.setAttribute("result_id", i)
 		var text_full = result.text_full
-		text_full = displacy.search_render(text_full, new_marks)
+		var text_full_marked = displacy.search_render(text_full, new_marks)
 		    
 		p.setAttribute("full_text", text_full)
                 p.setAttribute("class", "description_text")
                 p.setAttribute("id", "p_text_"+i)
-                if (result.text_full_labeled.length > 200) {
-            	    var short_text = result.text_full_labeled.substring(0, 200)
+                if (result.text_full.length > 200) {
+            	    var short_text = result.text_full.substring(0, 200)
 		    while (short_text.slice(-1) != " ") {
 			short_text = short_text.substring(0, short_text.length - 1);
 		    }
-		    short_text= displacy.search_render(short_text, new_marks) + " ..."
+		    var short_text_marked = displacy.search_render(short_text, new_marks) + " ..."
 
-		    div_element.setAttribute("full_text", text_full)
-		    div_element.setAttribute("short_text", short_text);
-		    p.innerHTML = short_text;
+		    div_element.setAttribute("full_text", text_full_marked)
+		    div_element.setAttribute("short_text", short_text_marked);
+		    p.innerHTML = short_text_marked;
 
 
 		    var span = document.createElement("span")
@@ -134,11 +134,9 @@ function search_action() {
 		    span.appendChild(span_text)
 
                 } else {
-                    var text_full = result.text_full
-                    text_full = displacy.search_render(text_full, new_marks)
-		    div_element.setAttribute("full_text", text_full)
-		    div_element.setAttribute("short_text", text_full)
-                    p.innerHTML = text_full;
+		    div_element.setAttribute("full_text", text_full_marked)
+		    div_element.setAttribute("short_text", text_full_marked)
+                    p.innerHTML = text_full_marked;
                 }
 		div_element.appendChild(h);
 		div_element.appendChild(p);
@@ -161,7 +159,7 @@ function search_action() {
 		    var err = textStatus + ", " + error;
 		    console.log( "Request Failed: " + err );
 		    var h = document.createElement("H1")                // Create a <h1> element
-                    var t = document.createTextNode("No results found. (timeout)");     // Create a text node
+                    var t = document.createTextNode("No results found. (Timeout)");     // Create a text node
                     h.appendChild(t);
                     $("#displacy").append(h);                                   // Append the text to <h1>
 	    });	
