@@ -268,7 +268,7 @@ def search_in_es(query, where_to_seach):
                 text_full_labeled = text_full
                 for word in query_words:
                     for match in set(re.findall(word, text_full_labeled, re.IGNORECASE)):
-                        positions = [{"start": m.start(), "end": m.end()} for m in re.finditer(match, text_full_labeled)]
+                        positions = [{"type": "search", "start": m.start(), "end": m.end()} for m in re.finditer(match, text_full_labeled)]
                         query_search_positions.extend(positions)
 
             doc["text_with_hit"] = adjust_punctuation(hit["highlight"][highlight_field][0])
