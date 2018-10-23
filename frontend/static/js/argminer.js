@@ -98,6 +98,10 @@ function search_action() {
             console.log(marks_new);
 	    var i = 1;
             results.forEach(function(result){
+		
+        	var new_marks = []
+        	new_marks = new_marks.concat(result.query_search_positions).concat(result.query_search_positions).concat(result.entity_positions)
+
 		var div_element = document.createElement("div")
 		div_element.setAttribute("class", "result_div")
                 var h = document.createElement("H1")                // Create a <h1> element
@@ -105,7 +109,10 @@ function search_action() {
                 var p = document.createElement("p")                // Create a <h1> element
 		
 		div_element.setAttribute("result_id", i)
-		p.setAttribute("full_text", result.text_full)
+		var text_full = result.text_full
+		text_full = displacy.search_render(text_full, new_marks)
+		    
+		p.setAttribute("full_text", text_full)
                 p.setAttribute("class", "description_text")
                 p.setAttribute("id", "p_text_"+i)
                 if (result.text_full_labeled.length > 200) {
@@ -113,9 +120,9 @@ function search_action() {
 		    while (short_text.slice(-1) != " ") {
 			short_text = short_text.substring(0, short_text.length - 1);
 		    }
-		    short_text = short_text + " ..."
+		    short_text= displacy.search_render(short_text, new_marks) + " ..."
 
-		    div_element.setAttribute("full_text", result.text_full_labeled)
+		    div_element.setAttribute("full_text", text_full)
 		    div_element.setAttribute("short_text", short_text);
 		    p.innerHTML = short_text;
 
@@ -128,7 +135,9 @@ function search_action() {
 		    span.appendChild(span_text)
 
                 } else {
-                    p.innerHTML = result.text_full;
+                    var text_full = result.text_full
+                    text_full = displacy.search_render(text_full, new_marks)
+                    p.innerHTML = text_full;
                 }
 		div_element.appendChild(h);
 		div_element.appendChild(p);
