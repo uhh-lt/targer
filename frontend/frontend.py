@@ -205,20 +205,34 @@ def search_in_es(query):
         doc = {}
         text_full = ""
 
+
+        arguments_positions = []
         for sentence in hit["_source"]["sentences"]:
+            offset = len(text_full)
             text_full += adjust_punctuation(sentence["text"]) + " "
+
+            for claim in sentence["claim"]:
+                start_pos = sentence["text"].find(claim)
+                end_pos = start_pos + len(claim)
+                arguments_positions.append({"type": "claim", "start": offset + start_pos, "end": offset + end_pos})
+
+            for premise in sentence["premise"]:
+                start_pos = sentence["text"].find(premise)
+                end_pos = start_pos + len(premise)
+                arguments_positions.append({"type": "premise", "start": offset + start_pos, "end": offset + end_pos})
 
         query_search_positions = []
         text_full_labeled = text_full
         for word in query_words:
             for match in set(re.findall(word, text_full_labeled, re.IGNORECASE)):
-                pos = [{"start": m.start(), "end": m.end()} for m in re.finditer(match, text_full_labeled)]
-                query_search_positions.extend(pos)
+                positions = [{"start": m.start(), "end": m.end()} for m in re.finditer(match, text_full_labeled)]
+                query_search_positions.extend(positions)
 
         doc["text_with_hit"] = adjust_punctuation(hit["highlight"]["sentences.text"][0])
         doc["text_full"] = text_full
         doc["text_full_labeled"] = text_full_labeled
         doc["query_positions"] = query_search_positions
+        doc["arguments_positions"] = arguments_positions
         docs.append(doc)
     return json.dumps(docs)
 
