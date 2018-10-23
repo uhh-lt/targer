@@ -258,8 +258,8 @@ def search_in_es(query, where_to_seach):
                     arguments_positions.append({"type": "premise", "start": offset + start_pos, "end": offset + end_pos})
 
                 for entity in sentence["entities"]:
-                    if entity["class"] == "ORGANISATION": type = "ORG"
-                    elif entity["class"] == "LOCATION": type = "LOC"
+                    if entity["class"].upper() == "ORGANISATION": type = "ORG"
+                    elif entity["class"].upper() == "LOCATION": type = "LOC"
                     else: type = entity["class"]
                     text = entity["text"]
                     start_pos = sentence["text"].find(text)
