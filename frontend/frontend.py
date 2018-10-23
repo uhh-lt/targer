@@ -172,7 +172,7 @@ def do_label_arg(marks):
 
 def search_in_es(query):
     docs = []
-    res = es.search(index=INDEX_NAME, body={"from": 0, "size": 25,
+    res = es.search(index=INDEX_NAME, body={"from": 0, "size": 1,
                                             "query": {
                                                 "nested": {
                                                     "path": "sentences",
@@ -187,12 +187,14 @@ def search_in_es(query):
                                                 }
                                             },
                                             "highlight": {
+                                                "pre_tags": [""],
+                                                "post_tags": [""],
                                                 "fields": {
                                                     "sentences.text": {
                                                         "type": "plain",
                                                         "fragment_size": 125,
                                                         "number_of_fragments": 1,
-                                                        "fragmenter": "span"
+                                                        "fragmenter": "simple"
                                                     }
                                                 }
                                             }})
@@ -206,19 +208,22 @@ def search_in_es(query):
         for sentence in hit["_source"]["sentences"]:
             text_full += adjust_punctuation(sentence["text"]) + " "
 
+        query_search_positions = []
         text_full_labeled = text_full
         for word in query_words:
             for match in set(re.findall(word, text_full_labeled, re.IGNORECASE)):
-                text_full_labeled = re.sub(match, '<em>' + match + '</em>', text_full_labeled, flags=re.I)
+                pos = [{"start": m.start(), "end": m.end()} for m in re.finditer(match, text_full_labeled)]
+                query_search_positions.extend(pos)
 
         doc["text_with_hit"] = adjust_punctuation(hit["highlight"]["sentences.text"][0])
         doc["text_full"] = text_full
         doc["text_full_labeled"] = text_full_labeled
+        doc["query_positions"] = query_search_positions
         docs.append(doc)
     return json.dumps(docs)
 
 def adjust_punctuation(text):
-    return re.sub(r'\s([?.!,:;"](?:\s|$))', r'\1', text)
+    return re.sub(r'\s([?.!,:;\'"](?:\s|$))', r'\1', text)
 
 if __name__ == "__main__":
     app.jinja_env.auto_reload = True
