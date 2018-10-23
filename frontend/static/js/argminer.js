@@ -324,7 +324,7 @@ function search_page() {
 function add_listener(){
     $('.description_text').bind('click', function(e) {
         home_page()
-        var document_text = e.target.attributes.full_text.value
+        var document_text = e.currentTarget.attributes.full_text.value
         $('#text_to_parse').val(document_text)
         send_action()
     })
