@@ -172,7 +172,7 @@ def do_label_arg(marks):
 
 def search_in_es(query):
     docs = []
-    res = es.search(index=INDEX_NAME, body={"from": 0, "size": 1,
+    res = es.search(index=INDEX_NAME, body={"from": 0, "size": 25,
                                             "query": {
                                                 "nested": {
                                                     "path": "sentences",
@@ -202,11 +202,14 @@ def search_in_es(query):
     query_words = query[:100].strip().split()
     print("Got %d Hits:" % res['hits']['total'])
     for hit in res['hits']['hits']:
+
         doc = {}
         text_full = ""
 
 
         arguments_positions = []
+        entity_positions = []
+
         for sentence in hit["_source"]["sentences"]:
             offset = len(text_full)
             text_full += adjust_punctuation(sentence["text"]) + " "
@@ -221,6 +224,13 @@ def search_in_es(query):
                 end_pos = start_pos + len(premise)
                 arguments_positions.append({"type": "premise", "start": offset + start_pos, "end": offset + end_pos})
 
+            for entity in sentence["entities"]:
+                type = entity["class"]
+                text = entity["text"]
+                start_pos = sentence["text"].find(text)
+                end_pos = start_pos + len(text)
+                entity_positions.append({"type": type, "start": offset + start_pos, "end": offset + end_pos})
+
         query_search_positions = []
         text_full_labeled = text_full
         for word in query_words:
@@ -233,6 +243,7 @@ def search_in_es(query):
         doc["text_full_labeled"] = text_full_labeled
         doc["query_positions"] = query_search_positions
         doc["arguments_positions"] = arguments_positions
+        doc["entity_positions"] = entity_positions
         docs.append(doc)
     return json.dumps(docs)
 
