@@ -3,6 +3,7 @@ from Model import Model
 from Document import Document
 from Sentence import Sentence
 import time
+import argparse
 
 def extract_tokens(words_conll):
     words = ""
@@ -31,8 +32,8 @@ def label_doc(document):
                 dictionary = labeled_sentence[word_index]
                 doc_output+=word + "\t" + dictionary["label"] + "\n"
                 word_index += 1
-            except IndexError:
-                #print ("error")
+            except Exception as e:
+                print(e)
                 pass
     return doc_output
 
@@ -71,8 +72,8 @@ def initializer():
     model = Model()
     print("model loaded: ", time.time() - st)
 
-def write(text):
-    with open("out.txt", "a") as myfile:
+def write(text, filename):
+    with open(filename, "a") as myfile:
         myfile.write("\n")
         myfile.write(text)
 
@@ -80,19 +81,32 @@ model = None
 
 if __name__ == '__main__':
     time_start = time.time()
-    with open("out.txt", "w") as myfile:
+
+    parser = argparse.ArgumentParser(description='Argument labeling')
+    parser.add_argument('--input',
+                        required=True,
+                        help='input data',
+                        default='input')
+    parser.add_argument('--output',
+                        required=True,
+                        help='labeled data',
+                        default='output')
+    args = parser.parse_args()
+
+
+    with open(args.output, "w") as myfile:
         myfile.write("")
 
     texts_to_label = []
-    with open('conll.txt') as f:  
+    with open(args.input) as f:
         data = f.read()  
         splt = data.split('# newdoc')  
         for sp in splt:
             doc = parse_doc(sp)
             texts_to_label.append(doc)
 
-    with Pool(6, initializer, ()) as p:
+    with Pool(multiprocessing.cpu_count() - 2, initializer, ()) as p:
         for result in p.map(label_doc,  texts_to_label):
-            write(result)
+            write(result, args.output)
 
-    print(time.time() - time_start)
+    print("Time: ", time.time() - time_start)
