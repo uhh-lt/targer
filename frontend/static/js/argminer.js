@@ -1,15 +1,15 @@
 var marks_new = []
 
 var items = Array("Quebecan independence is justified. In the special episode in Japan, his system is restored by a doctor who wishes to use his independence for her selfish reasons.",
-"We should abandon Youtube. Toolassisted speedruns uploaded to video sites like Nico Nico Douga , YouTube or TASVideos may be described as a new world record by TASsan , who is said to have the superhuman memory and reflexes",
+"We should abandon Youtube. Toolassisted speedruns uploaded to video sites like Nico Nico Douga, YouTube or TASVideos may be described as a new world record by TASsan , who is said to have the superhuman memory and reflexes",
 "The internet brings more harm than good. Source the Internet except as noted for items from the 1999 censusREF.",
 "The internet brings more harm than good. Some of Sarcones artworks such as The Other Face of ParisREF or Flashing StarREF have gone viral on the Internet.",
 "Science is a major threat. In the final section, that dealing with moral philosophy or ethics in seven lessons, Debono discusses religion, happiness as humans highest end, the duties of scientists ,on right behaviour especially moderation, duties in general, genuine ethical mistakes, and the principal reason for acquiring knowledge and science.",
 "Newspapers are outdated. Bahrains Information Affairs Authority reported that the number of newspapers in 1999 was four which were published in Arabic and English languages.",
-"We should not subsidize single parents. In the United States , 80.6 of single parents are mothers.",
+"We should not subsidize single parents. In the United States, 80.6 of single parents are mothers.",
 "Suicide should be a criminal offence. It is suspected that Francis committed suicide having been faced with being murdered over his large debt to Johnny Boy.",
 "Religion does more harm than good. Morriss early academic work was in the field of modern British religious history, looking in particular at the impact of urbanization and industrialization on religious change.",
-"Child labor should be legalized .Officials investigated several cases of child labor in all instances, offenders were issued compliance orders in accordance with the 2007 Labor Act, but were not arrested or otherwise penalized.",
+"Child labor should be legalized. Officials investigated several cases of child labor in all instances, offenders were issued compliance orders in accordance with the 2007 Labor Act, but were not arrested or otherwise penalized.",
 "We should disband the United Nations. The United Nations condemned the killings in the strongest possible terms, and the French Council of the Muslim Faith also condemned the attacks",
 "Academic freedom is not absolute. All major Canadian universities are now publicly funded but maintain institutional autonomy, with the ability to decide on admission, tuition and governance.",
 "Coaching brings more harm than good. He is coaching junior tennis players while simultaneously going to school and working to receive his massage therapy license.",
@@ -100,8 +100,7 @@ function search_action() {
             results.forEach(function(result){
 		
         	var new_marks = []
-        	new_marks = new_marks.concat(result.query_search_positions).concat(result.query_search_positions).concat(result.entity_positions)
-
+        	new_marks = new_marks.concat(result.query_positions).concat(result.arguments_positions).concat(result.entity_positions)
 		var div_element = document.createElement("div")
 		div_element.setAttribute("class", "result_div")
                 var h = document.createElement("H1")                // Create a <h1> element
