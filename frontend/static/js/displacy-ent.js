@@ -124,7 +124,7 @@ class displaCyENT {
         if(typeof this.onRender === 'function') this.onRender();
     }
 
-    search_render(text, spans, ents) {
+    search_render(text, spans) {
         var text_copy = text
         var offset = 0        
 
