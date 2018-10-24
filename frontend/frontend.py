@@ -20,7 +20,7 @@ import spacy
 
 nlp = spacy.load('xx')
 # path = "arg-mining-ltcpu/"
-path = "/"
+path = "./"
 
 
 class ReverseProxied(object):
