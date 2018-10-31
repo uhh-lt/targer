@@ -19,8 +19,8 @@ import json
 import spacy
 
 nlp = spacy.load('xx')
-# path = "arg-mining-ltcpu/"
-path = "./"
+path = "argsearch/"
+#path = "./"
 
 
 class ReverseProxied(object):
