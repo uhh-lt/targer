@@ -19,7 +19,7 @@ import json
 import spacy
 
 nlp = spacy.load('xx')
-path = "argsearch/"
+path = "/argsearch/"
 #path = "./"
 
 
