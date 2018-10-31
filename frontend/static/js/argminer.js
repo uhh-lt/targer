@@ -82,7 +82,8 @@ $(function() {
 });
 
 function search_action() {
-
+	$("#displacy").empty()
+        $("#displacy").text("Searching ...")
         var selected_fields = [];
 	    $(".search_box").each(function() {
             if( $(this).prop('checked') ) {
