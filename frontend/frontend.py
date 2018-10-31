@@ -89,6 +89,8 @@ sender = Sender()
 
 @app.route('/')
 def index():
+    if request.url[-1] != '/':
+        return redirect(request.url + '/')
     return render_template('displacy.html', title="Argument Entity Visualizer", page="index", path=path)
 
 
