@@ -105,7 +105,7 @@ function search_action() {
 		div_element.setAttribute("class", "result_div")
                 var h = document.createElement("H1")                // Create a <h1> element
 		//h.innerHTML = result.text_with_hit
-		h.innerHTML = "<a target='blank' href='" + result.url + "'>" + result.url + "</a>"
+		h.innerHTML = "<a target='_blank' href='" + result.url + "'>" + result.url + "</a>"
                 var p = document.createElement("p")                // Create a <h1> element
 		
 		div_element.setAttribute("result_id", i)
