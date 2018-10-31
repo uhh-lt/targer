@@ -90,7 +90,7 @@ function search_action() {
             }
 	    });
 
-	    $.post( "search_text", { username: document.getElementById("text_to_parse").value, where: selected_fields } )
+	    $.post( "./search_text", { username: document.getElementById("text_to_parse").value, where: selected_fields } )
 	    .done(function( data ) {
         	    $("#displacy").empty()
 		    console.log( "JSON Data: " + data )
@@ -169,7 +169,7 @@ function search_action() {
 
 
 function send_action() {
-$.post( "label_text", { username: document.getElementById("text_to_parse").value , classifier: document.getElementById("model").value } )
+$.post( "./label_text", { username: document.getElementById("text_to_parse").value , classifier: document.getElementById("model").value } )
 	    .done(function( data ) {
 		    console.log( "JSON Data: " + data )
             marks = JSON.parse(data)
