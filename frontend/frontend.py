@@ -279,6 +279,7 @@ def search_in_es(query, where_to_seach):
             doc["query_positions"] = query_search_positions
             doc["arguments_positions"] = arguments_positions
             doc["entity_positions"] = entity_positions
+            doc["url"] = hit["_source"]["url"]
             docs.append(doc)
         except:
             print("Unexpected error:", sys.exc_info()[0])
