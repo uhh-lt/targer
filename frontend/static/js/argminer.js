@@ -91,9 +91,12 @@ function search_action() {
             }
 	    });
 
+        document.getElementById("button_send").disabled = true;
+
 	    $.post( "./search_text", { username: document.getElementById("text_to_parse").value, where: selected_fields } )
 	    .done(function( data ) {
         	    $("#displacy").empty()
+        	console.log("qwe")
 		    console.log( "JSON Data: " + data )
             results = JSON.parse(data)
             console.log(marks_new);
@@ -156,7 +159,7 @@ function search_action() {
                 $("#displacy").append(h);                                   // Append the text to <h1>
             }
             	    add_listener()
-	        
+        document.getElementById("button_send").disabled = false;
 	    })
 	    .fail(function( jqxhr, textStatus, error ) {
 		    var err = textStatus + ", " + error;
@@ -165,12 +168,15 @@ function search_action() {
                     var t = document.createTextNode("No results found. (Timeout)");     // Create a text node
                     h.appendChild(t);
                     $("#displacy").append(h);                                   // Append the text to <h1>
+            document.getElementById("button_send").disabled = false;
 	    });	
 	    return false;
 }
 
 
 function send_action() {
+
+document.getElementById("button_send").disabled = true;
 $.post( "./label_text", { username: document.getElementById("text_to_parse").value , classifier: document.getElementById("model").value } )
 	    .done(function( data ) {
 		    console.log( "JSON Data: " + data )
@@ -203,11 +209,13 @@ $.post( "./label_text", { username: document.getElementById("text_to_parse").val
             	        $('#text_to_parse').val(e.target.textContent)
             	        search_action()
 	        })
+	        document.getElementById("button_send").disabled = false;
 	        
 	    })
 	    .fail(function( jqxhr, textStatus, error ) {
 		    var err = textStatus + ", " + error;
 		    console.log( "Request Failed: " + err );
+		    document.getElementById("button_send").disabled = false;
 	    });
 }
 
