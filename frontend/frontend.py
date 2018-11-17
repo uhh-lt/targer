@@ -189,6 +189,8 @@ def get_search_field(path, field, query):
                 }
            }}
 
+number_of_sentences_around = 3
+
 def search_in_es(query, where_to_seach):
     docs = []
 
@@ -244,21 +246,49 @@ def search_in_es(query, where_to_seach):
 
             arguments_positions = []
             entity_positions = []
+            query_search_positions = []
 
-            for sentence in hit["_source"]["sentences"]:
+            top_match = hit["highlight"][highlight_field][0]
+            sentences = hit["_source"]["sentences"]
+
+            x = [x for x in sentences if top_match in x["text"]][0]
+
+            index_with_top_match = sentences.index(x)
+
+            # finding for sentences indexes to show
+            if len(sentences) < 7:
+                min_pos = 0
+                max_pos = len(sentences) - 1
+            elif index_with_top_match < number_of_sentences_around:
+                min_pos = 0
+                max_pos = number_of_sentences_around * 2
+            elif index_with_top_match > (len(sentences) - (number_of_sentences_around * 2 + 2)):
+                min_pos = (len(sentences) - (number_of_sentences_around * 2 + 2))
+                max_pos = (len(sentences) - 1)
+            else:
+                min_pos = index_with_top_match - number_of_sentences_around
+                max_pos = index_with_top_match + number_of_sentences_around
+
+            for sentence_index in range(min_pos, max_pos):
+
+                sentence = sentences[sentence_index]
+
                 offset = len(text_full)
                 text_full += adjust_punctuation(sentence["text"]) + " "
 
+                # finding positions for claims
                 for claim in sentence["claim"]:
                     start_pos = sentence["text"].find(claim)
                     end_pos = start_pos + len(claim)
                     arguments_positions.append({"type": "claim", "start": offset + start_pos, "end": offset + end_pos})
 
+                # finding positions for premises
                 for premise in sentence["premise"]:
                     start_pos = sentence["text"].find(premise)
                     end_pos = start_pos + len(premise)
                     arguments_positions.append({"type": "premise", "start": offset + start_pos, "end": offset + end_pos})
 
+                # finding positions for entities
                 for entity in sentence["entities"]:
                     if entity["class"].upper() == "ORGANIZATION": type = "ORG"
                     elif entity["class"].upper() == "LOCATION": type = "LOC"
@@ -268,14 +298,15 @@ def search_in_es(query, where_to_seach):
                     end_pos = start_pos + len(text)
                     entity_positions.append({"type": type, "start": offset + start_pos, "end": offset + end_pos})
 
-                query_search_positions = []
-                for word in query_words:
-                    for match in set(re.findall(word, text_full, re.IGNORECASE)):
-                        positions = [{"type": "search", "start": m.start(), "end": m.end()} for m in re.finditer(match, text_full)]
-                        query_search_positions.extend(positions)
+            #finding positions for search query instances
+            for word in query_words:
+                for match in set(re.findall(word, text_full, re.IGNORECASE)):
+                    positions = [{"type": "search", "start": m.start(), "end": m.end()} for m in re.finditer(match, text_full)]
+                    query_search_positions.extend(positions)
+
 
             doc["text_with_hit"] = adjust_punctuation(hit["highlight"][highlight_field][0])
-            doc["text_full"] = text_fullуг
+            doc["text_full"] = text_full
             doc["query_positions"] = query_search_positions
             doc["arguments_positions"] = arguments_positions
             doc["entity_positions"] = entity_positions
