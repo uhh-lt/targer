@@ -76,6 +76,14 @@ a{
 a:active,a:hover{
     outline:0
 }
+.nowrap {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.doc_url{
+    color:#4357AD
+}
 abbr{
     text-decoration:none
 }
