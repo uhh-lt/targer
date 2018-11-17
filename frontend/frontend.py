@@ -274,18 +274,21 @@ def search_in_es(query, where_to_seach):
                 sentence = sentences[sentence_index]
 
                 offset = len(text_full)
-                text_full += adjust_punctuation(sentence["text"]) + " "
+                sentence_text_adjusted = adjust_punctuation(sentence['text'])
+                text_full += sentence_text_adjusted + " "
 
                 # finding positions for claims
                 for claim in sentence["claim"]:
-                    start_pos = sentence["text"].find(claim)
-                    end_pos = start_pos + len(claim)
+                    claim_adjusted = adjust_punctuation(claim)
+                    start_pos = sentence_text_adjusted.find(claim_adjusted)
+                    end_pos = start_pos + len(claim_adjusted)
                     arguments_positions.append({"type": "claim", "start": offset + start_pos, "end": offset + end_pos})
 
                 # finding positions for premises
                 for premise in sentence["premise"]:
-                    start_pos = sentence["text"].find(premise)
-                    end_pos = start_pos + len(premise)
+                    premise_adjusted = adjust_punctuation(premise)
+                    start_pos = sentence_text_adjusted.find(premise_adjusted)
+                    end_pos = start_pos + len(premise_adjusted)
                     arguments_positions.append({"type": "premise", "start": offset + start_pos, "end": offset + end_pos})
 
                 # finding positions for entities
@@ -293,8 +296,8 @@ def search_in_es(query, where_to_seach):
                     if entity["class"].upper() == "ORGANIZATION": type = "ORG"
                     elif entity["class"].upper() == "LOCATION": type = "LOC"
                     else: type = entity["class"]
-                    text = entity["text"]
-                    start_pos = sentence["text"].find(text)
+                    text = adjust_punctuation(entity["text"])
+                    start_pos = sentence_text_adjusted.find(text)
                     end_pos = start_pos + len(text)
                     entity_positions.append({"type": type, "start": offset + start_pos, "end": offset + end_pos})
 
