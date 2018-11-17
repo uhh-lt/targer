@@ -269,15 +269,13 @@ def search_in_es(query, where_to_seach):
                     entity_positions.append({"type": type, "start": offset + start_pos, "end": offset + end_pos})
 
                 query_search_positions = []
-                text_full_labeled = text_full
                 for word in query_words:
-                    for match in set(re.findall(word, text_full_labeled, re.IGNORECASE)):
-                        positions = [{"type": "search", "start": m.start(), "end": m.end()} for m in re.finditer(match, text_full_labeled)]
+                    for match in set(re.findall(word, text_full, re.IGNORECASE)):
+                        positions = [{"type": "search", "start": m.start(), "end": m.end()} for m in re.finditer(match, text_full)]
                         query_search_positions.extend(positions)
 
             doc["text_with_hit"] = adjust_punctuation(hit["highlight"][highlight_field][0])
-            doc["text_full"] = text_full
-            doc["text_full_labeled"] = text_full_labeled
+            doc["text_full"] = text_fullуг
             doc["query_positions"] = query_search_positions
             doc["arguments_positions"] = arguments_positions
             doc["entity_positions"] = entity_positions
