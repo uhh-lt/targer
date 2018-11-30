@@ -111,13 +111,19 @@ function search_action() {
                 h.setAttribute("class", "nowrap")
 		//h.innerHTML = result.text_with_hit
 		h.innerHTML = "<a class='doc_url' target='_blank' href='" + result.url + "'>" + result.url + "</a>"
-                var p = document.createElement("p")                // Create a <h1> element
-		
+
+
+
+        var p = document.createElement("p")                // Create a <h1> element
 		div_element.setAttribute("result_id", i)
 		var text_full = result.text_full
 		var text_full_marked = displacy.search_render(text_full, new_marks)
-		    
-		p.setAttribute("full_text", text_full)
+
+		var button_analyze = document.createElement("button")
+		button_analyze.setAttribute("class", "doc_button_analyze")
+		button_analyze.innerHTML = "Analyze"
+		button_analyze.setAttribute("full_text", text_full)
+
                 p.setAttribute("class", "description_text")
                 p.setAttribute("id", "p_text_"+i)
                 if (result.text_full.length > 200) {
@@ -145,6 +151,7 @@ function search_action() {
                     p.innerHTML = text_full_marked;
                 }
 		div_element.appendChild(h);
+		div_element.appendChild(button_analyze)
 		div_element.appendChild(p);
 		if(result.text_full.length > 200) {
             	    div_element.appendChild(span)
@@ -333,7 +340,7 @@ function search_page() {
 }
 
 function add_listener(){
-    $('.description_text').bind('click', function(e) {
+    $('.doc_button_analyze').bind('click', function(e) {
         home_page()
         var document_text = e.currentTarget.attributes.full_text.value
         $('#text_to_parse').val(document_text)
