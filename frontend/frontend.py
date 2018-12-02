@@ -278,28 +278,31 @@ def search_in_es(query, where_to_seach):
                 text_full += sentence_text_adjusted + " "
 
                 # finding positions for claims
-                for claim in sentence["claim"]:
-                    claim_adjusted = adjust_punctuation(claim)
-                    start_pos = sentence_text_adjusted.find(claim_adjusted)
-                    end_pos = start_pos + len(claim_adjusted)
-                    arguments_positions.append({"type": "claim", "start": offset + start_pos, "end": offset + end_pos})
+                if SEARCH_KEY_CLAIM in where_to_seach:
+                    for claim in sentence["claim"]:
+                        claim_adjusted = adjust_punctuation(claim)
+                        start_pos = sentence_text_adjusted.find(claim_adjusted)
+                        end_pos = start_pos + len(claim_adjusted)
+                        arguments_positions.append({"type": "claim", "start": offset + start_pos, "end": offset + end_pos})
 
                 # finding positions for premises
-                for premise in sentence["premise"]:
-                    premise_adjusted = adjust_punctuation(premise)
-                    start_pos = sentence_text_adjusted.find(premise_adjusted)
-                    end_pos = start_pos + len(premise_adjusted)
-                    arguments_positions.append({"type": "premise", "start": offset + start_pos, "end": offset + end_pos})
+                if SEARCH_KEY_PREMISE in where_to_seach:
+                    for premise in sentence["premise"]:
+                        premise_adjusted = adjust_punctuation(premise)
+                        start_pos = sentence_text_adjusted.find(premise_adjusted)
+                        end_pos = start_pos + len(premise_adjusted)
+                        arguments_positions.append({"type": "premise", "start": offset + start_pos, "end": offset + end_pos})
 
                 # finding positions for entities
-                for entity in sentence["entities"]:
-                    if entity["class"].upper() == "ORGANIZATION": type = "ORG"
-                    elif entity["class"].upper() == "LOCATION": type = "LOC"
-                    else: type = entity["class"]
-                    text = adjust_punctuation(entity["text"])
-                    start_pos = sentence_text_adjusted.find(text)
-                    end_pos = start_pos + len(text)
-                    entity_positions.append({"type": type, "start": offset + start_pos, "end": offset + end_pos})
+                if SEARCH_KEY_ENTITY in where_to_seach:
+                    for entity in sentence["entities"]:
+                        if entity["class"].upper() == "ORGANIZATION": type = "ORG"
+                        elif entity["class"].upper() == "LOCATION": type = "LOC"
+                        else: type = entity["class"]
+                        text = adjust_punctuation(entity["text"])
+                        start_pos = sentence_text_adjusted.find(text)
+                        end_pos = start_pos + len(text)
+                        entity_positions.append({"type": type, "start": offset + start_pos, "end": offset + end_pos})
 
             #finding positions for search query instances
             for word in query_words:
