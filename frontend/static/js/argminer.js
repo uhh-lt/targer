@@ -83,98 +83,98 @@ $(function() {
 
 function search_action() {
 	$("#displacy").empty()
-        $("#displacy").text("Searching ...")
-        var selected_fields = [];
-	    $(".search_box").each(function() {
-            if( $(this).prop('checked') ) {
-    		    selected_fields.push($(this).val());
-            }
-	    });
+    $("#displacy").text("Searching ...")
+    var selected_fields = [];
+	$(".search_box").each(function() {
+        if( $(this).prop('checked') ) {
+            selected_fields.push($(this).val());
+        }
+	});
 
-        document.getElementById("button_send").disabled = true;
+    document.getElementById("button_send").disabled = true;
 
-	    $.post( "./search_text", { username: document.getElementById("text_to_parse").value, where: selected_fields } )
+	$.post( "./search_text", { username: document.getElementById("text_to_parse").value, where: selected_fields } )
 	    .done(function( data ) {
-        	    $("#displacy").empty()
+            $("#displacy").empty()
         	console.log("qwe")
 		    console.log( "JSON Data: " + data )
             results = JSON.parse(data)
             console.log(marks_new);
-	    var i = 1;
+	        var i = 1;
             results.forEach(function(result){
 		
-        	var new_marks = []
-        	new_marks = new_marks.concat(result.query_positions).concat(result.arguments_positions).concat(result.entity_positions)
-		var div_element = document.createElement("div")
-		div_element.setAttribute("class", "result_div")
+        	    var new_marks = []
+        	    new_marks = new_marks.concat(result.query_positions).concat(result.arguments_positions).concat(result.entity_positions)
+		        var div_element = document.createElement("div")
+		        div_element.setAttribute("class", "result_div")
                 var h = document.createElement("H1")                // Create a <h1> element
                 h.setAttribute("class", "nowrap")
-		//h.innerHTML = result.text_with_hit
-		h.innerHTML = "<a class='doc_url' target='_blank' href='" + result.url + "'>" + result.url + "</a>"
+		        //h.innerHTML = result.text_with_hit
+		        h.innerHTML = "<a class='doc_url' target='_blank' href='" + result.url + "'>" + result.url + "</a>"
 
+                var p = document.createElement("p")                // Create a <h1> element
+		        div_element.setAttribute("result_id", i)
+		        var text_full = result.text_full
+                var text_full_marked = displacy.search_render(text_full, new_marks)
 
-
-        var p = document.createElement("p")                // Create a <h1> element
-		div_element.setAttribute("result_id", i)
-		var text_full = result.text_full
-		var text_full_marked = displacy.search_render(text_full, new_marks)
-
-		var button_analyze = document.createElement("button")
-		button_analyze.setAttribute("class", "doc_button_analyze")
-		button_analyze.innerHTML = "Analyze"
-		button_analyze.setAttribute("full_text", text_full)
+                var button_analyze = document.createElement("button")
+                button_analyze.setAttribute("class", "doc_button_analyze")
+                button_analyze.innerHTML = "Analyze"
+                button_analyze.setAttribute("full_text", text_full)
 
                 p.setAttribute("class", "description_text")
                 p.setAttribute("id", "p_text_"+i)
                 if (result.text_full.length > 200) {
             	    var short_text = result.text_full.substring(0, 200)
-		    while (short_text.slice(-1) != " ") {
-			short_text = short_text.substring(0, short_text.length - 1);
-		    }
-		    var short_text_marked = displacy.search_render(short_text, new_marks) + " ..."
+		            while (short_text.slice(-1) != " ") {
+			            short_text = short_text.substring(0, short_text.length - 1);
+		            }
+		            var short_text_marked = displacy.search_render(short_text, new_marks) + " ..."
 
-		    div_element.setAttribute("full_text", text_full_marked)
-		    div_element.setAttribute("short_text", short_text_marked);
-		    p.innerHTML = short_text_marked;
+		            div_element.setAttribute("full_text", text_full_marked)
+		            div_element.setAttribute("short_text", short_text_marked);
+		            p.innerHTML = short_text_marked;
 
-
-		    var span = document.createElement("span")
-		    var span_text = document.createTextNode("more")
-		    span.setAttribute("class", "more_label")
-		    span.setAttribute("id", "more_"+i)
-		    span.setAttribute("state", "closed")
-		    span.appendChild(span_text)
-
+                    var span = document.createElement("span")
+                    var span_text = document.createTextNode("more")
+                    span.setAttribute("class", "more_label")
+                    span.setAttribute("id", "more_"+i)
+                    span.setAttribute("state", "closed")
+                    span.appendChild(span_text)
                 } else {
-		    div_element.setAttribute("full_text", text_full_marked)
-		    div_element.setAttribute("short_text", text_full_marked)
+		            div_element.setAttribute("full_text", text_full_marked)
+		            div_element.setAttribute("short_text", text_full_marked)
                     p.innerHTML = text_full_marked;
                 }
-		div_element.appendChild(h);
-		div_element.appendChild(button_analyze)
-		div_element.appendChild(p);
-		if(result.text_full.length > 200) {
+
+                div_element.appendChild(h);
+                div_element.appendChild(button_analyze)
+                div_element.appendChild(p);
+
+		        if(result.text_full.length > 200) {
             	    div_element.appendChild(span)
-        	}
+        	    }
                 $("#displacy").append(div_element);
-		i = i + 1
+		        i = i + 1
             })
+
             if (results.length == 0){
                 var h = document.createElement("H1")                // Create a <h1> element
                 var t = document.createTextNode("No results found.");     // Create a text node
                 h.appendChild(t);
                 $("#displacy").append(h);                                   // Append the text to <h1>
             }
-            	    add_listener()
-        document.getElementById("button_send").disabled = false;
+
+            add_listener()
+            document.getElementById("button_send").disabled = false;
 	    })
 	    .fail(function( jqxhr, textStatus, error ) {
 		    var err = textStatus + ", " + error;
 		    console.log( "Request Failed: " + err );
 		    var h = document.createElement("H1")                // Create a <h1> element
-                    var t = document.createTextNode("No results found. (Timeout)");     // Create a text node
-                    h.appendChild(t);
-                    $("#displacy").append(h);                                   // Append the text to <h1>
+            var t = document.createTextNode("No results found. (Timeout)");     // Create a text node
+            h.appendChild(t);
+            $("#displacy").append(h);                                   // Append the text to <h1>
             document.getElementById("button_send").disabled = false;
 	    });	
 	    return false;
@@ -183,8 +183,8 @@ function search_action() {
 
 function send_action() {
 
-document.getElementById("button_send").disabled = true;
-$.post( "./label_text", { username: document.getElementById("text_to_parse").value , classifier: document.getElementById("model").value } )
+    document.getElementById("button_send").disabled = true;
+    $.post( "./label_text", { username: document.getElementById("text_to_parse").value , classifier: document.getElementById("model").value } )
 	    .done(function( data ) {
 		    console.log( "JSON Data: " + data )
             marks = JSON.parse(data)
@@ -194,7 +194,7 @@ $.post( "./label_text", { username: document.getElementById("text_to_parse").val
 
 	        const displacy = new displaCyENT('https://api.explosion.ai/displacy/ent/', {
 	            container: '#displacy'
-	            });
+	        });
 	        text = document.getElementById("text_to_parse").value
 	        //ents = ['premise', 'claim', 'person', 'org', 'gpe', 'loc', 'product', 'misc']
 	        ents = []
@@ -217,7 +217,6 @@ $.post( "./label_text", { username: document.getElementById("text_to_parse").val
             	        search_action()
 	        })
 	        document.getElementById("button_send").disabled = false;
-	        
 	    })
 	    .fail(function( jqxhr, textStatus, error ) {
 		    var err = textStatus + ", " + error;
@@ -293,15 +292,13 @@ function show_entity_labels(labels) {
 
 
     console.log(marks_new );
-
     const displacy = new displaCyENT('https://api.explosion.ai/displacy/ent/', {
         container: '#displacy'
-        });
+    });
     text = document.getElementById("text_to_parse").value
     
     ents = labels;
     displacy.render(text, marks_new, ents);
-
 	
 	return false;
       
@@ -320,7 +317,7 @@ function home_page() {
     $('#button_send').unbind()
     $('#button_send').bind('click', function() {
 	    send_action()
-      });
+    });
 }
 
 function search_page() {
@@ -335,7 +332,7 @@ function search_page() {
     $('#button_send').unbind()
     $('#button_send').bind('click', function() {
 	    search_action()
-      });
+    });
 
 }
 
