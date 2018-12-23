@@ -12,6 +12,8 @@ RUN pip install -r requirements.txt
 
 RUN python -m spacy download xx
 
+RUN python -m pip install "msgpack<0.6.0"
+
 ENV LISTEN_PORT 6001
 ENV UWSGI_INI /uwsgi.ini
 ENV STATIC_PATH /static
