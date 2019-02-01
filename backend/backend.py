@@ -17,7 +17,11 @@ from ModelWD import ModelWD
 from ModelES_dep import ModelES_dep
 from ModelWD_dep import ModelWD_dep
 from ModelCombo import ModelCombo
+from ModelNewES import ModelNewES
 
+
+
+modelNewES = ModelNewES()
 
 modelIBM = ModelIBM()
 # We must call this cause of a keras bug
@@ -80,6 +84,37 @@ else:
 	swagger = Swagger(app)
 
 api = Api(app)
+
+class ClassifyNewPE(Resource):
+    def post(self):
+       """
+       Classifies input text to argument structure (ES model, fasttext - big dataset)
+       ---
+       consumes:
+         - text/plain
+       parameters:
+         - in: body
+           name: text
+           type: string
+           required: true
+           description: Text to classify
+           example: Quebecan independence is justified. In the special episode in Japan, his system is restored by a doctor who wishes to use his independence for her selfish reasons.
+       responses:
+         200:
+           description: A list of tagged tokens annotated with labels
+           schema:
+             id: argument-structure
+             properties:
+               argument-structure:
+                 type: string
+                 description: JSON-List
+                 default: No input text set
+        """
+       inputtext = request.get_data().decode('UTF-8')
+       result = modelNewES.label(inputtext)
+       response = make_response(jsonify(result))
+       response.headers['content-type'] = 'application/json'
+       return response
 
 class ClassifyES(Resource):
     def post(self):
@@ -266,13 +301,14 @@ class ClassifyCombo(Resource):
        response = make_response(jsonify(result))
        response.headers['content-type'] = 'application/json'
        return response
-       
+
 api.add_resource(ClassifyES, '/classifyES')
 api.add_resource(ClassifyWD, '/classifyWD')
 api.add_resource(ClassifyES_dep, '/classifyES_dep')
 api.add_resource(ClassifyWD_dep, '/classifyWD_dep')
 api.add_resource(ClassifyIBM, '/classifyIBM')
 api.add_resource(ClassifyCombo, '/classifyCombo')
+api.add_resource(ClassifyNewPE, '/classifyNewPE')
 
 app.jinja_env.auto_reload = True
 app.config['TEMPLATES_AUTO_RELOAD'] = True

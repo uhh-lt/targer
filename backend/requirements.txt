@@ -4,3 +4,7 @@ flask_restful
 nltk
 tensorflow==1.5.0
 keras
+numpy>=1.15.1
+scipy>=1.1.0
+torch==0.4.1
+torchvision==0.2.1

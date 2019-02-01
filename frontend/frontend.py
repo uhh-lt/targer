@@ -75,6 +75,8 @@ class Sender:
             url = "http://backend:6000/classifyIBM"
         elif classifier == "Combo":
             url = "http://backend:6000/classifyCombo"
+        elif classifier == "NEWPE":
+            url = "http://backend:6000/classifyNewPE"
 
         try:
             r = requests.post(url, data=text.encode("utf-8"))
