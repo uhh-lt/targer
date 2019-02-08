@@ -22,7 +22,7 @@ class ModelNewES:
             nltk.download('punkt')
 
     def label(self, input):
-        sentences = [ nltk.word_tokenize(sent) for sent in nltk.sent_tokenize(input)]
+        sentences = [ nltk.word_tokenize(sent) ]
 
         output = self.tagger.predict_tags_from_words(sentences, batch_size=200)
 
