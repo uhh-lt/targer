@@ -1,4 +1,4 @@
-# rnn2argument-web
+# argsearch
 Web application and web service based on the rnn2argument project
 
 ## Quick run with docker
