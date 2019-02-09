@@ -24,7 +24,7 @@
         <div class="l-content">
             <article data-demo="displacy-ent">
                 <header class="d-header d-wrapper l-wrapper">
-                    <h1 id="page_title" class="u-h2 u-b-sm">Argument Entity Visualizer</h1>
+                    <h1 id="page_title" class="u-h2 u-b-sm">Argument Tagger</h1>
                     <div class="o-grid o-grid--half">
                         <div class="u-t-md">
                             <div class="d-input d-input--full">
@@ -36,14 +36,14 @@
                                 <label class="u-b-xs u-block u-h6">Model to use</label>
                                 <div class="d-input__wrapper">
                                     <select id="model" class="d-select" v-model="model">
-                                    <option value="IBM">Model IBM</option>
-                                    <option value="Combo">Model Combo</option>
-                                    <option value="ES">Model PE (fasttext)</option>
-                                    <option value="ES_dep">Model PE (dependencies)</option>
-                                    <option value="WD">Model WD (fasttext)</option>
-                                    <option value="WD_dep">Model WD (dependencies)</option>
-                                    <option value="NEWPE">Model PE (new parser)</option>
-                                    <!--<option value="NEWWD">Model WD (new parser)</option>-->
+                                    <option value="ES">Essays (fastText)</option>
+                                    <option value="ES_dep">Essays (Dependency)</option>
+                                    <option value="NEWPE">Essays (Glove)</option>
+                                    <option value="WD">WebDiscourse (fastText)</option>
+                                    <option value="WD_dep">WebDiscourse (Dependency)</option>
+                                    <option value="IBM">IBM (fastText) </option>
+                                    <!--<option value="NEWWD">WebDiscourse (Glove)</option>-->
+                                    <!--<option value="Combo">Combo</option>-->
                                     </select>
                                 </div>
                             </div>

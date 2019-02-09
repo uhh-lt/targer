@@ -1048,7 +1048,9 @@ kbd{
 }
 
 .result_div {
-    margin-bottom: 3rem
+    margin-bottom: 3rem;
+    background-color: #f9fdff;
+    padding: 20px;
 }
 
 em {

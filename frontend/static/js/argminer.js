@@ -110,7 +110,7 @@ function search_action() {
                 var h = document.createElement("H1")                // Create a <h1> element
                 h.setAttribute("class", "nowrap")
 		        //h.innerHTML = result.text_with_hit
-		        h.innerHTML = "<a class='doc_url' target='_blank' href='" + result.url + "'>" + result.url + "</a>"
+		        h.innerHTML = "<a class='doc_url' target='_blank' href='" + result.url + "'>" + i + ". " + result.url + "</a>"
 
                 var p = document.createElement("p")                // Create a <h1> element
 		        div_element.setAttribute("result_id", i)
@@ -133,13 +133,13 @@ function search_action() {
 
 		            div_element.setAttribute("full_text", text_full_marked)
 		            div_element.setAttribute("short_text", short_text_marked);
-		            p.innerHTML = short_text_marked;
+		            p.innerHTML = text_full_marked;
 
                     var span = document.createElement("span")
-                    var span_text = document.createTextNode("more")
+                    var span_text = document.createTextNode("less")
                     span.setAttribute("class", "more_label")
                     span.setAttribute("id", "more_"+i)
-                    span.setAttribute("state", "closed")
+                    span.setAttribute("state", "opened")
                     span.appendChild(span_text)
                 } else {
 		            div_element.setAttribute("full_text", text_full_marked)
@@ -311,7 +311,7 @@ function home_page() {
     $("#displacy").empty()
     $("#model_selector_box").show()
     $("#label_box").show()
-    $("#page_title").text("Argument Entity Visualizer")
+    $("#page_title").text("Argument Tagger")
     $("#home_li").addClass('is-active u-strong');
     $("#search_li").removeClass('is-active u-strong');
     $('#button_send').unbind()
@@ -326,7 +326,7 @@ function search_page() {
     $("#displacy").empty()
     $("#model_selector_box").hide()
     $("#label_box").hide()
-    $("#page_title").text("Argument Entity Search")
+    $("#page_title").text("Argument Retrieval")
     $("#search_li").addClass('is-active u-strong');
     $("#home_li").removeClass('is-active u-strong');
     $('#button_send').unbind()
