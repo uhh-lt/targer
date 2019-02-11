@@ -1,9 +1,6 @@
-# argsearch
-Web application and web service based on the rnn2argument project
+# TARGER WEB+API
 
-## Neural argument tagger 
-
-PyTorch library implementing a neural [argument tagger](http://github.com/achernodub/bilstm-cnn-crf-tagger).
+Web application and web service based on the neural [argument tagger](http://github.com/achernodub/bilstm-cnn-crf-tagger).
 
 ## Quick run web application with docker
 `docker-compose up`
