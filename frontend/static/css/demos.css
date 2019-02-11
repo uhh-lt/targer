@@ -346,7 +346,7 @@
     background:#a6e22d
 }
 [data-demo=displacy-ent] [data-entity=claim],[data-demo=displacy-ent] [value=claim]:checked+.d-input__option__value{
-    background:#FFF159
+    background:#F76300
 }
 [data-demo=displacy-ent] [data-entity=rebuttal],[data-demo=displacy-ent] [value=rebuttal]:checked+.d-input__option__value{
     background:#CC1900
