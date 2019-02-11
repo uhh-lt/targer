@@ -169,7 +169,7 @@ def do_label_arg(marks):
                     mark = marks_new.pop()
                     mark['end'] = marks[i]['end']
                     marks_new.append(mark)
-        elif i == 0 and i + 1 == marks.length:
+        elif i == 0 and i + 1 == len(marks):
             # End Label
             if marks[i]['type'][0] == "P" or marks[i]['type'][0] == "C":
                 mark['end'] = marks[i]['end']
@@ -221,7 +221,7 @@ def search_in_es(query, where_to_seach):
         search_elements.append(get_search_field("sentences", "sentences.text", search_query))
         highlight_field = "sentences.text"
 
-    res = es.search(index=INDEX_NAME, body={"from": 0, "size": 25,
+    res = es.search(index=INDEX_NAME, request_timeout=60, body={"from": 0, "size": 25,
 
                                             "query": {
                                                 "bool": {
