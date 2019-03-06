@@ -5,14 +5,12 @@ from neuralnets.BiLSTM import BiLSTM
 import sys
 import json
 
+class Model:
 
-modelPath = "models/ES.h5"
 
-class ModelES:
-
-    lstmModel = BiLSTM.loadModel(modelPath)
-
-    def __init__(self):
+    def __init__(self, path):
+        print(path)
+        self.lstmModel = BiLSTM.loadModel("models/" + path)
         try:
             nltk.data.find('tokenizers/punkt')
         except LookupError:
@@ -76,8 +74,3 @@ class ModelES:
             result.append(sentence)
 
         return result
-
-#example usage
-#text = "Therefore fixed punishment will decrease the space between poor and rich people and everyone will understand the importance of each other. Yes I will."
-#model = Model()
-#print(model.label(text))

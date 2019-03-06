@@ -9,14 +9,11 @@ from nltk.tokenize import sent_tokenize, word_tokenize
 import random
 import json
 from flask import jsonify
+import json
 
 """Models"""
-from ModelIBM import ModelIBM
-from ModelES import ModelES
-from ModelWD import ModelWD
-from ModelES_dep import ModelES_dep
-from ModelWD_dep import ModelWD_dep
-from ModelCombo import ModelCombo
+
+from Model import Model
 from ModelNewES import ModelNewES
 from ModelNewWD import ModelNewWD
 
@@ -25,34 +22,34 @@ modelNewES = ModelNewES()
 
 modelNewWD = ModelNewWD()
 
-modelIBM = ModelIBM()
-# We must call this cause of a keras bug
-# https://github.com/keras-team/keras/issues/2397
+modelIBM = Model("IBM.h5")
+#We must call this cause of a keras bug
+#https://github.com/keras-team/keras/issues/2397
 modelIBM.label("Therefore fixed punishment will")
 
-modelCombo = ModelCombo()
-# We must call this cause of a keras bug
-# https://github.com/keras-team/keras/issues/2397
+modelCombo = Model("COMBO.h5")
+# # We must call this cause of a keras bug
+# # https://github.com/keras-team/keras/issues/2397
 modelCombo.label("Therefore fixed punishment will")
 
-modelES = ModelES()
+modelES = Model("ES.h5")
 # We must call this cause of a keras bug
 # https://github.com/keras-team/keras/issues/2397
 modelES.label("Therefore fixed punishment will")
 
-modelWD = ModelWD()
-# We must call this cause of a keras bug
-# https://github.com/keras-team/keras/issues/2397
+modelWD = Model("WD.h5")
+# # We must call this cause of a keras bug
+# # https://github.com/keras-team/keras/issues/2397
 modelWD.label("Therefore fixed punishment will")
 
-modelES_dep = ModelES_dep()
-# We must call this cause of a keras bug
-# https://github.com/keras-team/keras/issues/2397
+modelES_dep = Model("ES_dep.h5")
+# # We must call this cause of a keras bug
+# # https://github.com/keras-team/keras/issues/2397
 modelES_dep.label("Therefore fixed punishment will")
 
-modelWD_dep = ModelWD_dep()
-# We must call this cause of a keras bug
-# https://github.com/keras-team/keras/issues/2397
+modelWD_dep = Model("WD_dep.h5")
+# # We must call this cause of a keras bug
+# # https://github.com/keras-team/keras/issues/2397
 modelWD_dep.label("Therefore fixed punishment will")
 
 class ReverseProxied(object):
@@ -192,7 +189,7 @@ class ClassifyWD(Resource):
            name: text
            type: string
            required: true
-           description: Text to classify 
+           description: Text to classify
            example: Quebecan independence is justified. In the special episode in Japan, his system is restored by a doctor who wishes to use his independence for her selfish reasons.
        responses:
          200:
@@ -210,7 +207,7 @@ class ClassifyWD(Resource):
        response = make_response(jsonify(result))
        response.headers['content-type'] = 'application/json'
        return response
-       
+
 class ClassifyES_dep(Resource):
     def post(self):
        """
@@ -223,7 +220,7 @@ class ClassifyES_dep(Resource):
            name: text
            type: string
            required: true
-           description: Text to classify 
+           description: Text to classify
            example: Quebecan independence is justified. In the special episode in Japan, his system is restored by a doctor who wishes to use his independence for her selfish reasons.
        responses:
          200:
@@ -241,7 +238,7 @@ class ClassifyES_dep(Resource):
        response = make_response(jsonify(result))
        response.headers['content-type'] = 'application/json'
        return response
-       
+
 class ClassifyWD_dep(Resource):
     def post(self):
        """
@@ -254,7 +251,7 @@ class ClassifyWD_dep(Resource):
            name: text
            type: string
            required: true
-           description: Text to classify 
+           description: Text to classify
            example: Quebecan independence is justified. In the special episode in Japan, his system is restored by a doctor who wishes to use his independence for her selfish reasons.
        responses:
          200:
@@ -285,7 +282,7 @@ class ClassifyIBM(Resource):
            name: text
            type: string
            required: true
-           description: Text to classify 
+           description: Text to classify
            example: Quebecan independence is justified. In the special episode in Japan, his system is restored by a doctor who wishes to use his independence for her selfish reasons.
        responses:
          200:
@@ -316,7 +313,7 @@ class ClassifyCombo(Resource):
            name: text
            type: string
            required: true
-           description: Text to classify 
+           description: Text to classify
            example: Quebecan independence is justified. In the special episode in Japan, his system is restored by a doctor who wishes to use his independence for her selfish reasons.
        responses:
          200:
@@ -346,6 +343,6 @@ api.add_resource(ClassifyNewWD, '/classifyNewWD')
 
 app.jinja_env.auto_reload = True
 app.config['TEMPLATES_AUTO_RELOAD'] = True
-app.run(host='0.0.0.0', port=6000,debug=False)
+app.run(host='0.0.0.0', port=6000,debug=True)
 
 
