@@ -2,7 +2,6 @@ from __future__ import print_function
 import nltk
 from util.preprocessing import addCharInformation, createMatrices, addCasingInformation
 from neuralnets.BiLSTM import BiLSTM
-modelPath = "model.h5"
 
 class Model:
 
