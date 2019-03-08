@@ -31,3 +31,62 @@ def parse_doc(s):
                     current_sentence.add_word_conll(word)
         current_doc.add_sentence(current_sentence)
     return current_doc
+
+def extract_arguments(sentence):
+    sentence_text = " ".join([word.FORM for word in sentence.words_conll])
+    sentence_claims = []
+    sentence_premises = []
+
+    prev = ""
+    current_type = ""
+    current_arg = []
+    for word in sentence.words_conll:
+        if word.ARGUMENT != prev and prev != "":
+            if len(current_arg) > 0:
+                if current_type == "P":
+                    sentence_premises.append(" ".join(current_arg))
+                if current_type == "C":
+                    sentence_claims.append(" ".join(current_arg))
+                current_arg = []
+
+        if word.ARGUMENT != "O":
+            current_arg.append(word.FORM)
+            current_type = word.ARGUMENT
+        prev = word.ARGUMENT
+
+    if (len(current_arg) > 0):
+        if current_type == "P":
+            sentence_premises.append(" ".join(current_arg))
+        if current_type == "C":
+            sentence_claims.append(" ".join(current_arg))
+
+    return sentence_text, sentence_premises, sentence_claims
+
+
+def extract_entities(sentence):
+    entities_result = []
+
+    prev = ""
+    current_type = ""
+    current_entity = []
+    for word in sentence.words_conll:
+        if word.ENTITY != prev and prev != "":
+            if len(current_entity) > 0:
+                entity = {}
+                entity['class'] = current_type
+                entity['text'] = " ".join(current_entity)
+                entities_result.append(entity)
+                current_entity = []
+
+        if word.ENTITY != "O":
+            current_entity.append(word.FORM)
+            current_type = word.ENTITY
+        prev = word.ENTITY
+
+    if (len(current_entity) > 0):
+        entity = {}
+        entity['class'] = current_type
+        entity['text'] = " ".join(current_entity)
+        entities_result.append(entity)
+
+    return entities_result

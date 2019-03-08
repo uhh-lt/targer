@@ -1,7 +1,10 @@
 from elasticsearch import Elasticsearch
 from elasticsearch.helpers import bulk
-from Document import Document
-from Sentence import Sentence
+from util.Document import Document
+from util.Sentence import Sentence
+from util.data import parse_doc
+from util.data import extract_arguments
+from util.data import extract_entities
 import re
 import argparse
 
@@ -47,95 +50,6 @@ def create_index(name):
         result = es.indices.create(index=name, body=request_body)
         print(" result: '%s'" % (result))
 
-def parse_doc_from_raw(s):
-    data = s
-    paragraphs = data.split("\n\n")
-    current_doc = Document()
-    current_sentence = Sentence()
-    for paragraph in paragraphs:
-        if len(paragraph.strip()) == 0:
-            continue
-        # initial comment
-        if paragraph.startswith("# parser"):
-            break
-        # new doc identifier
-        if paragraph.strip().startswith("url ="):
-            current_doc = Document()
-            current_doc.meta = "# newdoc " + paragraph
-            continue
-        # sentence
-        current_sentence = Sentence()
-        words = paragraph.split("\n")
-        for word in words:
-            if len(word) > 0:
-                if word.startswith("# sent_id"):
-                    current_sentence.sent_id = word
-                elif word.startswith("# text"):
-                    current_sentence.text = word
-                else:
-                    current_sentence.add_word_conll(word)
-        current_doc.add_sentence(current_sentence)
-    return current_doc
-
-def extract_arguments(sentence):
-    sentence_text = " ".join([word.FORM for word in sentence.words_conll])
-    sentence_claims = []
-    sentence_premises = []
-
-    prev = ""
-    current_type = ""
-    current_arg = []
-    for word in sentence.words_conll:
-        if word.ARGUMENT != prev and prev != "":
-            if len(current_arg) > 0:
-                if current_type == "P":
-                    sentence_premises.append(" ".join(current_arg))
-                if current_type == "C":
-                    sentence_claims.append(" ".join(current_arg))
-                current_arg = []
-
-        if word.ARGUMENT != "O":
-            current_arg.append(word.FORM)
-            current_type = word.ARGUMENT
-        prev = word.ARGUMENT
-
-    if (len(current_arg) > 0):
-        if current_type == "P":
-            sentence_premises.append(" ".join(current_arg))
-        if current_type == "C":
-            sentence_claims.append(" ".join(current_arg))
-
-    return sentence_text, sentence_premises, sentence_claims
-
-
-def extract_entities(sentence):
-    entities_result = []
-
-    prev = ""
-    current_type = ""
-    current_entity = []
-    for word in sentence.words_conll:
-        if word.ENTITY != prev and prev != "":
-            if len(current_entity) > 0:
-                entity = {}
-                entity['class'] = current_type
-                entity['text'] = " ".join(current_entity)
-                entities_result.append(entity)
-                current_entity = []
-
-        if word.ENTITY != "O":
-            current_entity.append(word.FORM)
-            current_type = word.ENTITY
-        prev = word.ENTITY
-
-    if (len(current_entity) > 0):
-        entity = {}
-        entity['class'] = current_type
-        entity['text'] = " ".join(current_entity)
-        entities_result.append(entity)
-
-    return entities_result
-
 def parse_arguments(filename):
     docs = []
 
@@ -143,7 +57,7 @@ def parse_arguments(filename):
         data = f.read()
         splt = data.split('# newdoc')
         for sp in splt:
-            doc = parse_doc_from_raw(sp)
+            doc = parse_doc(sp)
             docs.append(doc)
 
     for doc in docs:
@@ -166,11 +80,11 @@ def parse_arguments(filename):
         currentDocument['_type'] = "document"
         currentDocument['sentences']  = sentences
         currentDocument['url'] = re.search("(https?://[^\s]+)", doc.meta).group(0)
-
+        print(currentDocument)
         yield currentDocument
 
 parser = argparse.ArgumentParser(description='Index data')
-parser.add_argument("-index", help="file to parse")
+parser.add_argument("-input", help="file to parse")
 parser.add_argument("-host", help="host name")
 parser.add_argument("-port", help="port", type=int)
 args = parser.parse_args()
@@ -183,7 +97,7 @@ es = Elasticsearch(hosts=[ES_SERVER])
 
 #delete_index(INDEX_NAME)
 create_index(INDEX_NAME)
-bulk(es, parse_arguments(args.index))
+bulk(es, parse_arguments(args.input))
 
 
 
