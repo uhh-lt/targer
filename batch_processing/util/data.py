@@ -1,6 +1,7 @@
 from util.Document import Document
 from util.Sentence import Sentence
 from util.Word import Word
+import numpy as np
 
 def parse_doc(s):
     data = s
@@ -40,17 +41,23 @@ def extract_arguments(sentence):
     prev = ""
     current_type = ""
     current_arg = []
+    current_confidence = []
     for word in sentence.words_conll:
         if word.ARGUMENT != prev and prev != "":
             if len(current_arg) > 0:
+                argument = {}
+                argument['text'] = " ".join(current_arg)
+                argument['score'] = np.round(np.mean(current_confidence), 2)
                 if current_type == "P":
-                    sentence_premises.append(" ".join(current_arg))
+                    sentence_premises.append(argument)
                 if current_type == "C":
-                    sentence_claims.append(" ".join(current_arg))
+                    sentence_claims.append(argument)
                 current_arg = []
+                current_confidence = []
 
         if word.ARGUMENT != "O":
             current_arg.append(word.FORM)
+            current_confidence.append(word.CONFIDENCE)
             current_type = word.ARGUMENT
         prev = word.ARGUMENT
 

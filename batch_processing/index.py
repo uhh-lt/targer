@@ -31,8 +31,20 @@ def create_index(name):
                             "type": "nested",
                             "properties": {
                                 "text": {"type": "text"},
-                                "claims": {"type": "text"},
-                                "premises": {"type": "text"},
+                                "claims": {
+                                    "type": "nested",
+                                    "properties": {
+                                        "text": {"type": "text"},
+                                        "score": {"type": "float"}
+                                    }
+                                },
+                                "premises": {
+                                    "type": "nested",
+                                    "properties": {
+                                        "text": {"type": "text"},
+                                        "score": {"type": "float"}
+                                    }
+                                },
                                 "entities": {
                                     "type": "nested",
                                     "properties": {
