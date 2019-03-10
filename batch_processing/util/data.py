@@ -62,10 +62,13 @@ def extract_arguments(sentence):
         prev = word.ARGUMENT
 
     if (len(current_arg) > 0):
+        argument = {}
+        argument['text'] = " ".join(current_arg)
+        argument['score'] = np.round(np.mean(current_confidence), 2)
         if current_type == "P":
-            sentence_premises.append(" ".join(current_arg))
+            sentence_premises.append(argument)
         if current_type == "C":
-            sentence_claims.append(" ".join(current_arg))
+            sentence_claims.append(argument)
 
     return sentence_text, sentence_premises, sentence_claims
 

@@ -92,7 +92,6 @@ def parse_arguments(filename):
         currentDocument['_type'] = "document"
         currentDocument['sentences']  = sentences
         currentDocument['url'] = re.search("(https?://[^\s]+)", doc.meta).group(0)
-        print(currentDocument)
         yield currentDocument
 
 parser = argparse.ArgumentParser(description='Index data')
