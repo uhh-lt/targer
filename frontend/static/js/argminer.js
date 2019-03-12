@@ -93,7 +93,7 @@ function search_action() {
 
     document.getElementById("button_send").disabled = true;
 
-	$.post( "./search_text", { username: document.getElementById("text_to_parse").value, where: selected_fields } )
+	$.post( "./search_text", { username: document.getElementById("text_to_parse").value, where: selected_fields, confidence: $(".js-range-slider").val() } )
 	    .done(function( data ) {
             $("#displacy").empty()
         	console.log("qwe")
@@ -358,3 +358,34 @@ function add_listener(){
         }
     })
 }
+
+function update_slider(my_range){
+
+if( $('#premise').is(":checked") || $('#claim').is(":checked")) {
+            my_range.update({
+                disable: false
+            });
+
+        } else {
+            my_range.update({
+                disable: true
+            });
+        }
+}
+
+$(document).ready(function() {
+
+    $(".js-range-slider").ionRangeSlider();
+    var my_range = $(".js-range-slider").data("ionRangeSlider");
+
+
+    $('#premise').change(function() {
+        update_slider(my_range)
+    });
+
+    $('#claim').change(function() {
+        update_slider(my_range)
+    });
+});
+
+
