@@ -25,7 +25,7 @@ path = "./"
 
 config_parser = configparser.ConfigParser()
 config_parser.read('config.ini')
-config = config_parser['DEV']
+config = config_parser['DEFAULT']
 
 
 class ReverseProxied(object):
