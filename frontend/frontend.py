@@ -7,6 +7,7 @@ from flask_restful import Api
 import json
 import sys
 import configparser
+import urllib.parse
 
 """Front-End"""
 from flask import render_template
@@ -65,25 +66,28 @@ else:
 api = Api(app)
 
 
+def create_api_url(endpoint):
+    return 'http://' + config["backend_host"] + ":" + config["backend_port"] + "/" + endpoint
+
 class Sender:
     def send(self, text, classifier):
 
         if classifier == "WD":
-            url = "http://backend:6000/classifyWD"
+            url = create_api_url("classifyWD")
         elif classifier == "WD_dep":
-            url = "http://backend:6000/classifyWD_dep"
+            url = create_api_url("classifyWD_dep")
         elif classifier == "ES":
-            url = "http://backend:6000/classifyES"
+            url = create_api_url("classifyES")
         elif classifier == "ES_dep":
-            url = "http://backend:6000/classifyES_dep"
+            url = create_api_url("classifyES_dep")
         elif classifier == "IBM":
-            url = "http://backend:6000/classifyIBM"
+            url = create_api_url("classifyIBM")
         elif classifier == "Combo":
-            url = "http://backend:6000/classifyCombo"
+            url = create_api_url("classifyCombo")
         elif classifier == "NEWPE":
-            url = "http://backend:6000/classifyNewPE"
+            url = create_api_url("classifyNewPE")
         elif classifier == "NEWWD":
-            url = "http://backend:6000/classifyNewWD"
+            url = create_api_url("classifyNewWD")
 
         try:
             r = requests.post(url, data=text.encode("utf-8"))
