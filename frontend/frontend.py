@@ -6,6 +6,7 @@ from flasgger import Swagger, LazyString, LazyJSONEncoder
 from flask_restful import Api
 import json
 import sys
+import configparser
 
 """Front-End"""
 from flask import render_template
@@ -21,6 +22,10 @@ import spacy
 nlp = spacy.load('xx')
 #path = "/argsearch/"
 path = "./"
+
+config_parser = configparser.ConfigParser()
+config_parser.read('config.ini')
+config = config_parser['DEV']
 
 
 class ReverseProxied(object):
@@ -44,7 +49,7 @@ class ReverseProxied(object):
 app = Flask(__name__)
 app.json_encoder = LazyJSONEncoder
 
-ES_SERVER = {"host": "es", "port": 9200}
+ES_SERVER = {"host": config["es_host"], "port": int(config["es_port"])}
 INDEX_NAME = 'arguments'
 es = Elasticsearch(hosts=[ES_SERVER])
 
@@ -333,4 +338,4 @@ def adjust_punctuation(text):
 if __name__ == "__main__":
     app.jinja_env.auto_reload = True
     app.config['TEMPLATES_AUTO_RELOAD'] = True
-    app.run(host='0.0.0.0', port=6001, debug=False)
+    app.run(host=config["publish_host"], port=int(config["publish_port"]), debug=False)
