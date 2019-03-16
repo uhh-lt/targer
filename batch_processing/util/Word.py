@@ -7,19 +7,19 @@ class Word:
         self.LEMMA = fields[2]
         self.UPOSTAG = fields[3]
         self.XPOSTAG = fields[4]
-        self.HEAD = fields[6]
-        self.DEPREL = fields[7]
-        self.DEPS = fields[8]
+        self.HEAD = fields[5]
+        self.DEPREL = fields[6]
+        self.DEPS = fields[7]
 
-        self.ENTITY = fields[9].replace("B-", "").replace("I-", "")
+        self.ENTITY = fields[8].replace("B-", "").replace("I-", "")
 
-        if len(fields) > 10:
-            self.ARGUMENT = fields[10].replace("-B", "").replace("-I", "")
+        if len(fields) > 9:
+            self.ARGUMENT = fields[9].replace("-B", "").replace("-I", "")
         else:
             self.ARGUMENT = "_"
 
-        if len(fields) > 11:
-            self.CONFIDENCE = float(fields[11])
+        if len(fields) > 10:
+            self.CONFIDENCE = float(fields[10])
         else:
             self.CONFIDENCE = -1
 

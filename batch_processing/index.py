@@ -83,8 +83,8 @@ def parse_arguments(filename):
             text, premise, claim = extract_arguments(sentence)
             currentSent = {}
             currentSent['text'] = text
-            currentSent['claim'] = claim
-            currentSent['premise'] = premise
+            currentSent['claims'] = claim
+            currentSent['premises'] = premise
             currentSent['entities'] = extract_entities(sentence)
             sentences.append(currentSent)
 
