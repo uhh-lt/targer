@@ -26,7 +26,7 @@ path = "./"
 
 config_parser = configparser.ConfigParser()
 config_parser.read('config.ini')
-config = config_parser['DEFAULT']
+config = config_parser['DEV']
 
 
 class ReverseProxied(object):
@@ -110,8 +110,9 @@ def index():
 @app.route('/search_text', methods=['POST'])
 def search_text():
     text = request.form.get('username')
+    confidence = request.form.get('confidence')
     where_to_seach = request.form.getlist('where[]') # List like ['premise', 'claim', 'named_entity', 'text']
-    return search_in_es(text, where_to_seach)
+    return search_in_es(text, where_to_seach, confidence)
 
 
 @app.route('/label_text', methods=['POST'])
@@ -196,57 +197,49 @@ def get_search_field(path, field, query):
                 "path": path,
                 "query": {
                     "bool": {
-                        "must": [{"match": {
-                            field: {"query": query}}}]
+                        "must": [{"match": { field: {"query": query}}}]
                     }
-                }
+                },
+                "inner_hits": {}
+           }}
+
+def get_search_field_with_score(path, field, query, score_field, score):
+    return {"nested": {
+                "path": path,
+                "query": {
+                    "bool": {
+                        "must": [{"match": { field: {"query": query}}},
+                                 {"range": {score_field: {"gt": score}}}]
+                    }
+                },
+                "inner_hits": {}
            }}
 
 number_of_sentences_around = 3
 
-def search_in_es(query, where_to_seach):
+def search_in_es(query, where_to_seach, confidence):
     docs = []
-
     search_query = query[:100]
 
-    highlight_field = ""
     search_elements = []
     for search_category in where_to_seach:
         if search_category == SEARCH_KEY_TEXT:
             search_elements.append(get_search_field("sentences", "sentences.text", search_query))
-            highlight_field = "sentences.text"
         if search_category == SEARCH_KEY_PREMISE:
-            search_elements.append(get_search_field("sentences", "sentences.premise", search_query))
-            highlight_field = "sentences.premise"
+            search_elements.append(get_search_field_with_score("sentences.premises", "sentences.premises.text", search_query, "sentences.premises.score", int(float(confidence))))
         if search_category == SEARCH_KEY_CLAIM:
-            search_elements.append(get_search_field("sentences", "sentences.claim", search_query))
-            highlight_field = "sentences.claim"
+            search_elements.append(get_search_field_with_score("sentences.claims", "sentences.claims.text", search_query, "sentences.claims.score", int(float(confidence))))
         if search_category == SEARCH_KEY_ENTITY:
             search_elements.append(get_search_field("sentences.entities", "sentences.entities.text", search_query))
-            highlight_field = "sentences.entities.text"
-
 
     if len(search_elements) == 0:
         search_elements.append(get_search_field("sentences", "sentences.text", search_query))
-        highlight_field = "sentences.text"
 
     res = es.search(index=INDEX_NAME, request_timeout=60, body={"from": 0, "size": 25,
 
                                             "query": {
                                                 "bool": {
                                                     "should": search_elements
-                                                }
-                                            },
-                                            "highlight": {
-                                                "pre_tags": [""],
-                                                "post_tags": [""],
-                                                "fields": {
-                                                    highlight_field: {
-                                                        "type": "plain",
-                                                        "fragment_size": 125,
-                                                        "number_of_fragments": 1,
-                                                        "fragmenter": "simple"
-                                                    }
                                                 }
                                             }})
 
@@ -256,17 +249,22 @@ def search_in_es(query, where_to_seach):
         try:
             doc = {}
             text_full = ""
-
             arguments_positions = []
             entity_positions = []
             query_search_positions = []
 
-            top_match = hit["highlight"][highlight_field][0]
             sentences = hit["_source"]["sentences"]
 
-            x = [x for x in sentences if top_match in x["text"]][0]
+            field = "sentences"
+            if SEARCH_KEY_PREMISE in where_to_seach and hit["inner_hits"]["sentences.premises"]["hits"]["total"] > 0:
+                field = "sentences.premises"
+            elif SEARCH_KEY_CLAIM in where_to_seach and hit["inner_hits"]["sentences.claims"]["hits"]["total"] > 0:
+                field = "sentences.claims"
+            elif SEARCH_KEY_ENTITY in where_to_seach and hit["inner_hits"]["sentences.entities"]["hits"]["total"] > 0:
+                field = "sentences.entities"
 
-            index_with_top_match = sentences.index(x)
+
+            index_with_top_match = hit["inner_hits"][field]["hits"]["hits"][0]["_nested"]["offset"]
 
             # finding for sentences indexes to show
             if len(sentences) < 7:
@@ -282,29 +280,30 @@ def search_in_es(query, where_to_seach):
                 min_pos = index_with_top_match - number_of_sentences_around
                 max_pos = index_with_top_match + number_of_sentences_around
 
-            for sentence_index in range(min_pos, max_pos):
+            for sentence_index in range(min_pos, max_pos + 1):
 
                 sentence = sentences[sentence_index]
-
                 offset = len(text_full)
                 sentence_text_adjusted = adjust_punctuation(sentence['text'])
                 text_full += sentence_text_adjusted + " "
 
                 # finding positions for claims
                 if SEARCH_KEY_CLAIM in where_to_seach:
-                    for claim in sentence["claim"]:
-                        claim_adjusted = adjust_punctuation(claim)
-                        start_pos = sentence_text_adjusted.find(claim_adjusted)
-                        end_pos = start_pos + len(claim_adjusted)
-                        arguments_positions.append({"type": "claim", "start": offset + start_pos, "end": offset + end_pos})
+                    for claim in sentence["claims"]:
+                        if (float(claim["score"]) > float(confidence)):
+                            claim_adjusted = adjust_punctuation(claim["text"])
+                            start_pos = sentence_text_adjusted.find(claim_adjusted)
+                            end_pos = start_pos + len(claim_adjusted)
+                            arguments_positions.append({"type": "claim", "start": offset + start_pos, "end": offset + end_pos})
 
                 # finding positions for premises
                 if SEARCH_KEY_PREMISE in where_to_seach:
-                    for premise in sentence["premise"]:
-                        premise_adjusted = adjust_punctuation(premise)
-                        start_pos = sentence_text_adjusted.find(premise_adjusted)
-                        end_pos = start_pos + len(premise_adjusted)
-                        arguments_positions.append({"type": "premise", "start": offset + start_pos, "end": offset + end_pos})
+                    for premise in sentence["premises"]:
+                        if (float(premise["score"]) > float(confidence)):
+                            premise_adjusted = adjust_punctuation(premise["text"])
+                            start_pos = sentence_text_adjusted.find(premise_adjusted)
+                            end_pos = start_pos + len(premise_adjusted)
+                            arguments_positions.append({"type": "premise", "start": offset + start_pos, "end": offset + end_pos})
 
                 # finding positions for entities
                 if SEARCH_KEY_ENTITY in where_to_seach:
@@ -323,8 +322,6 @@ def search_in_es(query, where_to_seach):
                     positions = [{"type": "search", "start": m.start(), "end": m.end()} for m in re.finditer(match, text_full)]
                     query_search_positions.extend(positions)
 
-
-            doc["text_with_hit"] = adjust_punctuation(hit["highlight"][highlight_field][0])
             doc["text_full"] = text_full
             doc["query_positions"] = query_search_positions
             doc["arguments_positions"] = arguments_positions
