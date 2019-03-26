@@ -1,8 +1,14 @@
 # Argument labeling
 
 
+For labeling script label_mp.py is used. It takes such a parameters:
 
-
+```
+--input # input filename
+--model # model to use for labelling
+--output # output filename
+--workers # number of CPUs to use
+```
 Script takes text file in a CONLL format as an input. Then  parse out the sentence, applies model to it to label with arguments. Argument labels and confidence scores are added as an additional fields(columns) in a conll file. 
 
 
@@ -46,6 +52,15 @@ Script takes text file in a CONLL format as an input. Then  parse out the senten
 ```
 
 # ES indexing
+
+
+For indexing script index.py is used. It takes such a parameters:
+
+```
+--input # input filename
+--host # host name of Elastic Search server
+--port # port number of Elastic Search server
+```
 
 Script parses the conll file with argument labels and saves to ES index. 
 
