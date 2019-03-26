@@ -60,7 +60,7 @@ Script parses the conll file with argument labels and saves to ES index.
   "_source": {
     "sentences": [
       {
-        "claim": [],
+        "claims": [],
         "entities": [
           {
             "text": "Sangla Valley",
@@ -68,12 +68,15 @@ Script parses the conll file with argument labels and saves to ES index.
           }
         ],
         "text": "Sangla Valley in Himachal Pradesh in India .",
-        "premise": [
-          "Sangla Valley in Himachal Pradesh in India"
+        "premises": [
+          {
+            "text": "Sangla Valley in Himachal Pradesh in India",
+            "score": 97.33
+          }
         ]
       },
       {
-        "claim": [],
+        "claims": [],
         "entities": [
           {
             "text": "Samgla",
@@ -81,8 +84,11 @@ Script parses the conll file with argument labels and saves to ES index.
           }
         ],
         "text": "Samgla is the best for the Apple .",
-        "premise": [
-          "Samgla is the best for the Apple"
+        "premises": [
+          {
+            "text": "Samgla is the best for the Apple",
+            "score": 97.33
+          }
         ]
       }
     ],
