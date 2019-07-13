@@ -87,7 +87,7 @@ api = Api(app)
 class ClassifyNewWD(Resource):
     def post(self):
        """
-       Classifies input text to argument structure (ES model, fasttext - big dataset)
+       Classifies input text to argument structure (Essays model, fasttext - big dataset)
        ---
        consumes:
          - text/plain
@@ -118,7 +118,7 @@ class ClassifyNewWD(Resource):
 class ClassifyNewPE(Resource):
     def post(self):
        """
-       Classifies input text to argument structure (ES model, fasttext - big dataset)
+       Classifies input text to argument structure (Essays model, fasttext - big dataset)
        ---
        consumes:
          - text/plain
@@ -149,7 +149,7 @@ class ClassifyNewPE(Resource):
 class ClassifyES(Resource):
     def post(self):
        """
-       Classifies input text to argument structure (ES model, fasttext - big dataset)
+       Classifies input text to argument structure (Essays model, fasttext - big dataset)
        ---
        consumes:
          - text/plain
@@ -180,7 +180,7 @@ class ClassifyES(Resource):
 class ClassifyWD(Resource):
     def post(self):
        """
-       Classifies input text to argument structure (WD model, fasttext - big dataset)
+       Classifies input text to argument structure (WebD model, fasttext - big dataset)
        ---
        consumes:
          - text/plain
@@ -211,7 +211,7 @@ class ClassifyWD(Resource):
 class ClassifyES_dep(Resource):
     def post(self):
        """
-       Classifies input text to argument structure (ES model, dependency based)
+       Classifies input text to argument structure (Essays model, dependency based)
        ---
        consumes:
          - text/plain
@@ -242,7 +242,7 @@ class ClassifyES_dep(Resource):
 class ClassifyWD_dep(Resource):
     def post(self):
        """
-       Classifies input text to argument structure (WD model, dependency based)
+       Classifies input text to argument structure (WebD model, dependency based)
        ---
        consumes:
          - text/plain
