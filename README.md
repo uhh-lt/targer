@@ -4,7 +4,7 @@ This page contains code of the Web application and web service based on the neur
 
 ![alt text](frontend/static/img/readme-figure.png)
 
-This repository shares code and data related to the following paper:
+More specifically, this repository shares code and data related to the following demo paper:
 
 *Artem Chernodub, Oleksiy Oliynyk, Philipp Heidenreich, Alexander Bondarenko, Matthias Hagen, Chris Biemann, and Alexander Panchenko (2019):* [TARGER: Neural Argument Mining at Your Fingertips](https://www.inf.uni-hamburg.de/en/inst/ab/lt/publications/2019-chernodubetal-acl19demo-targer.pdf). *In Proceedings of the 57th Annual Meeting of the Association of Computational Linguistics (ACL'2019). Florence, Italy.*
 
