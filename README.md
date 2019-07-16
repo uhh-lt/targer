@@ -6,7 +6,7 @@ This page contains code of the Web application and web service based on the neur
 
 This repository shares code and data related to the following paper:
 
-Artem Chernodub, Oleksiy Oliynyk, Philipp Heidenreich, Alexander Bondarenko, Matthias Hagen, Chris Biemann, and Alexander Panchenko (2019): [TARGER: Neural Argument Mining at Your Fingertips](https://www.inf.uni-hamburg.de/en/inst/ab/lt/publications/2019-chernodubetal-acl19demo-targer.pdf). In Proceedings of the 57th Annual Meeting of the Association of Computational Linguistics (ACL'2019). Florence, Italy. 
+*Artem Chernodub, Oleksiy Oliynyk, Philipp Heidenreich, Alexander Bondarenko, Matthias Hagen, Chris Biemann, and Alexander Panchenko (2019):* [TARGER: Neural Argument Mining at Your Fingertips](https://www.inf.uni-hamburg.de/en/inst/ab/lt/publications/2019-chernodubetal-acl19demo-targer.pdf). *In Proceedings of the 57th Annual Meeting of the Association of Computational Linguistics (ACL'2019). Florence, Italy.*
 
 If you use the demo or would like to refer to it, please cite the paper mentioned above. You can also use the following BibTex information for citation: 
 
@@ -20,7 +20,9 @@ If you use the demo or would like to refer to it, please cite the paper mentione
 }
 ```
 
-Below you will find instructions on how to run this web application locally. Alternatively you can just access it using the following URL: http://ltdemos.informatik.uni-hamburg.de/targer/. The web application relies on a neural tagging library: http://github.com/achernodub/targer based on PyTorch. You may find it also useful. This library lives in a separate repository from the Web applcation but is also part of the TARGER project.
+Below you will find instructions on how to run this web application locally. Alternatively you can just (access it online)[http://ltdemos.informatik.uni-hamburg.de/targer/] though web interface or using API. This web application relies on a (neural tagging library)[http://github.com/achernodub/targer] based on (PyTorch)[https://pytorch.org] framework. You may find this library also useful on its own i.e. for training sequence taggers for argument mining, but also for other tasks such as part of speech tagging or named entity recognition. The library is taking as input CoNLL files is easy to use and has a minimal number of dependencies. Note tht while this library lives in a separate repository from the web applcation but is also part of the TARGER project. So if you are using the library, please also cite the paper mentioned above. 
+
+Below you will find some instructions on how to run TARGER web application and its API. For documentation about the tagging library refer to (its repository)[http://github.com/achernodub/targer].  
 
 ## Quick run web application with docker
 `docker-compose up`
