@@ -26,7 +26,7 @@ path = "./"
 
 config_parser = configparser.ConfigParser()
 config_parser.read('config.ini')
-config = config_parser['DEV']
+config = config_parser['DEFAULT']
 
 
 class ReverseProxied(object):
@@ -226,15 +226,16 @@ def search_in_es(query, where_to_seach, confidence):
         if search_category == SEARCH_KEY_TEXT:
             search_elements.append(get_search_field("sentences", "sentences.text", search_query))
         if search_category == SEARCH_KEY_PREMISE:
-            search_elements.append(get_search_field_with_score("sentences.premises", "sentences.premises.text", search_query, "sentences.premises.score", int(float(confidence))))
+            search_elements.append(get_search_field_with_score("sentences.premises", "sentences.premises.text", search_query, "sentences.premises.score", float(confidence)/100))
         if search_category == SEARCH_KEY_CLAIM:
-            search_elements.append(get_search_field_with_score("sentences.claims", "sentences.claims.text", search_query, "sentences.claims.score", int(float(confidence))))
+            search_elements.append(get_search_field_with_score("sentences.claims", "sentences.claims.text", search_query, "sentences.claims.score", float(confidence)/100))
         if search_category == SEARCH_KEY_ENTITY:
             search_elements.append(get_search_field("sentences.entities", "sentences.entities.text", search_query))
 
     if len(search_elements) == 0:
         search_elements.append(get_search_field("sentences", "sentences.text", search_query))
 
+    print(search_elements)
     res = es.search(index=INDEX_NAME, request_timeout=60, body={"from": 0, "size": 25,
 
                                             "query": {
@@ -263,8 +264,9 @@ def search_in_es(query, where_to_seach, confidence):
             elif SEARCH_KEY_ENTITY in where_to_seach and hit["inner_hits"]["sentences.entities"]["hits"]["total"] > 0:
                 field = "sentences.entities"
 
-
             index_with_top_match = hit["inner_hits"][field]["hits"]["hits"][0]["_nested"]["offset"]
+
+
 
             # finding for sentences indexes to show
             if len(sentences) < 7:
@@ -290,7 +292,7 @@ def search_in_es(query, where_to_seach, confidence):
                 # finding positions for claims
                 if SEARCH_KEY_CLAIM in where_to_seach:
                     for claim in sentence["claims"]:
-                        if (float(claim["score"]) > float(confidence)):
+                        if (float(claim["score"]) > float(confidence)/100):
                             claim_adjusted = adjust_punctuation(claim["text"])
                             start_pos = sentence_text_adjusted.find(claim_adjusted)
                             end_pos = start_pos + len(claim_adjusted)
@@ -299,7 +301,7 @@ def search_in_es(query, where_to_seach, confidence):
                 # finding positions for premises
                 if SEARCH_KEY_PREMISE in where_to_seach:
                     for premise in sentence["premises"]:
-                        if (float(premise["score"]) > float(confidence)):
+                        if (float(premise["score"]) > float(confidence)/100):
                             premise_adjusted = adjust_punctuation(premise["text"])
                             start_pos = sentence_text_adjusted.find(premise_adjusted)
                             end_pos = start_pos + len(premise_adjusted)
