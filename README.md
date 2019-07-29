@@ -4,9 +4,6 @@ This page contains code of the Web application and web service based on the neur
 
 **Front-end code is based on MIT licensed [displacy-ent](https://github.com/explosion/displacy-ent) by [explosion.ai](http://explosion.ai). We are thankful to [Ines Motani](https://github.com/ines) for developing this piece of software and making it publicly available under the MIT license.** 
 
-
-![alt text](frontend/static/img/readme-figure.png)
-
 More specifically, this repository shares code and data related to the following demo paper:
 
 *Artem Chernodub, Oleksiy Oliynyk, Philipp Heidenreich, Alexander Bondarenko, Matthias Hagen, Chris Biemann, and Alexander Panchenko (2019):* [TARGER: Neural Argument Mining at Your Fingertips](https://www.inf.uni-hamburg.de/en/inst/ab/lt/publications/2019-chernodubetal-acl19demo-targer.pdf). *In Proceedings of the 57th Annual Meeting of the Association of Computational Linguistics (ACL'2019). Florence, Italy.*
