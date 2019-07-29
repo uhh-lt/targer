@@ -8,6 +8,8 @@ More specifically, this repository shares code and data related to the following
 
 *Artem Chernodub, Oleksiy Oliynyk, Philipp Heidenreich, Alexander Bondarenko, Matthias Hagen, Chris Biemann, and Alexander Panchenko (2019):* [TARGER: Neural Argument Mining at Your Fingertips](https://www.inf.uni-hamburg.de/en/inst/ab/lt/publications/2019-chernodubetal-acl19demo-targer.pdf). *In Proceedings of the 57th Annual Meeting of the Association of Computational Linguistics (ACL'2019). Florence, Italy.*
 
+**Front-end code is based on MIT licensed [displacy-ent](https://github.com/explosion/displacy-ent) by [explosion.ai](http://explosion.ai). We are thankful to [Ines Motani](https://github.com/ines) for developing this piece of software and making it publicly available under the MIT license. ** 
+
 If you use the demo or would like to refer to it, please cite the paper mentioned above. You can also use the following BibTex information for citation: 
 
 ```
@@ -20,7 +22,6 @@ If you use the demo or would like to refer to it, please cite the paper mentione
 }
 ```
 
-**Front-end code is based on MIT licensed [displacy-ent](https://github.com/explosion/displacy-ent) by [explosion.ai](http://explosion.ai).** 
 
 Below you will find some instructions on how to run TARGER web application and its API locally (using docker). Alternatively you can just (access it online)[http://ltdemos.informatik.uni-hamburg.de/targer/] though web interface or using API. This web application relies on a (neural tagging library)[http://github.com/achernodub/targer] based on (PyTorch)[https://pytorch.org] framework. You may find this library also useful on its own i.e. for training sequence taggers for argument mining, but also for other tasks such as part of speech tagging or named entity recognition. The library is taking as input CoNLL files is easy to use and has a minimal number of dependencies. Note tht while this library lives in a separate repository from the web applcation but is also part of the TARGER project. So if you are using the library, please also cite the paper mentioned above. For documentation about the tagging library refer to (its repository)[http://github.com/achernodub/targer].  
 
