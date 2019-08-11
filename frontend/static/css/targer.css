@@ -44,6 +44,10 @@ body {
     background: #F76300
 }
 
+[data-entity][data-entity=search] {
+    background: #FFFF00
+}
+
 [data-entity][data-entity=rebuttal] {
     background: #CC1900
 }
