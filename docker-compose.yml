@@ -12,15 +12,6 @@ services:
       - 10600:6000
     networks:
       - arg
-  es:
-    build: ./es
-    networks:
-      - arg
-    ports:
-      - 10602:9200
-      - 10603:9300
-    environment:
-      - discovery.type=single-node
 
 networks:
   arg:
