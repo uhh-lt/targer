@@ -135,6 +135,15 @@ body {
     color:#ffaa00
 }
 
+doc_url:hover{
+    outline:0
+}
+.nowrap {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
 .more_label {
     color: #4357ad
 }
