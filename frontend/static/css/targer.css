@@ -127,3 +127,20 @@ body {
 [data-entity][data-entity=cardinal] {
     background: #bbb
 }
+
+.doc_url{
+    color:#4357AD
+}
+.doc_button_analyze{
+    color:#ffaa00
+}
+
+.more_label {
+    color: #4357ad
+}
+
+.result_div {
+    margin-bottom: 3rem;
+    background-color: #f9fdff;
+    padding: 20px;
+}

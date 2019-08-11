@@ -74,7 +74,7 @@ function search_action() {
     });
 
     document.getElementById("button_search").disabled = true;
-
+    console.log(selected_fields)
     $.post("./search_text", {
         username: document.getElementById("searchArgumentsInput").value,
         where: selected_fields,
@@ -131,7 +131,7 @@ function search_action() {
                 }
 
                 div_element.appendChild(h);
-                div_element.appendChild(button_analyze)
+                //div_element.appendChild(button_analyze)
                 div_element.appendChild(p);
 
                 if (result.text_full.length > 200) {
