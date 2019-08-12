@@ -84,7 +84,7 @@ function search_action() {
                 new_marks = new_marks.concat(result.query_positions).concat(result.arguments_positions).concat(result.entity_positions)
                 var div_element = document.createElement("div")
                 div_element.setAttribute("class", "result_div")
-                var h = document.createElement("H2")                // Create a <h1> element
+                var h = document.createElement("H3")                // Create a <h1> element
                 h.setAttribute("class", "nowrap")
                 h.innerHTML = "<a class='doc_url' target='_blank' href='" + result.url + "'>" + i + ". " + result.url + "</a>"
 

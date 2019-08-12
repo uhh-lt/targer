@@ -58,9 +58,9 @@
     <nav>
         <div class="nav nav-tabs" id="nav-tab" role="tablist">
             <a class="nav-item nav-link active" id="nav-label-tab" data-toggle="tab" href="#nav-label" role="tab"
-               aria-controls="nav-label" aria-selected="true">Analyze text</a>
+               aria-controls="nav-label" aria-selected="true">Analyze Text</a>
             <a class="nav-item nav-link" id="nav-search-tab" data-toggle="tab" href="#nav-search" role="tab"
-               aria-controls="nav-search" aria-selected="false">Search arguments</a>
+               aria-controls="nav-search" aria-selected="false">Search Arguments</a>
         </div>
     </nav>
 
@@ -75,7 +75,7 @@
                     </div>
                     <div class="form-group">
                         <label for="model">Model to label with</label>
-                        <select class="form-control" id="model">
+                        <select class="form-control" id="model"  style="width:auto;">
                             <option value="ES">Essays (fastText)</option>
                             <option value="ES_dep">Essays (Dependency)</option>
                             <option value="NEWPE">Essays (Glove)</option>
@@ -85,7 +85,7 @@
                             <option value="IBM" selected="selected">IBM (fastText)</option>
                         </select>
                     </div>
-                    <a class="btn btn-lg btn-primary btn-block" href="#" id="button_label" role="button">Label</a>
+                    <a class="btn btn-lg btn-primary" href="#" id="button_label" role="button">Analyze</a>
                 </form>
 
             </div>
@@ -102,28 +102,29 @@
                     <fieldset class="form-group">
                         <div class="row">
                             <legend class="col-form-label col-sm-2 pt-0">Search in:</legend>
-                            <div class="col-sm-10">
-                                <div class="form-check">
-                                    <input class="form-check-input search_box" type="checkbox" id="premise"
-                                           value="premise" checked>
-                                    <label class="form-check-label" for="premise">Premises</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input search_box" type="checkbox" id="claim" value="claim"
-                                           checked>
-                                    <label class="form-check-label" for="claim">Claims</label>
-                                </div>
-                                <div class="form-check disabled">
-                                    <input class="form-check-input search_box" type="checkbox" id="named_entity"
-                                           value="named_entity" checked>
-                                    <label class="form-check-label" for="named_entity">Named Entities</label>
-                                </div>
-                                <div class="form-check disabled">
-                                    <input class="form-check-input search_box" type="checkbox" id="text" value="text"
-                                           checked>
-                                    <label class="form-check-label" for="text">Text</label>
-                                </div>
+
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input search_box" type="checkbox" id="premise"
+                                       value="premise" checked>
+                                <label class="form-check-label" for="premise">PREMISES</label>
                             </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input search_box" type="checkbox" id="claim" value="claim"
+                                       checked>
+                                <label class="form-check-label" for="claim">CLAIMS</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input search_box" type="checkbox" id="named_entity"
+                                       value="named_entity" checked>
+                                <label class="form-check-label" for="named_entity">NAMED ENTITIES</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input search_box" type="checkbox" id="text" value="text"
+                                       checked>
+                                <label class="form-check-label" for="text">TEXT</label>
+                            </div>
+
+
                         </div>
                     </fieldset>
                     <div class="form-group row">
@@ -139,7 +140,7 @@
                         </div>
                     </div>
 
-                    <a class="btn btn-lg btn-primary btn-block" href="#" id="button_search" role="button">Search</a>
+                    <a class="btn btn-lg btn-primary" href="#" id="button_search" role="button">Search</a>
                 </form>
 
             </div>
@@ -148,55 +149,55 @@
 
     <div class="jumbotron" id="controls">
         <div id="label_box">
-            <label>Argument labels</label>
+            <label>Argument Labels</label>
             <div>
                 <label for="premise">
                     <input class="label_checkbox" type="checkbox" id="premise_check" value="premise" checked>
-                    <span >PREMISE</span>
+                    <span>PREMISE</span>
                 </label>
                 <label for="claim">
                     <input class="label_checkbox" type="checkbox" id="claim_check" value="claim" checked>
-                    <span >CLAIM</span>
+                    <span>CLAIM</span>
                 </label>
             </div>
             <div>
-                <label>Entity labels</label>
+                <label>Entity Labels</label>
                 <label for="person">
                     <input class="label_checkbox" id="person" value="person" type="checkbox" checked>
-                    <span >PERSON</span>
+                    <span>PERSON</span>
                 </label>
                 <label for="per">
                     <input class="label_checkbox" id="per" value="per" type="checkbox" checked>
-                    <span >PER</span>
+                    <span>PER</span>
                 </label>
                 <label for="norp">
                     <input class="label_checkbox" id="norp" value="norp" type="checkbox" checked>
-                    <span >NORP</span>
+                    <span>NORP</span>
                 </label>
                 <label for="facility">
                     <input class="label_checkbox" id="facility" value="facility" type="checkbox" checked>
-                    <span >FACILITY</span>
+                    <span>FACILITY</span>
                 </label>
                 <label for="org">
                     <input class="label_checkbox" id="org" value="org" type="checkbox" checked>
-                    <span >ORG</span>
+                    <span>ORG</span>
                 </label>
                 <label for="gpe">
-                    <input class="label_checkbox" id="gpe" value="gpe"  type="checkbox" checked>
-                    <span >GPE</span>
+                    <input class="label_checkbox" id="gpe" value="gpe" type="checkbox" checked>
+                    <span>GPE</span>
                 </label>
                 <label for="loc">
-                    <input class="label_checkbox" id="loc" value="loc"  type="checkbox" checked>
-                    <span >LOC</span>
+                    <input class="label_checkbox" id="loc" value="loc" type="checkbox" checked>
+                    <span>LOC</span>
                 </label>
                 <label for="product">
                     <input class="label_checkbox" id="product" value="product" type="checkbox" checked>
-                    <span >PRODUCT</span>
+                    <span>PRODUCT</span>
                 </label>
 
                 <label for="event">
                     <input class="label_checkbox" id="event" value="event" type="checkbox" checked>
-                    <span >EVENT</span>
+                    <span>EVENT</span>
                 </label>
 
 
@@ -204,43 +205,43 @@
                 <div id="more_labels_box" style="display: none;">
                     <label for="work_of_art">
                         <input class="label_checkbox" id="work_of_art" value="work_of_art" type="checkbox" checked>
-                        <span >WORK OF ART</span>
+                        <span>WORK OF ART</span>
                     </label>
                     <label for="language">
-                        <input class="label_checkbox" id="language" value="language"  type="checkbox" checked>
-                        <span >LANGUAGE</span>
+                        <input class="label_checkbox" id="language" value="language" type="checkbox" checked>
+                        <span>LANGUAGE</span>
                     </label>
                     <label for="date">
                         <input class="label_checkbox" id="date" value="date" type="checkbox" checked>
-                        <span >DATE</span>
+                        <span>DATE</span>
                     </label>
                     <label for="time">
-                        <input class="label_checkbox" id="time" value="time"  type="checkbox" checked>
-                        <span >TIME</span>
+                        <input class="label_checkbox" id="time" value="time" type="checkbox" checked>
+                        <span>TIME</span>
                     </label>
                     <label for="percent">
-                        <input class="label_checkbox" id="percent" value="percent"  type="checkbox" checked>
-                        <span >PERCENT</span>
+                        <input class="label_checkbox" id="percent" value="percent" type="checkbox" checked>
+                        <span>PERCENT</span>
                     </label>
                     <label for="money">
-                        <input class="label_checkbox" id="money" value="money"  type="checkbox" checked>
-                        <span >MONEY</span>
+                        <input class="label_checkbox" id="money" value="money" type="checkbox" checked>
+                        <span>MONEY</span>
                     </label>
                     <label for="quantity">
-                        <input class="label_checkbox" id="quantity" value="quantity"  type="checkbox" checked>
-                        <span >QUANTITY</span>
+                        <input class="label_checkbox" id="quantity" value="quantity" type="checkbox" checked>
+                        <span>QUANTITY</span>
                     </label>
                     <label for="ordinal">
                         <input class="label_checkbox" id="ordinal" value="ordinal" type="checkbox" checked>
-                        <span >ORDINAL</span>
+                        <span>ORDINAL</span>
                     </label>
                     <label for="cardinal">
-                        <input class="label_checkbox" id="cardinal" value="cardinal"  type="checkbox" checked>
-                        <span >CARDINAL</span>
+                        <input class="label_checkbox" id="cardinal" value="cardinal" type="checkbox" checked>
+                        <span>CARDINAL</span>
                     </label>
                     <label for="misc">
-                        <input class="label_checkbox" id="misc" value="misc"  type="checkbox" checked>
-                        <span >MISC</span>
+                        <input class="label_checkbox" id="misc" value="misc" type="checkbox" checked>
+                        <span>MISC</span>
                     </label>
 
                 </div>
