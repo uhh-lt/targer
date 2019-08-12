@@ -28,14 +28,7 @@ $(function () {
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         $("#displacy").empty()
         $('#displacy').hide()
-        e.target // newly activated tab
-        e.relatedTarget // previous active tab
         $('#controls').hide()
-        if (e.target.id == "nav-search-tab") {
-
-        } else if (e.target.id == "nav-label-tab"){
-
-        }
     })
 
     $('#searchArgumentsInput').val(search_items[Math.floor(Math.random() * search_items.length)])
