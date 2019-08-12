@@ -140,7 +140,7 @@ body {
 }
 
 doc_url:hover{
-    outline:0
+    outline:0;
 }
 .nowrap {
     overflow: hidden;
