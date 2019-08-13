@@ -27,7 +27,7 @@ $(function () {
 
     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
         $("#displacy").empty()
-        $('#displacy').hide()
+        $('#displacy-container').hide()
         $('#controls').hide()
     })
 
@@ -56,7 +56,7 @@ const displacy = new displaCyENT('https://api.explosion.ai/displacy/ent/', {
 });
 
 function search_action() {
-    $('#displacy').show()
+    $('#displacy-container').show()
     $("#displacy").empty()
     $("#displacy").text("Searching ...")
     var selected_fields = [];
@@ -166,7 +166,7 @@ function label_action() {
         classifier: document.getElementById("model").value
     })
         .done(function (data) {
-            $('#displacy').show()
+            $('#displacy-container').show()
             $('#controls').show()
             console.log("JSON Data: " + data)
             marks = JSON.parse(data)
@@ -308,7 +308,7 @@ $(document).ready(function () {
     $(".js-range-slider").ionRangeSlider();
     var my_range = $(".js-range-slider").data("ionRangeSlider");
 
-    $('#displacy').hide()
+    $('#displacy-container').hide()
     $('#controls').hide()
 
     $('#premise').change(function () {
