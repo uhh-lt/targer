@@ -1,6 +1,6 @@
 # Frontend
 
-Implemented with Flask + JQuery + Displacy
+Implemented with Flask + JQuery + Bootstrap + Displacy
 
 To start server:
 
