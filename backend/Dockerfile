@@ -12,7 +12,7 @@ RUN pip install -r requirements.txt
 
 RUN git clone https://github.com/UKPLab/emnlp2017-bilstm-cnn-crf.git
 
-RUN mv backend.py emnlp2017-bilstm-cnn-crf/ && mv ModelCombo.py emnlp2017-bilstm-cnn-crf/ && mv ModelES.py emnlp2017-bilstm-cnn-crf/ && mv ModelES_dep.py emnlp2017-bilstm-cnn-crf/ && mv ModelIBM.py emnlp2017-bilstm-cnn-crf/ && mv ModelWD.py emnlp2017-bilstm-cnn-crf/ && mv ModelWD_dep.py emnlp2017-bilstm-cnn-crf/ && mv ModelNewES.py emnlp2017-bilstm-cnn-crf/ && mv ModelNewWD.py emnlp2017-bilstm-cnn-crf/
+RUN mv backend.py emnlp2017-bilstm-cnn-crf/ && mv Model.py emnlp2017-bilstm-cnn-crf/ && mv ModelNewES.py emnlp2017-bilstm-cnn-crf/ && mv ModelNewWD.py emnlp2017-bilstm-cnn-crf/
 
 RUN mv models/* emnlp2017-bilstm-cnn-crf/models/
 

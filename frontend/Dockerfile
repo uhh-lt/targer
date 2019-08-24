@@ -2,7 +2,7 @@
 FROM tiangolo/uwsgi-nginx-flask:python3.7
 
 # Add all Data
-ADD . /
+ADD .. /
 
 # Set the working directory to /
 WORKDIR /

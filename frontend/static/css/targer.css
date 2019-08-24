@@ -1,0 +1,169 @@
+body {
+    min-height: 75rem;
+    padding-top: 4.5rem;
+}
+
+.entities {
+    line-height: 2;
+}
+
+[data-entity] {
+    padding: 0.25em 0.35em;
+    margin: 3px 0.25em;
+    line-height: 1;
+    display: inline-block;
+    border-radius: 0.25em;
+    border: 1px solid;
+    border-color: #ffffff;
+}
+
+[data-entity]::after {
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    content: attr(data-entity);
+    font-size: 0.6em;
+    line-height: 1;
+    padding: 0.35em;
+    border-radius: 0.35em;
+    text-transform: uppercase;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0px 0px 0.1rem 0.5rem;
+}
+
+[data-entity]::after {
+    background: #ffffff;
+    font-size: 1.0em;
+}
+
+[data-entity][data-entity=premise] {
+    background: #a6e22d
+}
+
+[data-entity][data-entity=claim] {
+    background: #F76300
+}
+
+[data-entity][data-entity=search] {
+    background: #FFFF00
+}
+
+[data-entity][data-entity=rebuttal] {
+    background: #CC1900
+}
+
+[data-entity][data-entity=named_entity] {
+    background: #43c6fc
+}
+
+[data-entity][data-entity=person] {
+    background: #5EC1CC
+}
+
+[data-entity][data-entity=per] {
+    background: #5EC1CC
+}
+
+[data-entity][data-entity=norp] {
+    background: #ef60b4
+}
+
+[data-entity][data-entity=facility] {
+    background: #43c6fc
+}
+
+[data-entity][data-entity=org] {
+    background: #43c6fc
+}
+
+[data-entity][data-entity=gpe] {
+    background: #fd9720
+}
+
+[data-entity][data-entity=loc] {
+    background: #fd9720
+}
+
+[data-entity][data-entity=product] {
+    background: #a99dfb
+}
+
+[data-entity][data-entity=misc] {
+    background: #a99dfb
+}
+
+[data-entity][data-entity=event] {
+    background: #fc0
+}
+
+[data-entity][data-entity=work_of_art] {
+    background: #fc0
+}
+
+[data-entity][data-entity=language] {
+    background: #fc0
+}
+
+[data-entity][data-entity=date] {
+    background: #2fbbab
+}
+
+[data-entity][data-entity=time] {
+    background: #2fbbab
+}
+
+[data-entity][data-entity=percent] {
+    background: #bbb
+}
+
+[data-entity][data-entity=money] {
+    background: #bbb
+}
+
+[data-entity][data-entity=quantity] {
+    background: #bbb
+}
+
+[data-entity][data-entity=ordinal] {
+    background: #bbb
+}
+
+[data-entity][data-entity=cardinal] {
+    background: #bbb
+}
+
+.doc_url{
+    color:#4357AD
+}
+.doc_button_analyze{
+    color:#ffaa00
+}
+
+doc_url:hover{
+    outline:0;
+}
+.nowrap {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.more_label {
+    color: #4357ad
+}
+
+.result_div {
+    margin-bottom: 3rem;
+    background-color: #f9fdff;
+    padding: 20px;
+}
+
+em {
+    background-color: #FFFF00;
+    font-style: normal
+}
+
+.content-block {
+    background-color: #E9ECEF;
+    margin-bottom: 5px;
+}

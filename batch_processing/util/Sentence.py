@@ -1,4 +1,4 @@
-from Word import Word
+from util.Word import Word
 
 class Sentence:
 

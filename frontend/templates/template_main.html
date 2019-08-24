@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>TARGER: Neural Argument Mining at Your Fingertips</title>
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+
+    <link href="{{ path }}static/css/targer.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ path }}static/css/ion.rangeSlider.css">
+</head>
+<body>
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+    <a class="navbar-brand" href="#">TARGER</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class=" collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link" target="_blank" href="http://ltdemos.informatik.uni-hamburg.de/arg-api">API</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" target="_blank"
+                   href="https://aclweb.org/anthology/papers/P/P19/P19-3031/">Publication</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" target="_blank" href="https://github.com/uhh-lt/targer">Github</a>
+            </li>
+        </ul>
+
+    </div>
+</nav>
+
+
+<main role="main" class="container">
+
+    <nav>
+        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+            <a class="nav-item nav-link active" id="nav-label-tab" data-toggle="tab" href="#nav-label" role="tab"
+               aria-controls="nav-label" aria-selected="true">Analyze Text</a>
+            <a class="nav-item nav-link" id="nav-search-tab" data-toggle="tab" href="#nav-search" role="tab"
+               aria-controls="nav-search" aria-selected="false">Search Arguments</a>
+        </div>
+    </nav>
+
+    <div class="tab-content" id="nav-tabContent">
+        <div class="tab-pane fade show active" id="nav-label" role="tabpanel" aria-labelledby="nav-label-tab">
+
+
+            <div class="card content-block">
+                <div class="card-body">
+                    <h5 class="card-title">Argument Tagger</h5>
+                    <form>
+                        <div class="form-row">
+                            <div class="col-9">
+                        <textarea class="form-control" id="labelTextInput"
+                                  placeholder="Enter text to label..." rows="5"></textarea>
+                            </div>
+                            <div class="col" style="margin-left: 15px">
+                                <div class="form-row">
+                                    <label for="model">Model to label with</label>
+                                    <select class="form-control" id="model">
+                                        <option value="ES">Essays (fastText)</option>
+                                        <option value="ES_dep">Essays (Dependency)</option>
+                                        <option value="NEWPE">Essays (Glove)</option>
+                                        <option value="WD">WebDiscourse (fastText)</option>
+                                        <option value="WD_dep">WebDiscourse (Dependency)</option>
+                                        <option value="NEWWD">WebDiscourse (Glove)</option>
+                                        <option value="IBM" selected="selected">IBM (fastText)</option>
+                                    </select>
+                                </div>
+                                <div class="form-row">
+                                    <a class="btn btn-lg btn-primary" href="#" id="button_label"
+                                       role="button" style="margin-top: 15px">Analyze</a>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+
+                </div>
+            </div>
+
+        </div>
+        <div class="tab-pane fade" id="nav-search" role="tabpanel" aria-labelledby="nav-search-tab">
+            <div class="card content-block">
+                <div class="card-body">
+                    <h5 class="card-title">Argument Tagger</h5>
+                    <form>
+                        <div class="form-group">
+                            <input class="form-control form-control-lg" type="text" id="searchArgumentsInput"
+                                   placeholder="Enter the search query...">
+                        </div>
+                        <fieldset class="form-group">
+                            <div class="row">
+                                <legend class="col-form-label col-sm-2 pt-0">Search in:</legend>
+
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input search_box" type="checkbox" id="premise"
+                                           value="premise" checked>
+                                    <label class="form-check-label" for="premise">PREMISES</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input search_box" type="checkbox" id="claim" value="claim"
+                                           checked>
+                                    <label class="form-check-label" for="claim">CLAIMS</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input search_box" type="checkbox" id="named_entity"
+                                           value="named_entity" checked>
+                                    <label class="form-check-label" for="named_entity">NAMED ENTITIES</label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input search_box" type="checkbox" id="text" value="text"
+                                           checked>
+                                    <label class="form-check-label" for="text">TEXT</label>
+                                </div>
+
+
+                            </div>
+                        </fieldset>
+                        <div class="form-group row">
+                            <label for="slider" class="col-sm-2 col-form-label">Minimum confidence:</label>
+                            <div class="col-sm-10">
+                                <input type="text" id="slider" class="js-range-slider" name="my_range" value=""
+                                       data-min="0"
+                                       data-max="100"
+                                       data-from="75"
+                                       data-to="100"
+                                       data-step="0.5"
+                                />
+                            </div>
+                        </div>
+
+                        <a class="btn btn-lg btn-primary" href="#" id="button_search" role="button">Search</a>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="controls" class="card content-block">
+        <div class="card-body">
+            <div id="label_box">
+                <div class="row">
+                    <div class="col-3">
+                        <h5>Argument Labels</h5>
+                        <div>
+                            <label for="premise_check">
+                                <input class="label_checkbox" type="checkbox" id="premise_check" value="premise"
+                                       checked>
+                                <span>PREMISE</span>
+                            </label>
+                            <label for="claim_check">
+                                <input class="label_checkbox" type="checkbox" id="claim_check" value="claim" checked>
+                                <span>CLAIM</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <h5>Entity Labels</h5>
+                        <div>
+                            <label for="person">
+                                <input class="label_checkbox" id="person" value="person" type="checkbox" checked>
+                                <span>PERSON</span>
+                            </label>
+                            <label for="per">
+                                <input class="label_checkbox" id="per" value="per" type="checkbox" checked>
+                                <span>PER</span>
+                            </label>
+                            <label for="norp">
+                                <input class="label_checkbox" id="norp" value="norp" type="checkbox" checked>
+                                <span>NORP</span>
+                            </label>
+                            <label for="facility">
+                                <input class="label_checkbox" id="facility" value="facility" type="checkbox" checked>
+                                <span>FACILITY</span>
+                            </label>
+                            <label for="org">
+                                <input class="label_checkbox" id="org" value="org" type="checkbox" checked>
+                                <span>ORG</span>
+                            </label>
+                            <label for="gpe">
+                                <input class="label_checkbox" id="gpe" value="gpe" type="checkbox" checked>
+                                <span>GPE</span>
+                            </label>
+                            <label for="loc">
+                                <input class="label_checkbox" id="loc" value="loc" type="checkbox" checked>
+                                <span>LOC</span>
+                            </label>
+                            <label for="product">
+                                <input class="label_checkbox" id="product" value="product" type="checkbox" checked>
+                                <span>PRODUCT</span>
+                            </label>
+
+                            <label for="event">
+                                <input class="label_checkbox" id="event" value="event" type="checkbox" checked>
+                                <span>EVENT</span>
+                            </label>
+
+
+                            <label id="more_labels">+ more labels</label>
+                            <div id="more_labels_box" style="display: none;">
+                                <label for="work_of_art">
+                                    <input class="label_checkbox" id="work_of_art" value="work_of_art" type="checkbox"
+                                           checked>
+                                    <span>WORK OF ART</span>
+                                </label>
+                                <label for="language">
+                                    <input class="label_checkbox" id="language" value="language" type="checkbox"
+                                           checked>
+                                    <span>LANGUAGE</span>
+                                </label>
+                                <label for="date">
+                                    <input class="label_checkbox" id="date" value="date" type="checkbox" checked>
+                                    <span>DATE</span>
+                                </label>
+                                <label for="time">
+                                    <input class="label_checkbox" id="time" value="time" type="checkbox" checked>
+                                    <span>TIME</span>
+                                </label>
+                                <label for="percent">
+                                    <input class="label_checkbox" id="percent" value="percent" type="checkbox" checked>
+                                    <span>PERCENT</span>
+                                </label>
+                                <label for="money">
+                                    <input class="label_checkbox" id="money" value="money" type="checkbox" checked>
+                                    <span>MONEY</span>
+                                </label>
+                                <label for="quantity">
+                                    <input class="label_checkbox" id="quantity" value="quantity" type="checkbox"
+                                           checked>
+                                    <span>QUANTITY</span>
+                                </label>
+                                <label for="ordinal">
+                                    <input class="label_checkbox" id="ordinal" value="ordinal" type="checkbox" checked>
+                                    <span>ORDINAL</span>
+                                </label>
+                                <label for="cardinal">
+                                    <input class="label_checkbox" id="cardinal" value="cardinal" type="checkbox"
+                                           checked>
+                                    <span>CARDINAL</span>
+                                </label>
+                                <label for="misc">
+                                    <input class="label_checkbox" id="misc" value="misc" type="checkbox" checked>
+                                    <span>MISC</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="displacy-container" class="card content-block">
+        <div class="card-body">
+            <div id="displacy"></div>
+        </div>
+    </div>
+
+
+</main>
+
+<script src="{{ path }}static/js/jquery-3.3.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script src="{{ path }}static/js/ion.rangeSlider.js"></script>
+<script type='text/javascript' src="{{ path }}static/js/displacy-ent.js"></script>
+<script type='text/javascript' src="{{ path }}static/js/targer.js"></script>
+</body>
+</html>
