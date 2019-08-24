@@ -118,7 +118,8 @@ class ClassifyNewWD(Resource):
 class ClassifyNewPE(Resource):
     def post(self):
        """
-       Classifies input text to argument structure (Essays model, fasttext - big dataset)
+       Classifies input text to argument structure (Essays model, fasttext embeddings)
+
        ---
        consumes:
          - text/plain
@@ -149,7 +150,7 @@ class ClassifyNewPE(Resource):
 class ClassifyES(Resource):
     def post(self):
        """
-       Classifies input text to argument structure (Essays model, fasttext - big dataset)
+       Classifies input text to argument structure (Essays model, fasttext embeddings)
        ---
        consumes:
          - text/plain

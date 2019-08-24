@@ -2,7 +2,8 @@
 
 This page contains code of the Web application and web service based on the neural [argument tagger](http://github.com/achernodub/bilstm-cnn-crf-tagger). The figure below illustrates how the sytem looks like: you can enter some text in the input box and detect arguments in it with one of the pre-trained neural models for argument mining. 
 
-**Front-end code is based on [displaCy ENT](https://github.com/explosion/displacy-ent) by [explosion.ai](http://explosion.ai). In particular, we are thankful to [Ines Motani](https://github.com/ines) for developing this piece of software and making it available under the MIT license.** 
+**Front-end code is based on MIT licensed [displacy-ent](https://github.com/explosion/displacy-ent) by [explosion.ai](http://explosion.ai). We are thankful to [Ines Motani](https://github.com/ines) for developing this piece of software and making it publicly available under the MIT license.** 
+
 
 More specifically, this repository shares code and data related to the following demo paper:
 
