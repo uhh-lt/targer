@@ -21,7 +21,7 @@ import json
 import spacy
 
 nlp = spacy.load('xx')
-#path = "/argsearch/"
+# path = "/argsearch/"
 path = "./"
 
 config_parser = configparser.ConfigParser()
@@ -69,6 +69,7 @@ api = Api(app)
 def create_api_url(endpoint):
     return 'http://' + config["backend_host"] + ":" + config["backend_port"] + "/" + endpoint
 
+
 class Sender:
     def send(self, text, classifier):
 
@@ -111,7 +112,7 @@ def index():
 def search_text():
     text = request.form.get('username')
     confidence = request.form.get('confidence')
-    where_to_seach = request.form.getlist('where[]') # List like ['premise', 'claim', 'named_entity', 'text']
+    where_to_seach = request.form.getlist('where[]')  # List like ['premise', 'claim', 'named_entity', 'text']
     return search_in_es(text, where_to_seach, confidence)
 
 
@@ -192,30 +193,34 @@ SEARCH_KEY_CLAIM = 'claim'
 SEARCH_KEY_ENTITY = 'named_entity'
 SEARCH_KEY_TEXT = 'text'
 
+
 def get_search_field(path, field, query):
     return {"nested": {
-                "path": path,
-                "query": {
-                    "bool": {
-                        "must": [{"match": { field: {"query": query}}}]
-                    }
-                },
-                "inner_hits": {}
-           }}
+        "path": path,
+        "query": {
+            "bool": {
+                "must": [{"match": {field: {"query": query}}}]
+            }
+        },
+        "inner_hits": {}
+    }}
+
 
 def get_search_field_with_score(path, field, query, score_field, score):
     return {"nested": {
-                "path": path,
-                "query": {
-                    "bool": {
-                        "must": [{"match": { field: {"query": query}}},
-                                 {"range": {score_field: {"gt": score}}}]
-                    }
-                },
-                "inner_hits": {}
-           }}
+        "path": path,
+        "query": {
+            "bool": {
+                "must": [{"match": {field: {"query": query}}},
+                         {"range": {score_field: {"gt": score}}}]
+            }
+        },
+        "inner_hits": {}
+    }}
+
 
 number_of_sentences_around = 3
+
 
 def search_in_es(query, where_to_seach, confidence):
     docs = []
@@ -226,9 +231,13 @@ def search_in_es(query, where_to_seach, confidence):
         if search_category == SEARCH_KEY_TEXT:
             search_elements.append(get_search_field("sentences", "sentences.text", search_query))
         if search_category == SEARCH_KEY_PREMISE:
-            search_elements.append(get_search_field_with_score("sentences.premises", "sentences.premises.text", search_query, "sentences.premises.score", float(confidence)/100))
+            search_elements.append(
+                get_search_field_with_score("sentences.premises", "sentences.premises.text", search_query,
+                                            "sentences.premises.score", float(confidence) / 100))
         if search_category == SEARCH_KEY_CLAIM:
-            search_elements.append(get_search_field_with_score("sentences.claims", "sentences.claims.text", search_query, "sentences.claims.score", float(confidence)/100))
+            search_elements.append(
+                get_search_field_with_score("sentences.claims", "sentences.claims.text", search_query,
+                                            "sentences.claims.score", float(confidence) / 100))
         if search_category == SEARCH_KEY_ENTITY:
             search_elements.append(get_search_field("sentences.entities", "sentences.entities.text", search_query))
 
@@ -237,11 +246,11 @@ def search_in_es(query, where_to_seach, confidence):
 
     res = es.search(index=INDEX_NAME, request_timeout=60, body={"from": 0, "size": 25,
 
-                                            "query": {
-                                                "bool": {
-                                                    "should": search_elements
-                                                }
-                                            }})
+                                                                "query": {
+                                                                    "bool": {
+                                                                        "should": search_elements
+                                                                    }
+                                                                }})
 
     query_words = search_query.strip().split()
     print("Got %d Hits:" % res['hits']['total'])
@@ -262,7 +271,6 @@ def search_in_es(query, where_to_seach, confidence):
                 field = "sentences.claims"
             elif SEARCH_KEY_ENTITY in where_to_seach and hit["inner_hits"]["sentences.entities"]["hits"]["total"] > 0:
                 field = "sentences.entities"
-
 
             index_with_top_match = hit["inner_hits"][field]["hits"]["hits"][0]["_nested"]["offset"]
 
@@ -290,36 +298,42 @@ def search_in_es(query, where_to_seach, confidence):
                 # finding positions for claims
                 if SEARCH_KEY_CLAIM in where_to_seach:
                     for claim in sentence["claims"]:
-                        if (float(claim["score"]) > float(confidence)/100):
+                        if (float(claim["score"]) > float(confidence) / 100):
                             claim_adjusted = adjust_punctuation(claim["text"])
                             start_pos = sentence_text_adjusted.find(claim_adjusted)
                             end_pos = start_pos + len(claim_adjusted)
-                            arguments_positions.append({"type": "claim", "start": offset + start_pos, "end": offset + end_pos})
+                            arguments_positions.append(
+                                {"type": "claim", "start": offset + start_pos, "end": offset + end_pos})
 
                 # finding positions for premises
                 if SEARCH_KEY_PREMISE in where_to_seach:
                     for premise in sentence["premises"]:
-                        if (float(premise["score"]) > float(confidence)/100):
+                        if (float(premise["score"]) > float(confidence) / 100):
                             premise_adjusted = adjust_punctuation(premise["text"])
                             start_pos = sentence_text_adjusted.find(premise_adjusted)
                             end_pos = start_pos + len(premise_adjusted)
-                            arguments_positions.append({"type": "premise", "start": offset + start_pos, "end": offset + end_pos})
+                            arguments_positions.append(
+                                {"type": "premise", "start": offset + start_pos, "end": offset + end_pos})
 
                 # finding positions for entities
                 if SEARCH_KEY_ENTITY in where_to_seach:
                     for entity in sentence["entities"]:
-                        if entity["class"].upper() == "ORGANIZATION": type = "ORG"
-                        elif entity["class"].upper() == "LOCATION": type = "LOC"
-                        else: type = entity["class"]
+                        if entity["class"].upper() == "ORGANIZATION":
+                            type = "ORG"
+                        elif entity["class"].upper() == "LOCATION":
+                            type = "LOC"
+                        else:
+                            type = entity["class"]
                         text = adjust_punctuation(entity["text"])
                         start_pos = sentence_text_adjusted.find(text)
                         end_pos = start_pos + len(text)
                         entity_positions.append({"type": type, "start": offset + start_pos, "end": offset + end_pos})
 
-            #finding positions for search query instances
+            # finding positions for search query instances
             for word in query_words:
                 for match in set(re.findall(word, text_full, re.IGNORECASE)):
-                    positions = [{"type": "search", "start": m.start(), "end": m.end()} for m in re.finditer(match, text_full)]
+                    positions = [{"type": "search", "start": m.start(), "end": m.end()} for m in
+                                 re.finditer(match, text_full)]
                     query_search_positions.extend(positions)
 
             doc["text_full"] = text_full
@@ -333,8 +347,10 @@ def search_in_es(query, where_to_seach, confidence):
 
     return json.dumps(docs)
 
+
 def adjust_punctuation(text):
     return re.sub(r'\s([?.!,:;\'"](?:\s|$))', r'\1', text)
+
 
 if __name__ == "__main__":
     app.jinja_env.auto_reload = True
