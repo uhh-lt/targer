@@ -16,8 +16,9 @@ import json
 from Model import Model
 from ModelNewES import ModelNewES
 from ModelNewWD import ModelNewWD
-
-
+import configparser
+from elasticsearch import Elasticsearch
+from es_utils import search_in_es
 modelNewES = ModelNewES()
 
 modelNewWD = ModelNewWD()
@@ -51,6 +52,14 @@ modelWD_dep = Model("WD_dep.h5")
 # # We must call this cause of a keras bug
 # # https://github.com/keras-team/keras/issues/2397
 modelWD_dep.label("Therefore fixed punishment will")
+
+config_parser = configparser.ConfigParser()
+config_parser.read('config.ini')
+config = config_parser['DEV']
+
+ES_SERVER = {"host": config["es_host"], "port": int(config["es_port"])}
+INDEX_NAME = 'arguments'
+es = Elasticsearch(hosts=[ES_SERVER])
 
 class ReverseProxied(object):
     def __init__(self, app):
@@ -333,6 +342,51 @@ class ClassifyCombo(Resource):
        response.headers['content-type'] = 'application/json'
        return response
 
+class SearchES(Resource):
+    def post(self):
+       """
+       Classifies input text to argument structure (Combo model - big dataset)
+       ---
+       consumes:
+         - text/plain
+       parameters:
+         - in: body
+           name: query
+           type: string
+           required: true
+           description: Search query
+           example: single gender schools
+         - in: body
+           name: where_to_search
+           type: list of strings
+           required: true
+           description: list of types of entities to search in. Available: 'premise', 'claim', 'named_entity', 'text'
+           example: ['premise', 'claim']
+         - in: body
+           name: confidence
+           type: int
+           required: true
+           description: Minimum confidence score for arguments, from 0 to 100
+           example: 75
+       responses:
+         200:
+           description: A list of search results
+           schema:
+             id: argument-structure
+             properties:
+               argument-structure:
+                 type: string
+                 description: JSON-List
+                 default: No input text set
+        """
+       query = request.form.get('query')
+       confidence = request.form.get('confidence')
+       where_to_search = request.form.getlist('where_to_search')
+       result = search_in_es(es, INDEX_NAME, query, where_to_search, confidence)
+       response = make_response(jsonify(result))
+       response.headers['content-type'] = 'application/json'
+       return response
+
 api.add_resource(ClassifyES, '/classifyES')
 api.add_resource(ClassifyWD, '/classifyWD')
 api.add_resource(ClassifyES_dep, '/classifyES_dep')
@@ -341,6 +395,7 @@ api.add_resource(ClassifyIBM, '/classifyIBM')
 api.add_resource(ClassifyCombo, '/classifyCombo')
 api.add_resource(ClassifyNewPE, '/classifyNewPE')
 api.add_resource(ClassifyNewWD, '/classifyNewWD')
+api.add_resource(SearchES, '/search_arguments')
 
 app.jinja_env.auto_reload = True
 app.config['TEMPLATES_AUTO_RELOAD'] = True
