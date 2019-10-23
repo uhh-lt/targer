@@ -69,7 +69,7 @@ function search_action() {
     document.getElementById("button_search").disabled = true;
     console.log(selected_fields)
     $.post("./search_text", {
-        query: document.getElementById("searchArgumentsInput").value,
+        search_query: document.getElementById("searchArgumentsInput").value,
         where_to_search: selected_fields,
         confidence: $(".js-range-slider").val()
     })

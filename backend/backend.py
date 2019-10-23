@@ -345,45 +345,46 @@ class ClassifyCombo(Resource):
 class SearchES(Resource):
     def post(self):
        """
-       Classifies input text to argument structure (Combo model - big dataset)
+       Argument Retrieval endpoint
        ---
        consumes:
-         - text/plain
+         - application/json
        parameters:
          - in: body
-           name: query
-           type: string
-           required: true
-           description: Search query
-           example: single gender schools
-         - in: body
-           name: where_to_search
-           type: list of strings
-           required: true
-           description: list of types of entities to search in. Available: 'premise', 'claim', 'named_entity', 'text'
-           example: ['premise', 'claim']
-         - in: body
-           name: confidence
-           type: int
-           required: true
-           description: Minimum confidence score for arguments, from 0 to 100
-           example: 75
-       responses:
-         200:
-           description: A list of search results
+           name: search_object
+           description: Request consists of search query, minimum confidence score, entities to search
            schema:
-             id: argument-structure
+             type: object
+             required:
+               - search_query
+               - confidence
+               - where_to_search
              properties:
-               argument-structure:
+               search_query:
                  type: string
-                 description: JSON-List
-                 default: No input text set
+                 example: coffee
+               confidence:
+                 type: integer
+                 example: 75
+               where_to_search:
+                 type: array
+                 items:
+                   type: string
+                 example:
+                   - text
+                   - premise
+       responses:
+           200:
+             description: OK
         """
-       query = request.form.get('query')
-       confidence = request.form.get('confidence')
-       where_to_search = request.form.getlist('where_to_search')
-       result = search_in_es(es, INDEX_NAME, query, where_to_search, confidence)
-       response = make_response(jsonify(result))
+
+       request_data = request.json
+       search_query = request_data['search_query']
+       confidence = request_data['confidence']
+       where_to_search = request_data['where_to_search']
+
+       result = search_in_es(es, INDEX_NAME, str(search_query), where_to_search, confidence)
+       response = make_response(result)
        response.headers['content-type'] = 'application/json'
        return response
 

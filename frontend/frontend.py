@@ -48,10 +48,6 @@ class ReverseProxied(object):
 app = Flask(__name__)
 app.json_encoder = LazyJSONEncoder
 
-ES_SERVER = {"host": config["es_host"], "port": int(config["es_port"])}
-es = Elasticsearch(hosts=[ES_SERVER])
-INDEX_NAME = 'arguments'
-
 reversed = True
 
 if (reversed):
@@ -108,12 +104,13 @@ def index():
 
 @app.route('/search_text', methods=['POST'])
 def search_text():
-    query = request.form.get('query')
+    search_query = request.form.get('search_query')
     confidence = request.form.get('confidence')
     where_to_search = request.form.getlist('where_to_search[]')  # List like ['premise', 'claim', 'named_entity', 'text']
 
-    r = requests.post(create_api_url("search_arguments"), data={'query': query, 'confidence': confidence, 'where_to_search': where_to_search})
-    return r.json()
+    headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
+    r = requests.post(base_url+ "search_arguments", headers=headers, data=json.dumps({'search_query': search_query, 'confidence': confidence, 'where_to_search': where_to_search}))
+    return r.text
 
 
 @app.route('/label_text', methods=['POST'])

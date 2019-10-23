@@ -10,13 +10,21 @@ WORKDIR /
 # Install any needed packages specified in requirements.txt
 RUN pip install -r requirements.txt
 
+RUN python -m pip install "jsonschema<3.0.0"
+
 RUN git clone https://github.com/UKPLab/emnlp2017-bilstm-cnn-crf.git
 
-RUN mv backend.py emnlp2017-bilstm-cnn-crf/ && mv es_utils.py emnlp2017-bilstm-cnn-crf/ && mv Model.py emnlp2017-bilstm-cnn-crf/ && mv ModelNewES.py emnlp2017-bilstm-cnn-crf/ && mv ModelNewWD.py emnlp2017-bilstm-cnn-crf/
+RUN mv backend.py emnlp2017-bilstm-cnn-crf/  && mv ModelCombo.py emnlp2017-bilstm-cnn-crf/ && mv ModelES.py emnlp2017-bilstm-cnn-crf/ && mv ModelES_dep.py emnlp2017-bilstm-cnn-crf/ && mv ModelIBM.py emnl$
+
+RUN mv es_utils.py emnlp2017-bilstm-cnn-crf/ && mv config.ini emnlp2017-bilstm-cnn-crf/
 
 RUN mv models/* emnlp2017-bilstm-cnn-crf/models/
 
 RUN mv -f BiLSTM.py emnlp2017-bilstm-cnn-crf/neuralnets/
+
+RUN cp -r static emnlp2017-bilstm-cnn-crf/
+
+RUN cp -r templates emnlp2017-bilstm-cnn-crf/
 
 RUN mkdir emnlp2017-bilstm-cnn-crf/lstm
 
@@ -29,12 +37,3 @@ WORKDIR /emnlp2017-bilstm-cnn-crf
 
 # Run app.py when the container launches
 CMD ["python3", "backend.py"]
-
-
-
-
-
-
-
-
-
