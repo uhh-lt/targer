@@ -1,10 +1,10 @@
-flask
-flasgger
-flask_restful
-nltk
+flask==1.1.1
+flasgger==0.9.3
+flask_restful==0.3.7
+nltk==3.4.5
 tensorflow==1.5.0
-keras
-numpy>=1.15.1
-scipy>=1.1.0
+keras==2.1.5
+numpy==1.17.3
+scipy==1.3.1
 torch==0.4.1
 torchvision==0.2.1
