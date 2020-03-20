@@ -1,5 +1,5 @@
-flask
-flasgger
-flask_restful
-elasticsearch
-spacy
+flask==1.0.2
+flasgger==0.9.3
+flask_restful==0.3.7
+elasticsearch==7.0.5
+spacy==2.2.1
