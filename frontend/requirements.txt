@@ -1,4 +1,4 @@
-flask==1.0.2
+flask==2.3.2
 flasgger==0.9.3
 flask_restful==0.3.7
 elasticsearch==7.0.5
